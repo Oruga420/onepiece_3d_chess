@@ -1002,10 +1002,10 @@ class OnePiece3DChess {
     getLocalSpritePath(player, type) {
         const normalizedType = String(type).toLowerCase();
         if (player === 'marine') {
-            return `/assets/marines/${normalizedType}.png`;
+            return `assets/marines/${normalizedType}.png`;
         }
         if (player === 'pirate' && this.selectedCrew) {
-            return `/assets/crews/${this.selectedCrew}/${normalizedType}.png`;
+            return `assets/crews/${this.selectedCrew}/${normalizedType}.png`;
         }
         return null;
     }

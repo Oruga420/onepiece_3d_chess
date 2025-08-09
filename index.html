@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>One Piece 3D Chess</title>
+    <link rel="stylesheet" href="styles.css">
+    <!-- Three.js with fallback CDNs -->
+    <script>
+        // Script loading utility
+        function loadScript(src, fallbackSrc = null) {
+            return new Promise((resolve, reject) => {
+                const script = document.createElement('script');
+                script.src = src;
+                script.onload = () => resolve();
+                script.onerror = () => {
+                    if (fallbackSrc) {
+                        console.log(`Failed to load ${src}, trying fallback...`);
+                        const fallbackScript = document.createElement('script');
+                        fallbackScript.src = fallbackSrc;
+                        fallbackScript.onload = () => resolve();
+                        fallbackScript.onerror = () => reject(new Error(`Failed to load Three.js from both ${src} and ${fallbackSrc}`));
+                        document.head.appendChild(fallbackScript);
+                    } else {
+                        reject(new Error(`Failed to load ${src}`));
+                    }
+                };
+                document.head.appendChild(script);
+            });
+        }
+
+        // Load all required scripts
+        async function loadAllScripts() {
+            try {
+                console.log('🔄 Loading Three.js libraries...');
+                
+                // Load Three.js main library from local file
+                await loadScript('three.min.js');
+                console.log('✅ Three.js main library loaded');
+                
+                                   // Load OrbitControls from local file
+                   await loadScript('OrbitControls.js');
+                   console.log('✅ OrbitControls loaded');
+                
+                // Load GLTFLoader from local file
+                await loadScript('GLTFLoader.js');
+                console.log('✅ GLTFLoader loaded');
+                
+                console.log('🎉 All Three.js libraries loaded successfully!');
+                
+                // Signal that scripts are ready
+                window.threeJSReady = true;
+                
+                // Trigger game initialization if DOM is already loaded
+                if (document.readyState === 'loading') {
+                    document.addEventListener('DOMContentLoaded', initializeGame);
+                } else {
+                    initializeGame();
+                }
+                
+            } catch (error) {
+                console.error('❌ Failed to load Three.js libraries:', error);
+                showLoadingError(error.message);
+            }
+        }
+
+        function showLoadingError(message) {
+            const loadingScreen = document.getElementById('loading-screen');
+            if (loadingScreen) {
+                loadingScreen.innerHTML = `
+                    <div class="loading-content">
+                        <h1>One Piece 3D Chess</h1>
+                        <p style="color: #ff6b6b;">Error loading Three.js: ${message}</p>
+                        <p>This might be due to network issues or firewall restrictions.</p>
+                        <button onclick="location.reload()" style="padding: 10px 20px; background: #ff6b35; color: white; border: none; border-radius: 5px; cursor: pointer;">Retry</button>
+                    </div>
+                `;
+            }
+        }
+
+        function initializeGame() {
+            if (typeof THREE === 'undefined') {
+                showLoadingError('Three.js library not available after loading');
+                return;
+            }
+            
+            // Initialize the game
+            const script = document.createElement('script');
+            script.src = 'script.js';
+            script.onload = () => {
+                console.log('✅ Game script loaded');
+            };
+            script.onerror = () => {
+                showLoadingError('Failed to load game script (script.js)');
+            };
+            document.head.appendChild(script);
+        }
+
+        // Start loading scripts immediately
+        loadAllScripts();
+    </script>
+</head>
+<body>
+    <div id="loading-screen">
+        <div class="loading-content">
+            <h1>One Piece 3D Chess</h1>
+            <div class="loading-bar">
+                <div class="loading-progress"></div>
+            </div>
+            <p>Loading the Grand Line...</p>
+        </div>
+    </div>
+
+    <div id="game-ui" style="display: none;">
+        <div class="ui-overlay">
+            <header class="game-header">
+                <h1 class="game-title">One Piece 3D Chess</h1>
+                <div class="crew-selection" id="crew-selection">
+                    <h3>Select Your Pirate Crew</h3>
+                    <div class="crew-options">
+                        <button class="crew-btn" data-crew="mugiwara">Mugiwara Pirates</button>
+                        <button class="crew-btn" data-crew="buggy">Buggy Pirates</button>
+                        <button class="crew-btn" data-crew="shanks">Red Hair Pirates</button>
+                        <button class="crew-btn" data-crew="bigmom">Big Mom Pirates</button>
+                        <button class="crew-btn" data-crew="kaido">Beast Pirates</button>
+                        <button class="crew-btn" data-crew="doflamingo">Donquixote Pirates</button>
+                        <button class="crew-btn" data-crew="heart">Heart Pirates</button>
+                        <button class="crew-btn" data-crew="kid">Kid Pirates</button>
+                        <button class="crew-btn" data-crew="blackbeard">Blackbeard Pirates</button>
+                        <button class="crew-btn" data-crew="whitebeard">Whitebeard Pirates</button>
+                    </div>
+                </div>
+                <div class="game-info" id="game-info" style="display: none;">
+                    <div class="info-panel">
+                        <div class="turn-indicator">
+                            <span>Current Turn: </span>
+                            <span id="current-player">Marines</span>
+                        </div>
+                        <div class="turn-counter">
+                            <span>Turn: </span>
+                            <span id="turn-number">1</span>
+                        </div>
+                        <div class="devil-fruit-counter">
+                            <span>Devil Fruit in: </span>
+                            <span id="devil-fruit-turns">7</span>
+                            <span> turns</span>
+                        </div>
+                        <div class="selected-crew">
+                            <span>Pirate Crew: </span>
+                            <span id="selected-crew-name">None</span>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <div class="side-panel" id="side-panel" style="display: none;">
+                <div class="panel-section">
+                    <h3>Captured Pieces</h3>
+                    <div class="captured-pieces">
+                        <div class="captured-marines">
+                            <h4>Marines</h4>
+                            <div id="captured-marines"></div>
+                        </div>
+                        <div class="captured-pirates">
+                            <h4>Pirates</h4>
+                            <div id="captured-pirates"></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="panel-section">
+                    <h3>Available Devil Fruits</h3>
+                    <div id="devil-fruits-container"></div>
+                </div>
+            </div>
+
+            <div class="game-controls" id="game-controls" style="display: none;">
+                <button id="new-game-btn" class="control-btn">New Game</button>
+                <button id="undo-btn" class="control-btn">Undo Move</button>
+                <button id="change-crew-btn" class="control-btn">Change Crew</button>
+                <button id="camera-reset-btn" class="control-btn">Reset Camera</button>
+                <button id="ai-toggle-btn" class="control-btn">AI: ON</button>
+                <select id="ai-difficulty" class="control-btn" style="margin-left: 10px;">
+                    <option value="easy">Easy AI</option>
+                    <option value="medium" selected>Medium AI</option>
+                    <option value="hard">Hard AI</option>
+                </select>
+                
+                <div class="keyboard-controls">
+                    <h4>Camera Controls:</h4>
+                    <p><strong>WASD / Arrow Keys:</strong> Move camera</p>
+                    <p><strong>Q/E:</strong> Rotate camera</p>
+                    <p><strong>R/F:</strong> Zoom in/out</p>
+                    <p><strong>C:</strong> Reset camera</p>
+                    <p><strong>Mouse:</strong> Select and move pieces only</p>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <div id="game-message" class="game-message"></div>
+
+    <canvas id="game-canvas"></canvas>
+
+</body>
+</html>

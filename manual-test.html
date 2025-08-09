@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>One Piece Chess Test</title>
+    <style>
+        body { font-family: Arial; margin: 20px; background: #1a1a2e; color: #eee; }
+        .status { margin: 10px 0; padding: 10px; border-radius: 5px; }
+        .success { background: #0f5132; }
+        .error { background: #842029; }
+        .info { background: #055160; }
+        #test-results { margin-top: 20px; }
+        .test-item { margin: 5px 0; }
+        .checkmark { color: #00ff00; }
+        .x-mark { color: #ff0000; }
+    </style>
+</head>
+<body>
+    <h1>🧪 One Piece 3D Chess - Manual Test</h1>
+    <div id="test-results"></div>
+    
+    <div class="status info">
+        <h3>Testing Instructions:</h3>
+        <ol>
+            <li>Open this page in a web browser</li>
+            <li>Look at the test results below</li>
+            <li>If all tests show ✅, the game should work</li>
+            <li>Then open <code>index.html</code> to play the actual game</li>
+        </ol>
+    </div>
+
+    <script>
+        const results = document.getElementById('test-results');
+        
+        function addTest(name, status, details = '') {
+            const item = document.createElement('div');
+            item.className = 'test-item';
+            const icon = status ? '✅' : '❌';
+            item.innerHTML = `${icon} ${name}${details ? ': ' + details : ''}`;
+            results.appendChild(item);
+            return status;
+        }
+        
+        function runTests() {
+            addTest('Browser Test Environment', true, 'Running in browser');
+            
+            // Test file loading
+            const testFiles = [
+                'index.html',
+                'script.js', 
+                'styles.css',
+                'OrbitControls.js',
+                'GLTFLoader.js',
+                'three.min.js'
+            ];
+            
+            let filesTestedCount = 0;
+            let filesFoundCount = 0;
+            
+            testFiles.forEach(file => {
+                filesTestedCount++;
+                fetch(file, { method: 'HEAD' })
+                    .then(response => {
+                        if (response.ok) {
+                            filesFoundCount++;
+                            addTest(`File ${file}`, true, `${response.status} OK`);
+                        } else {
+                            addTest(`File ${file}`, false, `${response.status} ${response.statusText}`);
+                        }
+                        
+                        if (filesTestedCount === testFiles.length) {
+                            completeTests();
+                        }
+                    })
+                    .catch(error => {
+                        addTest(`File ${file}`, false, error.message);
+                        if (filesTestedCount === testFiles.length) {
+                            completeTests();
+                        }
+                    });
+            });
+            
+            function completeTests() {
+                addTest('All Files Accessible', filesFoundCount === filesTestedCount, 
+                       `${filesFoundCount}/${filesTestedCount} files found`);
+                
+                if (filesFoundCount === filesTestedCount) {
+                    const summary = document.createElement('div');
+                    summary.className = 'status success';
+                    summary.innerHTML = `
+                        <h3>🎉 All Tests Passed!</h3>
+                        <p>The One Piece 3D Chess game files are properly set up and should work.</p>
+                        <p><strong>Next step:</strong> Open <code>index.html</code> in your browser to play the game!</p>
+                    `;
+                    results.appendChild(summary);
+                } else {
+                    const summary = document.createElement('div');
+                    summary.className = 'status error';
+                    summary.innerHTML = `
+                        <h3>❌ Some Tests Failed</h3>
+                        <p>Some game files are missing or inaccessible. The game may not work properly.</p>
+                    `;
+                    results.appendChild(summary);
+                }
+            }
+        }
+        
+        runTests();
+    </script>
+</body>
+</html>

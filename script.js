@@ -627,7 +627,7 @@ class OnePiece3DChess {
                 left: '0',
                 width: '100%',
                 height: '100%',
-                backgroundSize: 'contain',
+                backgroundSize: 'cover', /* cover the board area completely */
                 backgroundPosition: 'center',
                 backgroundRepeat: 'no-repeat',
                 transition: 'opacity 2s ease-in-out'

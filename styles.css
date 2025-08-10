@@ -36,13 +36,15 @@ body {
     position: fixed;
     top: 50%;
     left: 50%;
-    transform: translate(-50%, -50%);
-    width: 400px;
-    height: 400px;
+    transform: translate(-50%, -50%) rotate(-90deg);
+    width: 520px;  /* Adjusted to better match 3D board size */
+    height: 520px; /* Square aspect ratio for 8x8 board */
     z-index: 2; /* above game canvas */
     pointer-events: none; /* allow mouse interaction with chess pieces below */
-    opacity: 0.3; /* semi-transparent overlay */
+    opacity: 0.4; /* balanced visibility */
     transition: opacity 0.3s ease;
+    mix-blend-mode: overlay; /* better blending for tile texture effect */
+    filter: contrast(1.2) brightness(0.9); /* enhance texture definition */
 }
 
 #loading-screen {
@@ -499,6 +501,12 @@ body {
 @media (max-width: 768px) {
     .game-title {
         font-size: 1.8rem;
+    }
+    
+    /* Adjust board overlay size for mobile */
+    #board-overlay {
+        width: 320px;
+        height: 320px;
     }
     
     .crew-options {

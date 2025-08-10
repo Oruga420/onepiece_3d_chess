@@ -1028,6 +1028,11 @@ class OnePiece3DChess {
         }
         
         const piece = this.board[row][col];
+        
+        // STRICT VALIDATION: Check for any pieces at the clicked position
+        const piecesAtClickedPosition = this.pieces.filter(p => {
+            return p.userData && p.userData.row === row && p.userData.col === col;
+        });
 
         if (this.selectedPiece) {
             const selectedPieceData = this.selectedPiece.userData;
@@ -1047,14 +1052,41 @@ class OnePiece3DChess {
                 return;
             }
 
+            // CRITICAL PRE-MOVE VALIDATION: Check destination before attempting move
+            console.log(`🔍 Pre-move check: ${piecesAtClickedPosition.length} visual pieces at (${row},${col})`);
+            
+            if (piecesAtClickedPosition.length > 0) {
+                const existingPiece = piecesAtClickedPosition[0];
+                
+                // Block if same player piece at destination
+                if (existingPiece.userData.player === selectedPieceData.player) {
+                    console.log('🚫 PRE-MOVE BLOCK: Same player piece at destination');
+                    this.clearHighlights();
+                    this.selectedPiece = null;
+                    this.showTemporaryMessage(`Cannot move to square occupied by your own ${existingPiece.userData.type}!`, 'error', 2000);
+                    return;
+                }
+                
+                // Block if multiple pieces at destination
+                if (piecesAtClickedPosition.length > 1) {
+                    console.log('🚫 PRE-MOVE BLOCK: Multiple pieces at destination');
+                    this.clearHighlights();
+                    this.selectedPiece = null;
+                    this.showTemporaryMessage('Cannot move to square with multiple pieces!', 'error', 2000);
+                    this.cleanupOverlappingPieces(row, col);
+                    return;
+                }
+            }
+
             // Try to move the selected piece
             if (this.isValidMove(selectedRow, selectedCol, row, col)) {
+                console.log('✅ All validations passed - executing move');
                 this.makeMove(selectedRow, selectedCol, row, col);
                 this.selectedPiece = null;
                 return;
             } else {
                 // Invalid move attempted - clear selection and show feedback
-                console.log('🎯 Invalid square move - clearing selection');
+                console.log('🚫 Move validation failed - clearing selection');
                 this.clearHighlights();
                 this.selectedPiece = null;
                 this.showTemporaryMessage('Invalid move!', 'error', 1000);
@@ -1673,10 +1705,31 @@ class OnePiece3DChess {
         const piece = this.board[fromRow][fromCol];
         const targetPiece = this.board[toRow][toCol];
         
-        // Final safety check before executing move
+        // ULTIMATE SAFETY CHECK: Validate everything before executing move
         if (!piece) {
             console.error(`🚫 Cannot move: No piece at source (${fromRow},${fromCol})`);
             return;
+        }
+
+        // CRITICAL: Final check for destination occupation
+        const finalDestinationCheck = this.pieces.filter(p => {
+            return p.userData && p.userData.row === toRow && p.userData.col === toCol;
+        });
+        
+        if (finalDestinationCheck.length > 1) {
+            console.error(`🚨 FINAL CHECK FAILED: ${finalDestinationCheck.length} pieces at destination (${toRow},${toCol}) - ABORTING MOVE`);
+            this.cleanupOverlappingPieces(toRow, toCol);
+            this.showTemporaryMessage('Move blocked - multiple pieces detected at destination!', 'error', 2000);
+            return;
+        }
+        
+        if (finalDestinationCheck.length === 1) {
+            const existingPiece = finalDestinationCheck[0];
+            if (existingPiece.userData.player === piece.player) {
+                console.error(`🚨 FINAL CHECK FAILED: Same player piece at destination - ABORTING MOVE`);
+                this.showTemporaryMessage(`Cannot place ${piece.type} on square with your own ${existingPiece.userData.type}!`, 'error', 2000);
+                return;
+            }
         }
         
         // Re-validate the move to ensure it's still legal
@@ -2045,10 +2098,35 @@ class OnePiece3DChess {
             return false;
         }
         
-        // Strict validation: cannot move to tile occupied by same player
+        // ULTRA STRICT: Check for ANY pieces at destination (board state AND visual pieces)
         if (targetPiece && targetPiece.player === piece.player) {
             console.log(`🚫 Invalid move: trying to place ${piece.player} ${piece.type} on tile occupied by ${targetPiece.player} ${targetPiece.type}`);
             return false;
+        }
+        
+        // CRITICAL: Check visual pieces at destination to prevent overlaps
+        const visualPiecesAtDestination = this.pieces.filter(p => {
+            return p.userData && p.userData.row === toRow && p.userData.col === toCol;
+        });
+        
+        if (visualPiecesAtDestination.length > 0) {
+            const existingPiece = visualPiecesAtDestination[0];
+            
+            // If it's an enemy piece, this is a capture move (allowed)
+            if (existingPiece.userData.player !== piece.player) {
+                console.log(`✅ Valid capture move: ${piece.player} ${piece.type} can capture ${existingPiece.userData.player} ${existingPiece.userData.type}`);
+                // This is valid - continue with validation
+            } else {
+                // Same player piece already there - BLOCKED
+                console.log(`🚫 BLOCKED: Visual piece check - ${piece.player} ${piece.type} cannot move to tile with ${existingPiece.userData.player} ${existingPiece.userData.type}`);
+                return false;
+            }
+            
+            // If there are multiple pieces at destination, block the move
+            if (visualPiecesAtDestination.length > 1) {
+                console.log(`🚫 BLOCKED: Multiple pieces (${visualPiecesAtDestination.length}) detected at destination (${toRow},${toCol})`);
+                return false;
+            }
         }
         
         // Additional safety: check if destination tile has valid coordinates

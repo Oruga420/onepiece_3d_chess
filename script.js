@@ -41,6 +41,15 @@ class OnePiece3DChess {
         ].map(path => encodeURI(path)); // Encode URLs for spaces and special characters
         this.gameOver = false;
         
+        // Sound effects system
+        this.soundEffects = {
+            marineCaptured: 'assets/sound effects/marine_piece_eaten.mp3',
+            pirateCaptured1: 'assets/sound effects/pirate_piece_eaten_1.mp3',
+            pirateCaptured2: 'assets/sound effects/pirate_piece_eaten_2.mp3'
+        };
+        this.soundEnabled = true;
+        this.soundVolume = 0.3;
+        
         // Pirate Crews with 3D models and textures
         this.pirateCrews = {
             mugiwara: {
@@ -581,6 +590,47 @@ class OnePiece3DChess {
         }
     }
 
+    playSoundEffect(soundKey) {
+        if (!this.soundEnabled) return;
+        
+        try {
+            let soundPath;
+            
+            // Handle special cases
+            if (soundKey === 'pirateCaptured') {
+                // Randomly choose between the two pirate capture sounds
+                soundPath = Math.random() < 0.5 ? this.soundEffects.pirateCaptured1 : this.soundEffects.pirateCaptured2;
+            } else if (soundKey === 'marineCaptured') {
+                soundPath = this.soundEffects.marineCaptured;
+            } else if (soundKey === 'victory') {
+                // Use a louder version of marine capture sound as victory placeholder
+                // You can replace this with a proper victory sound file later
+                soundPath = this.soundEffects.marineCaptured;
+                console.log('🎉 Playing victory sound (using marine capture as placeholder)');
+            } else {
+                console.warn(`Unknown sound effect: ${soundKey}`);
+                return;
+            }
+            
+            console.log(`🔊 Playing sound effect: ${soundKey} -> ${soundPath}`);
+            
+            // Create and play audio element
+            const audio = new Audio(encodeURI(soundPath));
+            audio.volume = this.soundVolume;
+            
+            // Play the sound
+            const playPromise = audio.play();
+            if (playPromise !== undefined) {
+                playPromise.catch(error => {
+                    console.warn('🔊 Sound effect play failed:', error);
+                });
+            }
+            
+        } catch (error) {
+            console.error('🔊 Sound effect error:', error);
+        }
+    }
+
 
     hideLoadingScreen() {
         const loadingScreen = document.getElementById('loading-screen');
@@ -700,6 +750,14 @@ class OnePiece3DChess {
                     this.musicEl.volume = isNaN(v) ? 0.15 : Math.max(0, Math.min(1, v));
                 }
             });
+        }
+
+        // Sound effects toggle
+        const soundToggle = document.getElementById('sound-toggle');
+        if (soundToggle) {
+            soundToggle.addEventListener('click', () => this.toggleSoundEffects());
+            // Set initial button state
+            soundToggle.textContent = this.soundEnabled ? '🔊' : '🔇';
         }
     }
 
@@ -1505,6 +1563,13 @@ class OnePiece3DChess {
                 this.capturedPieces[capturedPiece.player].push(capturedPiece.type);
                 this.scene.remove(capturedPiece.mesh);
                 this.pieces = this.pieces.filter(p => p !== capturedPiece.mesh);
+                
+                // Play capture sound effect
+                if (capturedPiece.player === 'marine') {
+                    this.playSoundEffect('marineCaptured');
+                } else if (capturedPiece.player === 'pirate') {
+                    this.playSoundEffect('pirateCaptured');
+                }
             }
             console.log(`🚀 Animation completed for ${piece.player} ${piece.type}`);
             console.log(`🚀 Piece mesh final position:`, piece.mesh.position);
@@ -1715,6 +1780,9 @@ class OnePiece3DChess {
 
         // Show the victory screen
         victoryScreen.style.display = 'flex';
+        
+        // Play victory sound effect
+        this.playSoundEffect('victory');
         
         // Stop music during victory screen
         this.stopMusic();
@@ -2289,6 +2357,15 @@ class OnePiece3DChess {
         // Ensure volume slider reflects current volume
         const vol = document.getElementById('music-volume');
         if (vol && this.musicEl) vol.value = String(this.musicEl.volume);
+    }
+
+    toggleSoundEffects() {
+        this.soundEnabled = !this.soundEnabled;
+        const soundToggle = document.getElementById('sound-toggle');
+        if (soundToggle) {
+            soundToggle.textContent = this.soundEnabled ? '🔊' : '🔇';
+        }
+        console.log(`🔊 Sound effects ${this.soundEnabled ? 'enabled' : 'disabled'}`);
     }
 }
 

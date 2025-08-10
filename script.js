@@ -789,21 +789,38 @@ class OnePiece3DChess {
 
         console.log(`🎯 Raycaster found ${intersects.length} intersections`);
 
+        // Separate pieces and squares from intersections
+        const pieceIntersections = [];
+        const squareIntersections = [];
+        
         for (const intersect of intersects) {
             console.log('🎯 Intersection with object:', intersect.object.userData);
             
-            // Prioritize piece clicks over square clicks
             if (intersect.object.userData.player) {
-                // Clicked on a piece (sprite) - handle this first
-                console.log(`🎯 Clicked on piece: ${intersect.object.userData.player} ${intersect.object.userData.type}`);
-                this.handlePieceClick(intersect.object);
-                break;
+                pieceIntersections.push(intersect);
             } else if (intersect.object.userData.row !== undefined && intersect.object.userData.col !== undefined) {
-                // Clicked on a board square
-                console.log(`🎯 Clicked on board square: ${intersect.object.userData.row}, ${intersect.object.userData.col}`);
-                this.handleSquareClick(intersect.object.userData.row, intersect.object.userData.col);
-                break;
+                squareIntersections.push(intersect);
             }
+        }
+        
+        // Handle piece clicks first (prioritize over squares)
+        if (pieceIntersections.length > 0) {
+            if (pieceIntersections.length > 1) {
+                console.warn(`🚨 Multiple pieces detected at click position (${pieceIntersections.length})`);
+                // Clean up overlaps at this position
+                const firstPiece = pieceIntersections[0].object;
+                this.cleanupOverlappingPieces(firstPiece.userData.row, firstPiece.userData.col);
+            }
+            
+            // Handle the first (or remaining) piece
+            const pieceToHandle = pieceIntersections[0].object;
+            console.log(`🎯 Clicked on piece: ${pieceToHandle.userData.player} ${pieceToHandle.userData.type}`);
+            this.handlePieceClick(pieceToHandle);
+        } else if (squareIntersections.length > 0) {
+            // No pieces clicked, handle square click
+            const square = squareIntersections[0].object;
+            console.log(`🎯 Clicked on board square: ${square.userData.row}, ${square.userData.col}`);
+            this.handleSquareClick(square.userData.row, square.userData.col);
         }
         
         if (intersects.length === 0) {
@@ -968,6 +985,7 @@ class OnePiece3DChess {
         
         // Check board integrity after setup
         this.checkBoardIntegrity();
+        this.performComprehensiveOverlapCheck();
         
         this.showMessage(`Selected ${this.pirateCrews[crewName].name}! Pirates go first.`, 'success');
         this.startMusic();
@@ -1524,6 +1542,89 @@ class OnePiece3DChess {
         return issuesFound === 0;
     }
 
+    cleanupOverlappingPieces(row, col) {
+        console.log(`🧹 Cleaning up overlapping pieces at (${row},${col})`);
+        
+        // Get all pieces at this position
+        const piecesAtPosition = this.pieces.filter(p => {
+            return p.userData && p.userData.row === row && p.userData.col === col;
+        });
+        
+        if (piecesAtPosition.length <= 1) {
+            console.log(`✅ No overlaps to clean at (${row},${col})`);
+            return;
+        }
+        
+        console.log(`🔍 Found ${piecesAtPosition.length} pieces overlapping at (${row},${col})`);
+        
+        // Keep the piece that matches the board state, remove others
+        const boardPiece = this.board[row][col];
+        let keepPiece = null;
+        
+        if (boardPiece) {
+            // Find the piece that matches the board state
+            keepPiece = piecesAtPosition.find(p => 
+                p.userData.player === boardPiece.player && 
+                p.userData.type === boardPiece.type
+            );
+        }
+        
+        // Remove all pieces except the one we're keeping
+        piecesAtPosition.forEach(piece => {
+            if (piece !== keepPiece) {
+                console.log(`🗑️ Removing duplicate piece: ${piece.userData.player} ${piece.userData.type} at (${row},${col})`);
+                this.scene.remove(piece);
+                this.pieces = this.pieces.filter(p => p !== piece);
+            }
+        });
+        
+        // If we have no board piece but have overlapping pieces, keep the first one and remove others
+        if (!boardPiece && piecesAtPosition.length > 0) {
+            const firstPiece = piecesAtPosition[0];
+            piecesAtPosition.slice(1).forEach(piece => {
+                console.log(`🗑️ Removing extra piece: ${piece.userData.player} ${piece.userData.type} at (${row},${col})`);
+                this.scene.remove(piece);
+                this.pieces = this.pieces.filter(p => p !== piece);
+            });
+            
+            // Update board state to match the remaining piece
+            this.board[row][col] = {
+                player: firstPiece.userData.player,
+                type: firstPiece.userData.type,
+                mesh: firstPiece
+            };
+        }
+        
+        console.log(`✅ Cleanup complete at (${row},${col})`);
+    }
+
+    performComprehensiveOverlapCheck() {
+        console.log('🔍 Performing comprehensive overlap check...');
+        let overlapsFixed = 0;
+        
+        // Check every position on the board
+        for (let row = 0; row < 8; row++) {
+            for (let col = 0; col < 8; col++) {
+                const piecesAtPosition = this.pieces.filter(p => {
+                    return p.userData && p.userData.row === row && p.userData.col === col;
+                });
+                
+                if (piecesAtPosition.length > 1) {
+                    console.log(`🚨 Found ${piecesAtPosition.length} pieces overlapping at (${row},${col})`);
+                    this.cleanupOverlappingPieces(row, col);
+                    overlapsFixed++;
+                }
+            }
+        }
+        
+        if (overlapsFixed > 0) {
+            console.log(`🔧 Fixed ${overlapsFixed} position overlaps`);
+            this.showTemporaryMessage(`Fixed ${overlapsFixed} piece overlaps`, 'info', 2000);
+        } else {
+            console.log('✅ No overlaps found');
+        }
+    }
+
     makeMove(fromRow, fromCol, toRow, toCol, onComplete = null) {
         const piece = this.board[fromRow][fromCol];
         const targetPiece = this.board[toRow][toCol];
@@ -1538,6 +1639,17 @@ class OnePiece3DChess {
         if (!this.isValidMove(fromRow, fromCol, toRow, toCol)) {
             console.error(`🚫 Cannot move: Move validation failed for ${piece.player} ${piece.type} from (${fromRow},${fromCol}) to (${toRow},${toCol})`);
             return;
+        }
+        
+        // CRITICAL: Check for overlapping pieces at destination before move
+        const overlappingPieces = this.pieces.filter(p => {
+            return p.userData && p.userData.row === toRow && p.userData.col === toCol;
+        });
+        
+        if (overlappingPieces.length > 1) {
+            console.error(`🚨 OVERLAP DETECTED: ${overlappingPieces.length} pieces at destination (${toRow},${toCol})`);
+            // Clean up overlaps before proceeding
+            this.cleanupOverlappingPieces(toRow, toCol);
         }
         
         console.log(`🚀 Making move: ${piece.player} ${piece.type} from (${fromRow},${fromCol}) to (${toRow},${toCol})`);
@@ -1575,6 +1687,13 @@ class OnePiece3DChess {
             console.log(`🚀 Piece mesh final position:`, piece.mesh.position);
             console.log(`🚀 Board state at old position (${fromRow},${fromCol}):`, this.board[fromRow][fromCol]);
             console.log(`🚀 Board state at new position (${toRow},${toCol}) before update:`, this.board[toRow][toCol]);
+            
+            // CRITICAL: Final overlap check before board state update
+            const finalOverlapCheck = this.pieces.filter(p => p.userData && p.userData.row === toRow && p.userData.col === toCol);
+            if (finalOverlapCheck.length > 1) {
+                console.error(`🚨 CRITICAL: ${finalOverlapCheck.length} pieces still at (${toRow},${toCol}) before board update!`);
+                this.cleanupOverlappingPieces(toRow, toCol);
+            }
             
             // Update board data - modify the original piece object instead of creating new one
             piece.hasMoved = true;
@@ -1632,8 +1751,9 @@ class OnePiece3DChess {
             this.updateDisplay();
             this.clearHighlights();
 
-            // Check board integrity after move
+            // Check board integrity after move and fix any issues
             this.checkBoardIntegrity();
+            this.performComprehensiveOverlapCheck();
             
             // Check for game end/state
             this.evaluateGameState();

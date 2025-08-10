@@ -27,6 +27,21 @@ app.get('/bg-images', (req, res) => {
     });
 });
 
+// List board overlay images dynamically
+app.get('/board-overlay', (req, res) => {
+    const dir = path.join(__dirname, 'assets', 'board_overlay');
+    fs.readdir(dir, (err, files) => {
+        if (err) {
+            return res.json([]);
+        }
+        const exts = new Set(['.jpg', '.jpeg', '.png', '.webp', '.gif']);
+        const urls = files
+            .filter(f => exts.has(path.extname(f).toLowerCase()))
+            .map(f => `/assets/board_overlay/${f}`);
+        res.json(urls);
+    });
+});
+
 // Handle all other routes by serving index.html (for SPA routing if needed)
 app.get('*', (req, res) => {
     res.sendFile(path.join(__dirname, 'index.html'));

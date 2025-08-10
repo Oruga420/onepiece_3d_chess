@@ -2,12 +2,19 @@
   "functions": {
     "api/bg-images.js": {
       "maxDuration": 10
+    },
+    "api/board-overlay.js": {
+      "maxDuration": 10
     }
   },
   "rewrites": [
     {
       "source": "/api/bg-images",
       "destination": "/api/bg-images.js"
+    },
+    {
+      "source": "/api/board-overlay",
+      "destination": "/api/board-overlay.js"
     }
   ]
 }

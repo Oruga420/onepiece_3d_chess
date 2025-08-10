@@ -31,6 +31,20 @@ body {
     z-index: 1; /* above bg slideshow */
 }
 
+/* Board overlay sits on top of the chess board */
+#board-overlay {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 400px;
+    height: 400px;
+    z-index: 2; /* above game canvas */
+    pointer-events: none; /* allow mouse interaction with chess pieces below */
+    opacity: 0.3; /* semi-transparent overlay */
+    transition: opacity 0.3s ease;
+}
+
 #loading-screen {
     position: fixed;
     top: 0;

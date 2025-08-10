@@ -453,6 +453,9 @@ class OnePiece3DChess {
 
         // Initialize background slideshow
         this.initBackgroundSlideshow();
+        
+        // Initialize board overlay slideshow
+        this.initBoardOverlaySlideshow();
     }
 
     async initBackgroundSlideshow() {
@@ -578,6 +581,130 @@ class OnePiece3DChess {
             
         } catch (e) {
             console.error('🖼️ Background slideshow initialization failed:', e);
+        }
+    }
+
+    async initBoardOverlaySlideshow() {
+        try {
+            console.log('🎯 Initializing board overlay slideshow...');
+            let images = [];
+            try {
+                // Try Vercel API route first, then fall back to Express server route
+                let res;
+                try {
+                    res = await fetch('/api/board-overlay');
+                    images = await res.json();
+                } catch (apiError) {
+                    console.log('🎯 Vercel API route not available, trying Express server...');
+                    res = await fetch('/board-overlay');
+                    images = await res.json();
+                }
+            } catch (e) {
+                console.warn('🎯 Failed to fetch board overlay images from both endpoints');
+                images = [];
+            }
+            
+            if (!Array.isArray(images) || images.length === 0) {
+                console.log('🎯 No board overlay images found');
+                return;
+            }
+            
+            console.log(`🎯 Found ${images.length} board overlay images:`, images);
+            const overlay = document.getElementById('board-overlay');
+            if (!overlay) {
+                console.error('🎯 Board overlay container not found');
+                return;
+            }
+
+            // Create two layers for crossfade effect
+            const layerA = document.createElement('div');
+            const layerB = document.createElement('div');
+            
+            // Style both layers
+            const layerStyle = {
+                position: 'absolute',
+                top: '0',
+                left: '0',
+                width: '100%',
+                height: '100%',
+                backgroundSize: 'contain',
+                backgroundPosition: 'center',
+                backgroundRepeat: 'no-repeat',
+                transition: 'opacity 2s ease-in-out'
+            };
+            
+            Object.assign(layerA.style, layerStyle);
+            Object.assign(layerB.style, layerStyle);
+            
+            // Start with layer A visible
+            layerA.style.opacity = '1';
+            layerB.style.opacity = '0';
+            
+            // Set initial images
+            console.log(`🎯 Setting initial overlay on layer A: ${images[0]}`);
+            layerA.style.backgroundImage = `url("${images[0]}")`;
+            if (images.length > 1) {
+                console.log(`🎯 Setting initial overlay on layer B: ${images[1]}`);
+                layerB.style.backgroundImage = `url("${images[1]}")`;
+            }
+            
+            overlay.appendChild(layerA);
+            overlay.appendChild(layerB);
+            
+            // Only start slideshow if we have multiple images
+            if (images.length > 1) {
+                let currentIndex = 0;
+                let showingA = true;
+                
+                // Allow faster switching for testing with ?overlay=fast or ?overlay=10 (for 10 seconds)
+                const urlParams = new URLSearchParams(window.location.search);
+                const overlayParam = urlParams.get('overlay');
+                let interval = 30000; // Default 30 seconds (faster than background)
+                
+                if (overlayParam === 'fast') {
+                    interval = 3000; // 3 seconds for testing
+                } else if (overlayParam && !isNaN(parseInt(overlayParam))) {
+                    interval = parseInt(overlayParam) * 1000; // Convert seconds to milliseconds
+                }
+                
+                console.log(`🎯 Board overlay slideshow interval: ${interval/1000} seconds`);
+                
+                setInterval(() => {
+                    currentIndex = (currentIndex + 1) % images.length;
+                    const nextIndex = (currentIndex + 1) % images.length;
+                    
+                    if (showingA) {
+                        // Fade to layer B
+                        layerB.style.backgroundImage = `url("${images[currentIndex]}")`;
+                        layerB.style.opacity = '1';
+                        layerA.style.opacity = '0';
+                        
+                        // Preload next image in layer A
+                        setTimeout(() => {
+                            layerA.style.backgroundImage = `url("${images[nextIndex]}")`;
+                        }, 1000); // Halfway through transition
+                    } else {
+                        // Fade to layer A
+                        layerA.style.backgroundImage = `url("${images[currentIndex]}")`;
+                        layerA.style.opacity = '1';
+                        layerB.style.opacity = '0';
+                        
+                        // Preload next image in layer B
+                        setTimeout(() => {
+                            layerB.style.backgroundImage = `url("${images[nextIndex]}")`;
+                        }, 1000); // Halfway through transition
+                    }
+                    
+                    showingA = !showingA;
+                }, interval);
+                
+                console.log(`🎯 Board overlay slideshow started - changing every ${interval/1000} seconds`);
+            } else {
+                console.log('🎯 Single board overlay image set');
+            }
+            
+        } catch (e) {
+            console.error('🎯 Board overlay slideshow initialization failed:', e);
         }
     }
 

@@ -25,6 +25,20 @@ class OnePiece3DChess {
         this.aiEnabled = true;
         this.aiThinking = false;
         this.aiDifficulty = 'medium'; // easy, medium, hard
+        // Music state
+        this.musicEl = null;
+        this.musicMuted = false;
+        this.musicReady = false;
+        this.musicCandidates = [
+            'assets/bg_music/The King\'s Gambit.mp3',
+            'assets/bg_music/The pirate Chess.mp3',
+            'assets/bg_music/The pirate Chess (1).mp3',
+            'assets/bg_music/The pirate Chess (2).mp3',
+            'assets/bg_music/The pirate Chess (3).mp3',
+            'assets/bg_music/The pirate Chess (4).mp3',
+            'assets/bg_music/The pirate Chess (5).mp3',
+            'assets/bg_music/The pirate Chess (6).mp3'
+        ].map(path => encodeURI(path)); // Encode URLs for spaces and special characters
         this.gameOver = false;
         
         // Pirate Crews with 3D models and textures
@@ -405,6 +419,30 @@ class OnePiece3DChess {
         console.log('🎯 Hiding loading screen...');
         this.hideLoadingScreen();
         
+        // Prepare background music element
+        this.musicEl = document.getElementById('bg-music');
+        if (this.musicEl) {
+            this.musicEl.volume = 0.15; // low ambient
+            // Randomly select a track from candidates
+            const randomTrack = this.musicCandidates[Math.floor(Math.random() * this.musicCandidates.length)];
+            this.musicEl.src = randomTrack;
+            console.log(`🎵 Selected background music: ${randomTrack}`);
+            
+            // Mark ready on canplay so we only try to play when permitted
+            this.musicEl.addEventListener('canplay', () => {
+                this.musicReady = true;
+                console.log('🎵 Background music ready to play');
+            }, { once: true });
+            
+            // Handle music ending - play a random track next
+            this.musicEl.addEventListener('ended', () => {
+                this.selectRandomTrack();
+                if (!this.musicMuted) {
+                    this.startMusic();
+                }
+            });
+        }
+
         // Set up event listeners again after DOM is fully loaded
         setTimeout(() => {
             console.log('🎯 Setting up event listeners again after DOM load...');
@@ -518,6 +556,21 @@ class OnePiece3DChess {
                 this.showMessage(`AI difficulty set to ${this.aiDifficulty}`, 'info');
             });
         }
+
+        // Music toggle
+        const musicToggle = document.getElementById('music-toggle');
+        if (musicToggle) {
+            musicToggle.addEventListener('click', () => this.toggleMusic());
+        }
+        const musicVolume = document.getElementById('music-volume');
+        if (musicVolume) {
+            musicVolume.addEventListener('input', (e) => {
+                if (this.musicEl) {
+                    const v = parseFloat(e.target.value);
+                    this.musicEl.volume = isNaN(v) ? 0.15 : Math.max(0, Math.min(1, v));
+                }
+            });
+        }
     }
 
     resetCamera() {
@@ -531,6 +584,9 @@ class OnePiece3DChess {
         document.getElementById('game-info').style.display = 'none';
         document.getElementById('side-panel').style.display = 'none';
         document.getElementById('game-controls').style.display = 'none';
+        
+        // Stop music during crew selection
+        this.stopMusic();
     }
 
     handleMouseClick(event) {
@@ -723,6 +779,7 @@ class OnePiece3DChess {
         this.updateDisplay();
         
         this.showMessage(`Selected ${this.pirateCrews[crewName].name}! Pirates go first.`, 'success');
+        this.startMusic();
     }
 
     selectPiece(row, col) {
@@ -1447,6 +1504,9 @@ class OnePiece3DChess {
 
         // Show the victory screen
         victoryScreen.style.display = 'flex';
+        
+        // Stop music during victory screen
+        this.stopMusic();
 
         // Setup victory screen button handlers
         this.setupVictoryScreenHandlers();
@@ -1949,6 +2009,61 @@ class OnePiece3DChess {
         this.updateDisplay();
         this.spawnDevilFruits();
         this.showMessage('New game started! Pirates go first.', 'success');
+        this.startMusic();
+    }
+
+    selectRandomTrack() {
+        if (this.musicEl) {
+            const randomTrack = this.musicCandidates[Math.floor(Math.random() * this.musicCandidates.length)];
+            this.musicEl.src = randomTrack;
+            console.log(`🎵 Next track selected: ${randomTrack}`);
+        }
+    }
+
+    startMusic() {
+        if (this.musicEl && !this.musicMuted) {
+            console.log('🎵 Starting background music...');
+            // Some browsers require a user gesture; attempt play and wire a fallback
+            const tryPlay = () => {
+                this.musicEl.play()
+                    .then(() => console.log('🎵 Music playing successfully'))
+                    .catch((error) => console.log('🎵 Music play blocked (likely needs user interaction):', error.message));
+            };
+            
+            if (this.musicReady) {
+                tryPlay();
+            } else {
+                console.log('🎵 Music not ready yet, waiting for canplay event...');
+                // If not ready yet, wait for canplay then play once
+                this.musicEl.addEventListener('canplay', () => {
+                    console.log('🎵 Music can now play, attempting...');
+                    tryPlay();
+                }, { once: true });
+            }
+            
+            const toggle = document.getElementById('music-toggle');
+            if (toggle) toggle.textContent = '🔊';
+        } else if (this.musicMuted) {
+            console.log('🎵 Music is muted');
+        }
+    }
+
+    stopMusic() {
+        if (this.musicEl) {
+            console.log('🎵 Stopping background music');
+            this.musicEl.pause();
+            this.musicEl.currentTime = 0;
+            const toggle = document.getElementById('music-toggle');
+            if (toggle) toggle.textContent = '🔈';
+        }
+    }
+
+    toggleMusic() {
+        this.musicMuted = !this.musicMuted;
+        if (this.musicMuted) this.stopMusic(); else this.startMusic();
+        // Ensure volume slider reflects current volume
+        const vol = document.getElementById('music-volume');
+        if (vol && this.musicEl) vol.value = String(this.musicEl.volume);
     }
 }
 

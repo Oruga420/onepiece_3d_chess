@@ -320,6 +320,21 @@ body {
     overflow: hidden;
 }
 
+/* Music toggle button */
+#music-toggle {
+  margin-left: 12px;
+  font-size: 16px;
+  width: 44px;
+  padding: 8px 10px;
+}
+
+#music-volume {
+  width: 120px;
+  accent-color: #ff6b35;
+  background: transparent;
+  cursor: pointer;
+}
+
 .control-btn::before {
     content: '';
     position: absolute;

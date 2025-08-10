@@ -116,6 +116,10 @@
         <div class="ui-overlay">
             <header class="game-header">
                 <h1 class="game-title">One Piece 3D Chess</h1>
+                <div style="display:flex; align-items:center; gap:8px;">
+                    <button id="music-toggle" class="control-btn" title="Toggle music">🔈</button>
+                    <input id="music-volume" type="range" min="0" max="1" step="0.01" value="0.15" title="Music volume" />
+                </div>
                 <div class="crew-selection" id="crew-selection">
                     <h3>Select Your Pirate Crew</h3>
                     <div class="crew-options">
@@ -217,6 +221,8 @@
     </div>
 
     <canvas id="game-canvas"></canvas>
+    <!-- Background music element (src set by script) -->
+    <audio id="bg-music" loop preload="auto"></audio>
 
 </body>
 </html>

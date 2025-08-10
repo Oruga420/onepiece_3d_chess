@@ -15,7 +15,8 @@
       "Bash(npx --yes playwright@latest install chromium)",
       "Bash(/home/chuck/.nvm/versions/node/v22.17.0/bin/npx playwright install chromium)",
       "Bash(cp:*)",
-      "Bash(grep:*)"
+      "Bash(grep:*)",
+      "Bash(PORT=3001 node server.js)"
     ],
     "deny": []
   }

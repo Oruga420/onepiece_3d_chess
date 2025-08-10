@@ -19,7 +19,8 @@
       "Bash(PORT=3001 node server.js)",
       "Bash(git add:*)",
       "Bash(git config:*)",
-      "Bash(git push:*)"
+      "Bash(git push:*)",
+      "Bash(rm:*)"
     ],
     "deny": []
   }

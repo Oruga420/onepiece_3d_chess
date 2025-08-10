@@ -458,8 +458,15 @@ class OnePiece3DChess {
     async initBackgroundSlideshow() {
         try {
             console.log('🖼️ Initializing background slideshow...');
-            const res = await fetch('/bg-images');
-            const images = await res.json();
+            let images = [];
+            try {
+                // Fetch background images from server endpoint
+                const res = await fetch('/bg-images');
+                images = await res.json();
+            } catch (e) {
+                console.warn('🖼️ Failed to fetch /bg-images, falling back to static defaults');
+                images = [];
+            }
             
             if (!Array.isArray(images) || images.length === 0) {
                 console.log('🖼️ No background images found');
@@ -893,6 +900,9 @@ class OnePiece3DChess {
         this.currentPlayer = 'pirate';
         this.updateDisplay();
         
+        // Check board integrity after setup
+        this.checkBoardIntegrity();
+        
         this.showMessage(`Selected ${this.pirateCrews[crewName].name}! Pirates go first.`, 'success');
         this.startMusic();
     }
@@ -1151,6 +1161,17 @@ class OnePiece3DChess {
     }
 
     createPiece(player, type, row, col) {
+        // Validate that the target square is not already occupied
+        if (this.board[row] && this.board[row][col]) {
+            console.warn(`⚠️ createPiece: Tile (${row},${col}) already occupied by ${this.board[row][col].player} ${this.board[row][col].type}, replacing...`);
+            // Remove existing piece to prevent duplicates
+            const existingPiece = this.board[row][col];
+            if (existingPiece.mesh) {
+                this.scene.remove(existingPiece.mesh);
+                this.pieces = this.pieces.filter(p => p !== existingPiece.mesh);
+            }
+        }
+        
         const pieceData = player === 'marine' ? this.marinePieces[type] : this.pirateCrews[this.selectedCrew][type];
 
         // Create material for a sprite (flat billboard)
@@ -1390,9 +1411,68 @@ class OnePiece3DChess {
         }
     }
 
+    checkBoardIntegrity() {
+        console.log('🔍 Checking board integrity...');
+        let issuesFound = 0;
+
+        // Check for pieces at positions that don't match the board array
+        this.pieces.forEach(piece => {
+            const { player, type, row, col } = piece.userData;
+            const boardPiece = this.board[row][col];
+            
+            if (!boardPiece) {
+                console.warn(`⚠️ Piece ${player} ${type} at (${row},${col}) not found in board array`);
+                issuesFound++;
+            } else if (boardPiece.player !== player || boardPiece.type !== type) {
+                console.warn(`⚠️ Mismatch: Visual piece ${player} ${type} at (${row},${col}) but board has ${boardPiece.player} ${boardPiece.type}`);
+                issuesFound++;
+            }
+        });
+
+        // Check for multiple pieces at the same position
+        const positionMap = new Map();
+        this.pieces.forEach(piece => {
+            const { row, col, player, type } = piece.userData;
+            const key = `${row},${col}`;
+            
+            if (positionMap.has(key)) {
+                const existing = positionMap.get(key);
+                console.error(`🚨 OVERLAP DETECTED: ${existing.player} ${existing.type} and ${player} ${type} both at (${row},${col})`);
+                issuesFound++;
+                
+                // Remove the duplicate piece from scene
+                console.log(`🧹 Removing duplicate piece: ${player} ${type} at (${row},${col})`);
+                this.scene.remove(piece);
+                this.pieces = this.pieces.filter(p => p !== piece);
+            } else {
+                positionMap.set(key, { player, type, piece });
+            }
+        });
+
+        if (issuesFound === 0) {
+            console.log('✅ Board integrity check passed');
+        } else {
+            console.log(`🔧 Fixed ${issuesFound} board integrity issues`);
+        }
+        
+        return issuesFound === 0;
+    }
+
     makeMove(fromRow, fromCol, toRow, toCol, onComplete = null) {
         const piece = this.board[fromRow][fromCol];
         const targetPiece = this.board[toRow][toCol];
+        
+        // Final safety check before executing move
+        if (!piece) {
+            console.error(`🚫 Cannot move: No piece at source (${fromRow},${fromCol})`);
+            return;
+        }
+        
+        // Re-validate the move to ensure it's still legal
+        if (!this.isValidMove(fromRow, fromCol, toRow, toCol)) {
+            console.error(`🚫 Cannot move: Move validation failed for ${piece.player} ${piece.type} from (${fromRow},${fromCol}) to (${toRow},${toCol})`);
+            return;
+        }
         
         console.log(`🚀 Making move: ${piece.player} ${piece.type} from (${fromRow},${fromCol}) to (${toRow},${toCol})`);
         console.log(`🚀 Piece mesh position before move:`, piece.mesh.position);
@@ -1479,6 +1559,9 @@ class OnePiece3DChess {
             this.updateDisplay();
             this.clearHighlights();
 
+            // Check board integrity after move
+            this.checkBoardIntegrity();
+            
             // Check for game end/state
             this.evaluateGameState();
             
@@ -1705,8 +1788,22 @@ class OnePiece3DChess {
         const piece = this.board[fromRow][fromCol];
         const targetPiece = this.board[toRow][toCol];
 
-        if (!piece) return false;
-        if (targetPiece && targetPiece.player === piece.player) return false;
+        if (!piece) {
+            console.log(`🚫 Invalid move: no piece at source (${fromRow},${fromCol})`);
+            return false;
+        }
+        
+        // Strict validation: cannot move to tile occupied by same player
+        if (targetPiece && targetPiece.player === piece.player) {
+            console.log(`🚫 Invalid move: trying to place ${piece.player} ${piece.type} on tile occupied by ${targetPiece.player} ${targetPiece.type}`);
+            return false;
+        }
+        
+        // Additional safety: check if destination tile has valid coordinates
+        if (toRow < 0 || toRow >= 8 || toCol < 0 || toCol >= 8) {
+            console.log(`🚫 Invalid move: destination out of bounds (${toRow},${toCol})`);
+            return false;
+        }
 
         // Check if the piece movement is valid according to piece rules
         let isValidPieceMove = false;

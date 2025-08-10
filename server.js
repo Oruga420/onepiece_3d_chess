@@ -1,5 +1,6 @@
 const express = require('express');
 const path = require('path');
+const fs = require('fs');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
@@ -9,6 +10,21 @@ app.use(express.static(__dirname));
 // Serve index.html for the root route
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'index.html'));
+});
+
+// List background images dynamically so client can rotate without code changes
+app.get('/bg-images', (req, res) => {
+    const dir = path.join(__dirname, 'assets', 'bg_images');
+    fs.readdir(dir, (err, files) => {
+        if (err) {
+            return res.json([]);
+        }
+        const exts = new Set(['.jpg', '.jpeg', '.png', '.webp', '.gif']);
+        const urls = files
+            .filter(f => exts.has(path.extname(f).toLowerCase()))
+            .map(f => `/assets/bg_images/${f}`);
+        res.json(urls);
+    });
 });
 
 // Handle all other routes by serving index.html (for SPA routing if needed)

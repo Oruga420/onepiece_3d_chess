@@ -450,6 +450,121 @@ class OnePiece3DChess {
         }, 100);
         
         console.log('🎯 Game initialization complete!');
+
+        // Initialize background slideshow
+        this.initBackgroundSlideshow();
+    }
+
+    async initBackgroundSlideshow() {
+        try {
+            console.log('🖼️ Initializing background slideshow...');
+            const res = await fetch('/bg-images');
+            const images = await res.json();
+            
+            if (!Array.isArray(images) || images.length === 0) {
+                console.log('🖼️ No background images found');
+                return;
+            }
+            
+            console.log(`🖼️ Found ${images.length} background images:`, images);
+            const slideshow = document.getElementById('bg-slideshow');
+            if (!slideshow) {
+                console.error('🖼️ Background slideshow container not found');
+                return;
+            }
+
+            // Create two layers for crossfade effect
+            const layerA = document.createElement('div');
+            const layerB = document.createElement('div');
+            
+            // Style both layers
+            const layerStyle = {
+                position: 'absolute',
+                top: '0',
+                left: '0',
+                width: '100%',
+                height: '100%',
+                backgroundSize: 'cover',
+                backgroundPosition: 'center',
+                backgroundRepeat: 'no-repeat',
+                transition: 'opacity 1.5s ease-in-out'
+            };
+            
+            Object.assign(layerA.style, layerStyle);
+            Object.assign(layerB.style, layerStyle);
+            
+            // Start with layer A visible
+            layerA.style.opacity = '1';
+            layerB.style.opacity = '0';
+            
+            // Set initial images
+            console.log(`🖼️ Setting initial image on layer A: ${images[0]}`);
+            layerA.style.backgroundImage = `url("${images[0]}")`;
+            if (images.length > 1) {
+                console.log(`🖼️ Setting initial image on layer B: ${images[1]}`);
+                layerB.style.backgroundImage = `url("${images[1]}")`;
+            }
+            
+            slideshow.appendChild(layerA);
+            slideshow.appendChild(layerB);
+            
+            // Only start slideshow if we have multiple images
+            if (images.length > 1) {
+                let currentIndex = 0;
+                let showingA = true;
+                
+                // Allow faster switching for testing with ?bg=fast or ?bg=5 (for 5 seconds)
+                const urlParams = new URLSearchParams(window.location.search);
+                const bgParam = urlParams.get('bg');
+                let interval = 60000; // Default 60 seconds
+                
+                if (bgParam === 'fast') {
+                    interval = 5000; // 5 seconds for testing
+                } else if (bgParam && !isNaN(parseInt(bgParam))) {
+                    interval = parseInt(bgParam) * 1000; // Convert seconds to milliseconds
+                }
+                
+                console.log(`🖼️ Background slideshow interval: ${interval/1000} seconds`);
+                
+                setInterval(() => {
+                    currentIndex = (currentIndex + 1) % images.length;
+                    const nextIndex = (currentIndex + 1) % images.length;
+                    
+                    console.log(`🖼️ Switching to image ${currentIndex}: ${images[currentIndex]}`);
+                    
+                    if (showingA) {
+                        // Fade to layer B
+                        layerB.style.backgroundImage = `url("${images[currentIndex]}")`;
+                        layerB.style.opacity = '1';
+                        layerA.style.opacity = '0';
+                        
+                        // Preload next image in layer A
+                        setTimeout(() => {
+                            layerA.style.backgroundImage = `url("${images[nextIndex]}")`;
+                        }, 750); // Halfway through transition
+                    } else {
+                        // Fade to layer A
+                        layerA.style.backgroundImage = `url("${images[currentIndex]}")`;
+                        layerA.style.opacity = '1';
+                        layerB.style.opacity = '0';
+                        
+                        // Preload next image in layer B
+                        setTimeout(() => {
+                            layerB.style.backgroundImage = `url("${images[nextIndex]}")`;
+                        }, 750); // Halfway through transition
+                    }
+                    
+                    showingA = !showingA;
+                }, interval);
+                
+                console.log(`🖼️ Background slideshow started - changing every ${interval/1000} seconds`);
+            } else {
+                console.log('🖼️ Single background image set');
+            }
+            
+        } catch (e) {
+            console.error('🖼️ Background slideshow initialization failed:', e);
+        }
     }
 
     hideLoadingScreen() {
@@ -891,8 +1006,10 @@ class OnePiece3DChess {
         
         // Create scene
         this.scene = new THREE.Scene();
-        this.scene.background = new THREE.Color(0x7fffd4); // Aquamarine blue background
-        this.scene.fog = new THREE.Fog(0x7fffd4, 10, 50);
+        // Make scene background transparent to show slideshow images behind
+        this.scene.background = null; 
+        // Keep fog but make it subtle
+        this.scene.fog = new THREE.Fog(0x000000, 20, 100);
 
         // Create camera
         this.camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
@@ -909,6 +1026,9 @@ class OnePiece3DChess {
         this.renderer.shadowMap.enabled = true;
         this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
         this.renderer.setPixelRatio(window.devicePixelRatio);
+        
+        // Set clear color to transparent to show background slideshow
+        this.renderer.setClearColor(0x000000, 0); // Black with 0 alpha (transparent)
 
         // No OrbitControls - camera controlled only by keyboard
         // This prevents mouse event interference with piece selection

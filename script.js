@@ -25,6 +25,7 @@ class OnePiece3DChess {
         this.aiEnabled = true;
         this.aiThinking = false;
         this.aiDifficulty = 'medium'; // easy, medium, hard
+        this.gameOver = false;
         
         // Pirate Crews with 3D models and textures
         this.pirateCrews = {
@@ -462,38 +463,61 @@ class OnePiece3DChess {
             });
         });
 
-        // Game controls
-        document.getElementById('new-game-btn').addEventListener('click', () => {
-            this.resetGame();
-        });
+        // Game controls - add null checks
+        const newGameBtn = document.getElementById('new-game-btn');
+        const undoBtn = document.getElementById('undo-btn');
+        const changeCrewBtn = document.getElementById('change-crew-btn');
+        const cameraResetBtn = document.getElementById('camera-reset-btn');
+        const aiToggleBtn = document.getElementById('ai-toggle-btn');
+        const aiDifficultySelect = document.getElementById('ai-difficulty');
 
-        document.getElementById('undo-btn').addEventListener('click', () => {
-            this.undoMove();
-        });
+        if (newGameBtn) {
+            console.log('🎯 Setting up New Game button listener');
+            newGameBtn.addEventListener('click', () => {
+                console.log('🎯 New Game button clicked!');
+                this.resetGame();
+            });
+        } else {
+            console.error('🎯 New Game button not found!');
+        }
 
-        document.getElementById('change-crew-btn').addEventListener('click', () => {
-            this.showCrewSelection();
-        });
+        if (undoBtn) {
+            undoBtn.addEventListener('click', () => {
+                this.undoMove();
+            });
+        }
 
-        document.getElementById('camera-reset-btn').addEventListener('click', () => {
-            this.resetCamera();
-        });
+        if (changeCrewBtn) {
+            changeCrewBtn.addEventListener('click', () => {
+                this.showCrewSelection();
+            });
+        }
 
-        document.getElementById('ai-toggle-btn').addEventListener('click', () => {
-            this.aiEnabled = !this.aiEnabled;
-            document.getElementById('ai-toggle-btn').textContent = `AI: ${this.aiEnabled ? 'ON' : 'OFF'}`;
-            this.showMessage(`Marine AI ${this.aiEnabled ? 'enabled' : 'disabled'}`, 'info');
-            
-            // Trigger AI move if it's marine's turn and AI was just enabled
-            if (this.aiEnabled && this.currentPlayer === 'marine' && !this.aiThinking) {
-                setTimeout(() => this.makeAIMove(), 500);
-            }
-        });
+        if (cameraResetBtn) {
+            cameraResetBtn.addEventListener('click', () => {
+                this.resetCamera();
+            });
+        }
 
-        document.getElementById('ai-difficulty').addEventListener('change', (e) => {
-            this.aiDifficulty = e.target.value;
-            this.showMessage(`AI difficulty set to ${this.aiDifficulty}`, 'info');
-        });
+        if (aiToggleBtn) {
+            aiToggleBtn.addEventListener('click', () => {
+                this.aiEnabled = !this.aiEnabled;
+                aiToggleBtn.textContent = `AI: ${this.aiEnabled ? 'ON' : 'OFF'}`;
+                this.showMessage(`Marine AI ${this.aiEnabled ? 'enabled' : 'disabled'}`, 'info');
+                
+                // Trigger AI move if it's marine's turn and AI was just enabled
+                if (this.aiEnabled && this.currentPlayer === 'marine' && !this.aiThinking) {
+                    setTimeout(() => this.makeAIMove(), 500);
+                }
+            });
+        }
+
+        if (aiDifficultySelect) {
+            aiDifficultySelect.addEventListener('change', (e) => {
+                this.aiDifficulty = e.target.value;
+                this.showMessage(`AI difficulty set to ${this.aiDifficulty}`, 'info');
+            });
+        }
     }
 
     resetCamera() {
@@ -510,6 +534,7 @@ class OnePiece3DChess {
     }
 
     handleMouseClick(event) {
+        if (this.gameOver) { this.showTemporaryMessage('Game over. Start a new game.', 'info', 1200); return; }
         console.log('🖱️ Mouse click detected at:', event.clientX, event.clientY);
         
         this.mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
@@ -543,6 +568,7 @@ class OnePiece3DChess {
     }
 
     handleMouseMove(event) {
+        if (this.gameOver) return;
         this.mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
         this.mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
 
@@ -621,6 +647,7 @@ class OnePiece3DChess {
     }
 
     handlePieceClick(piece) {
+        if (this.gameOver) { this.showTemporaryMessage('Game over. Start a new game.', 'info', 1200); return; }
         console.log('🎯 handlePieceClick called with piece:', piece.userData);
         const { player, row, col } = piece.userData;
         
@@ -645,7 +672,13 @@ class OnePiece3DChess {
             const selectedRow = selectedPieceData.row;
             const selectedCol = selectedPieceData.col;
             if (this.isValidMove(selectedRow, selectedCol, row, col)) {
+                console.log('🎯 Valid capture move - executing');
                 this.makeMove(selectedRow, selectedCol, row, col);
+            } else {
+                console.log('🎯 Invalid capture move - clearing selection');
+                this.clearHighlights();
+                this.selectedPiece = null;
+                this.showTemporaryMessage('Invalid move!', 'error', 1000);
             }
         } else {
             console.log(`🎯 Cannot select piece - wrong player turn (current: ${this.currentPlayer}, piece: ${player})`);
@@ -704,6 +737,7 @@ class OnePiece3DChess {
     }
 
     handleSquareClick(row, col) {
+        if (this.gameOver) { this.showTemporaryMessage('Game over. Start a new game.', 'info', 1200); return; }
         // Prevent moves while AI is thinking
         if (this.aiThinking) {
             this.showTemporaryMessage('AI is thinking, please wait...', 'info', 1000);
@@ -734,6 +768,13 @@ class OnePiece3DChess {
             if (this.isValidMove(selectedRow, selectedCol, row, col)) {
                 this.makeMove(selectedRow, selectedCol, row, col);
                 this.selectedPiece = null;
+                return;
+            } else {
+                // Invalid move attempted - clear selection and show feedback
+                console.log('🎯 Invalid square move - clearing selection');
+                this.clearHighlights();
+                this.selectedPiece = null;
+                this.showTemporaryMessage('Invalid move!', 'error', 1000);
                 return;
             }
         }
@@ -793,8 +834,8 @@ class OnePiece3DChess {
         
         // Create scene
         this.scene = new THREE.Scene();
-        this.scene.background = new THREE.Color(0x0a0a0a);
-        this.scene.fog = new THREE.Fog(0x0a0a0a, 10, 50);
+        this.scene.background = new THREE.Color(0x7fffd4); // Aquamarine blue background
+        this.scene.fog = new THREE.Fog(0x7fffd4, 10, 50);
 
         // Create camera
         this.camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
@@ -1180,13 +1221,11 @@ class OnePiece3DChess {
         console.log(`🚀 Piece mesh position before move:`, piece.mesh.position);
         console.log(`🚀 Total pieces in scene before move:`, this.pieces.length);
 
-        // Capture piece if present
+        // Store target piece for capture (don't remove yet to avoid visual overlap)
+        let capturedPiece = null;
         if (targetPiece) {
-            console.log(`🚀 Capturing ${targetPiece.player} ${targetPiece.type} with ID: ${targetPiece.mesh.userData.id}`);
-            this.capturedPieces[targetPiece.player].push(targetPiece.type);
-            this.scene.remove(targetPiece.mesh);
-            this.pieces = this.pieces.filter(p => p !== targetPiece.mesh);
-            console.log(`🗑️ Removed piece from scene: ${targetPiece.mesh.userData.id}`);
+            console.log(`🚀 Will capture ${targetPiece.player} ${targetPiece.type} with ID: ${targetPiece.mesh.userData.id}`);
+            capturedPiece = targetPiece;
         }
 
         // Add debugging to track all pieces before animation
@@ -1195,6 +1234,13 @@ class OnePiece3DChess {
         
         // Animate piece movement (only allow human move if it's pirate's turn)
         this.animatePieceMove(piece.mesh, fromRow, fromCol, toRow, toCol, () => {
+            // Remove captured piece during animation callback to avoid overlap
+            if (capturedPiece) {
+                console.log(`🗑️ Removing captured piece: ${capturedPiece.mesh.userData.id}`);
+                this.capturedPieces[capturedPiece.player].push(capturedPiece.type);
+                this.scene.remove(capturedPiece.mesh);
+                this.pieces = this.pieces.filter(p => p !== capturedPiece.mesh);
+            }
             console.log(`🚀 Animation completed for ${piece.player} ${piece.type}`);
             console.log(`🚀 Piece mesh final position:`, piece.mesh.position);
             console.log(`🚀 Board state at old position (${fromRow},${fromCol}):`, this.board[fromRow][fromCol]);
@@ -1240,7 +1286,7 @@ class OnePiece3DChess {
                 from: [fromRow, fromCol],
                 to: [toRow, toCol],
                 piece: piece,
-                captured: targetPiece
+                captured: capturedPiece
             });
 
             // Switch players
@@ -1256,25 +1302,185 @@ class OnePiece3DChess {
             this.updateDisplay();
             this.clearHighlights();
 
-            // Check for game end
-            if (this.isCheckmate()) {
-                this.showMessage(`Checkmate! ${this.currentPlayer === 'marine' ? 'Pirates' : 'Marines'} win!`, 'success');
-            } else if (this.isCheck()) {
-                this.showMessage('Check!', 'error');
-            }
+            // Check for game end/state
+            this.evaluateGameState();
             
             // Call the completion callback if provided (for AI moves)
             if (onComplete) {
                 onComplete();
             }
             
-            // Trigger AI move only when it's actually marine's turn after a human move
-            if (this.currentPlayer === 'marine' && this.aiEnabled && !onComplete) {
+            // Trigger AI move only when it's actually marine's turn after a human move and game is not over
+            if (this.currentPlayer === 'marine' && this.aiEnabled && !onComplete && !this.gameOver) {
                 setTimeout(() => {
                     this.makeAIMove();
                 }, 500); // Small delay for better UX
             }
         });
+    }
+
+    findKing(player) {
+        for (let r = 0; r < 8; r++) {
+            for (let c = 0; c < 8; c++) {
+                const p = this.board[r][c];
+                if (p && p.player === player && p.type === 'king') {
+                    return { row: r, col: c };
+                }
+            }
+        }
+        return null;
+    }
+
+    isInCheck(player) {
+        const kingPos = this.findKing(player);
+        if (!kingPos) return true; // king missing
+        const opponent = player === 'marine' ? 'pirate' : 'marine';
+        for (let r = 0; r < 8; r++) {
+            for (let c = 0; c < 8; c++) {
+                const p = this.board[r][c];
+                if (p && p.player === opponent) {
+                    if (this.isValidMove(r, c, kingPos.row, kingPos.col)) return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    hasAnyLegalMove(player) {
+        for (let r = 0; r < 8; r++) {
+            for (let c = 0; c < 8; c++) {
+                const p = this.board[r][c];
+                if (p && p.player === player) {
+                    for (let tr = 0; tr < 8; tr++) {
+                        for (let tc = 0; tc < 8; tc++) {
+                            if (this.isValidMove(r, c, tr, tc)) {
+                                return true; // Found a legal move
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
+    evaluateGameState() {
+        const sideToMove = this.currentPlayer;
+        const opponent = sideToMove === 'marine' ? 'pirate' : 'marine';
+        
+        // If king is gone, opponent wins
+        if (!this.findKing(sideToMove)) {
+            this.gameOver = true;
+            this.showVictoryScreen(opponent, 'checkmate');
+            return;
+        }
+
+        const inCheck = this.isInCheck(sideToMove);
+        const anyMove = this.hasAnyLegalMove(sideToMove);
+
+        if (!anyMove) {
+            this.gameOver = true;
+            if (inCheck) {
+                this.showVictoryScreen(opponent, 'checkmate');
+            } else {
+                this.showVictoryScreen(null, 'stalemate');
+            }
+            return;
+        }
+
+        if (inCheck) {
+            this.showTemporaryMessage('Check!', 'error', 1200);
+        }
+    }
+
+    showVictoryScreen(winner, reason) {
+        const victoryScreen = document.getElementById('victory-screen');
+        const victoryTitle = document.getElementById('victory-title');
+        const victoryWinner = document.getElementById('victory-winner');
+        const victorySubtitle = document.getElementById('victory-subtitle');
+        const victoryStats = document.getElementById('victory-stats');
+
+        // Clear any existing timeouts
+        if (this.messageTimeout) {
+            clearTimeout(this.messageTimeout);
+            this.messageTimeout = null;
+        }
+
+        if (reason === 'stalemate') {
+            victoryTitle.textContent = 'DRAW!';
+            victoryWinner.textContent = 'Stalemate';
+            victorySubtitle.textContent = 'No legal moves available';
+        } else {
+            victoryTitle.textContent = 'VICTORY!';
+            if (winner === 'marine') {
+                victoryWinner.textContent = 'Marines Win!';
+                victorySubtitle.textContent = 'Justice Prevails on the Grand Line!';
+            } else {
+                const crewName = this.selectedCrew ? this.pirateCrews[this.selectedCrew].name : 'Pirates';
+                victoryWinner.textContent = `${crewName} Win!`;
+                victorySubtitle.textContent = `${crewName} Conquer the Grand Line!`;
+            }
+        }
+
+        // Show game statistics
+        const marineCaptured = this.capturedPieces.marine.length;
+        const pirateCaptured = this.capturedPieces.pirate.length;
+        
+        victoryStats.innerHTML = `
+            <div class="victory-stat">
+                <span class="victory-stat-label">Total Turns:</span>
+                <span class="victory-stat-value">${this.turnNumber}</span>
+            </div>
+            <div class="victory-stat">
+                <span class="victory-stat-label">Marines Captured:</span>
+                <span class="victory-stat-value">${marineCaptured}</span>
+            </div>
+            <div class="victory-stat">
+                <span class="victory-stat-label">Pirates Captured:</span>
+                <span class="victory-stat-value">${pirateCaptured}</span>
+            </div>
+            <div class="victory-stat">
+                <span class="victory-stat-label">Devil Fruits Used:</span>
+                <span class="victory-stat-value">${4 - this.availableDevilFruits.length}</span>
+            </div>
+        `;
+
+        // Show the victory screen
+        victoryScreen.style.display = 'flex';
+
+        // Setup victory screen button handlers
+        this.setupVictoryScreenHandlers();
+
+        console.log(`🏆 Victory screen shown: ${winner} wins by ${reason}`);
+    }
+
+    setupVictoryScreenHandlers() {
+        const newGameBtn = document.getElementById('victory-new-game');
+        const changeCrewBtn = document.getElementById('victory-change-crew');
+
+        // Remove any existing listeners to avoid duplicates
+        newGameBtn.replaceWith(newGameBtn.cloneNode(true));
+        changeCrewBtn.replaceWith(changeCrewBtn.cloneNode(true));
+
+        // Get the new references after cloning
+        const newNewGameBtn = document.getElementById('victory-new-game');
+        const newChangeCrewBtn = document.getElementById('victory-change-crew');
+
+        newNewGameBtn.addEventListener('click', () => {
+            this.hideVictoryScreen();
+            this.resetGame();
+        });
+
+        newChangeCrewBtn.addEventListener('click', () => {
+            this.hideVictoryScreen();
+            this.showCrewSelection();
+            this.resetGame();
+        });
+    }
+
+    hideVictoryScreen() {
+        const victoryScreen = document.getElementById('victory-screen');
+        victoryScreen.style.display = 'none';
     }
 
     animatePieceMove(piece, fromRow, fromCol, toRow, toCol, callback) {
@@ -1322,25 +1528,45 @@ class OnePiece3DChess {
         if (!piece) return false;
         if (targetPiece && targetPiece.player === piece.player) return false;
 
-        const rowDiff = toRow - fromRow;
-        const colDiff = toCol - fromCol;
-
+        // Check if the piece movement is valid according to piece rules
+        let isValidPieceMove = false;
         switch (piece.type) {
             case 'pawn':
-                return this.isValidPawnMove(fromRow, fromCol, toRow, toCol);
+                isValidPieceMove = this.isValidPawnMove(fromRow, fromCol, toRow, toCol);
+                break;
             case 'rook':
-                return this.isValidRookMove(fromRow, fromCol, toRow, toCol);
+                isValidPieceMove = this.isValidRookMove(fromRow, fromCol, toRow, toCol);
+                break;
             case 'knight':
-                return this.isValidKnightMove(fromRow, fromCol, toRow, toCol);
+                isValidPieceMove = this.isValidKnightMove(fromRow, fromCol, toRow, toCol);
+                break;
             case 'bishop':
-                return this.isValidBishopMove(fromRow, fromCol, toRow, toCol);
+                isValidPieceMove = this.isValidBishopMove(fromRow, fromCol, toRow, toCol);
+                break;
             case 'queen':
-                return this.isValidQueenMove(fromRow, fromCol, toRow, toCol);
+                isValidPieceMove = this.isValidQueenMove(fromRow, fromCol, toRow, toCol);
+                break;
             case 'king':
-                return this.isValidKingMove(fromRow, fromCol, toRow, toCol);
+                isValidPieceMove = this.isValidKingMove(fromRow, fromCol, toRow, toCol);
+                break;
             default:
                 return false;
         }
+
+        if (!isValidPieceMove) return false;
+
+        // Test if this move leaves own king in check (simulate the move)
+        const originalTarget = this.board[toRow][toCol];
+        this.board[toRow][toCol] = piece;
+        this.board[fromRow][fromCol] = null;
+
+        const wouldBeInCheck = this.isInCheck(piece.player);
+
+        // Restore board state
+        this.board[fromRow][fromCol] = piece;
+        this.board[toRow][toCol] = originalTarget;
+
+        return !wouldBeInCheck;
     }
 
     isValidPawnMove(fromRow, fromCol, toRow, toCol) {
@@ -1686,6 +1912,8 @@ class OnePiece3DChess {
     }
 
     resetGame() {
+        console.log('🔄 resetGame() called');
+        
         // Clear all pieces from scene
         this.pieces.forEach(piece => {
             this.scene.remove(piece);
@@ -1702,9 +1930,13 @@ class OnePiece3DChess {
         this.availableDevilFruits = [];
         this.devilFruitCounter = 7;
         this.aiThinking = false;
+        this.gameOver = false;
 
         // Clear highlights
         this.clearHighlights();
+
+        // Hide victory screen if it's showing
+        this.hideVictoryScreen();
 
         // Recreate marine pieces only
         this.setupInitialPosition();

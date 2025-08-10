@@ -6,7 +6,7 @@
 
 body {
     font-family: 'Arial', sans-serif;
-    background: #000;
+    background: #7fffd4; /* Aquamarine blue background */
     overflow: hidden;
     color: white;
 }
@@ -495,5 +495,201 @@ body {
         padding: 10px 16px;
         margin: 0 5px;
         font-size: 12px;
+    }
+}
+
+/* Victory Screen */
+.victory-screen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: linear-gradient(135deg, rgba(0,0,0,0.95) 0%, rgba(26,26,46,0.95) 50%, rgba(22,33,62,0.95) 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2000;
+    backdrop-filter: blur(10px);
+}
+
+.victory-content {
+    text-align: center;
+    color: white;
+    animation: victoryFadeIn 1s ease-out;
+    position: relative;
+}
+
+.victory-fireworks {
+    position: absolute;
+    top: -100px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 200px;
+    height: 200px;
+    background: radial-gradient(circle, rgba(255,215,0,0.8) 0%, rgba(255,107,53,0.6) 30%, transparent 70%);
+    border-radius: 50%;
+    animation: fireworksExplode 2s ease-out infinite;
+    pointer-events: none;
+}
+
+.victory-fireworks::before,
+.victory-fireworks::after {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(255,107,53,0.6) 0%, rgba(255,215,0,0.4) 50%, transparent 70%);
+    animation: fireworksExplode 2s ease-out infinite 0.5s;
+}
+
+.victory-fireworks::after {
+    animation-delay: 1s;
+    background: radial-gradient(circle, rgba(0,191,255,0.6) 0%, rgba(138,43,226,0.4) 50%, transparent 70%);
+}
+
+#victory-title {
+    font-size: 4rem;
+    margin-bottom: 20px;
+    background: linear-gradient(45deg, #ffd700, #ff6b35, #00bfff, #ffd700);
+    background-size: 300% 300%;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: victoryGradient 3s ease-in-out infinite;
+    text-shadow: 0 0 30px rgba(255, 215, 0, 0.5);
+    font-weight: bold;
+    letter-spacing: 2px;
+}
+
+.victory-winner {
+    font-size: 2.5rem;
+    font-weight: bold;
+    margin-bottom: 15px;
+    color: #ffd700;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
+}
+
+.victory-subtitle {
+    font-size: 1.5rem;
+    margin-bottom: 30px;
+    color: #ff6b35;
+    font-style: italic;
+}
+
+.victory-stats {
+    background: rgba(255,255,255,0.1);
+    border-radius: 15px;
+    padding: 20px;
+    margin: 20px 0;
+    backdrop-filter: blur(5px);
+    border: 1px solid rgba(255,215,0,0.3);
+}
+
+.victory-stat {
+    display: flex;
+    justify-content: space-between;
+    margin: 10px 0;
+    font-size: 1.1rem;
+}
+
+.victory-stat-label {
+    color: #ccc;
+}
+
+.victory-stat-value {
+    color: #ffd700;
+    font-weight: bold;
+}
+
+.victory-buttons {
+    margin-top: 30px;
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+}
+
+.victory-btn {
+    padding: 15px 30px;
+    font-size: 1.1rem;
+    font-weight: bold;
+    color: white;
+    background: linear-gradient(45deg, #ff6b35, #ffd700);
+    border: none;
+    border-radius: 25px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(255, 107, 53, 0.4);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.victory-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(255, 107, 53, 0.6);
+    background: linear-gradient(45deg, #ffd700, #ff6b35);
+}
+
+.victory-btn:active {
+    transform: translateY(0);
+}
+
+@keyframes victoryFadeIn {
+    0% {
+        opacity: 0;
+        transform: scale(0.8) translateY(50px);
+    }
+    100% {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+}
+
+@keyframes victoryGradient {
+    0%, 100% {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+}
+
+@keyframes fireworksExplode {
+    0% {
+        transform: translateX(-50%) scale(0);
+        opacity: 1;
+    }
+    50% {
+        transform: translateX(-50%) scale(1);
+        opacity: 0.8;
+    }
+    100% {
+        transform: translateX(-50%) scale(1.5);
+        opacity: 0;
+    }
+}
+
+/* Victory screen responsive */
+@media (max-width: 768px) {
+    #victory-title {
+        font-size: 2.5rem;
+    }
+    
+    .victory-winner {
+        font-size: 1.8rem;
+    }
+    
+    .victory-subtitle {
+        font-size: 1.2rem;
+    }
+    
+    .victory-buttons {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .victory-btn {
+        width: 200px;
     }
 }

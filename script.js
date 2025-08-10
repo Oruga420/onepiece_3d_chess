@@ -460,11 +460,18 @@ class OnePiece3DChess {
             console.log('🖼️ Initializing background slideshow...');
             let images = [];
             try {
-                // Fetch background images from server endpoint
-                const res = await fetch('/bg-images');
-                images = await res.json();
+                // Try Vercel API route first, then fall back to Express server route
+                let res;
+                try {
+                    res = await fetch('/api/bg-images');
+                    images = await res.json();
+                } catch (apiError) {
+                    console.log('🖼️ Vercel API route not available, trying Express server...');
+                    res = await fetch('/bg-images');
+                    images = await res.json();
+                }
             } catch (e) {
-                console.warn('🖼️ Failed to fetch /bg-images, falling back to static defaults');
+                console.warn('🖼️ Failed to fetch background images from both endpoints, falling back to static defaults');
                 images = [];
             }
             

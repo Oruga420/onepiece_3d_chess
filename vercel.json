@@ -1,0 +1,13 @@
+{
+  "functions": {
+    "api/bg-images.js": {
+      "maxDuration": 10
+    }
+  },
+  "rewrites": [
+    {
+      "source": "/api/bg-images",
+      "destination": "/api/bg-images.js"
+    }
+  ]
+}

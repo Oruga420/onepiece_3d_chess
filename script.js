@@ -172,7 +172,7 @@ class OnePiece3DChess {
             'king': 900
         };
 
-        this.init();
+        // init() is called externally after construction
     }
 
     // AI Chess Engine
@@ -452,12 +452,6 @@ class OnePiece3DChess {
             });
         }
 
-        // Set up event listeners again after DOM is fully loaded
-        setTimeout(() => {
-            console.log('🎯 Setting up event listeners again after DOM load...');
-            this.setupEventListeners();
-        }, 100);
-        
         console.log('🎯 Game initialization complete!');
 
         // Initialize background slideshow
@@ -646,6 +640,9 @@ class OnePiece3DChess {
     }
 
     setupEventListeners() {
+        if (this._listenersAttached) return;
+        this._listenersAttached = true;
+
         // Mouse events for 3D board (piece selection only)
         this.renderer.domElement.addEventListener('click', (e) => {
             this.handleMouseClick(e);
@@ -794,7 +791,10 @@ class OnePiece3DChess {
         this.mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
 
         this.raycaster.setFromCamera(this.mouse, this.camera);
-        const intersects = this.raycaster.intersectObjects(this.scene.children);
+        // Only raycast against interactive objects (pieces + squares), not decoration (particles, board base, lights)
+        const interactiveObjects = [...this.pieces];
+        this.boardSquares.forEach(row => row.forEach(sq => interactiveObjects.push(sq)));
+        const intersects = this.raycaster.intersectObjects(interactiveObjects, false);
 
         console.log(`🎯 Raycaster found ${intersects.length} intersections`);
 
@@ -843,7 +843,8 @@ class OnePiece3DChess {
         this.mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
 
         this.raycaster.setFromCamera(this.mouse, this.camera);
-        const intersects = this.raycaster.intersectObjects(this.scene.children);
+        // Only raycast against pieces for hover effect
+        const intersects = this.raycaster.intersectObjects(this.pieces, false);
 
         // Reset all piece scales
         this.pieces.forEach(piece => {

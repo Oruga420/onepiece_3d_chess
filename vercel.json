@@ -1,13 +1,1 @@
-{
-  "functions": {
-    "api/bg-images.js": {
-      "maxDuration": 10
-    }
-  },
-  "rewrites": [
-    {
-      "source": "/api/bg-images",
-      "destination": "/api/bg-images.js"
-    }
-  ]
-}
+{"version":2,"functions":{"api/app.js":{"includeFiles":"{index.html,styles.css,src/**,vendor/**,assets/**}","maxDuration":30}},"routes":[{"src":"/(.*)","dest":"/api/app"}]}

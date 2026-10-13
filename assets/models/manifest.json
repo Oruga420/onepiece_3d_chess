@@ -1,0 +1,2653 @@
+{
+  "version": 1,
+  "required": 66,
+  "assets": [
+    {
+      "id": "mugiwara/king",
+      "crew": "mugiwara",
+      "role": "king",
+      "name": "Luffy",
+      "path": "/assets/models/mugiwara/king.glb",
+      "sourceImage": "/assets/crews/mugiwara/king.png",
+      "provider": "meshy",
+      "status": "ready",
+      "review": {
+        "status": "approved",
+        "views": [
+          "front",
+          "side",
+          "back",
+          "board"
+        ],
+        "sheet": "tools/assets/pilot-sheet.jpg",
+        "observations": "Recognizable textured volumetric front/side/back and isolated three-quarter view. Kaido club faceting accepted. Actual chess-board QA remains downstream renderer evidence.",
+        "reviewer": "orchestrator + asset agent"
+      },
+      "referenceTaskId": "3str2q6e95rmy0d16dbtetn2ww",
+      "referencePrompt": "A single full-body recognizable Luffy from One Piece, canonical anime character costume and distinctive face, high-quality stylized 3D game miniature. Full head, all limbs and shoes entirely visible, relaxed standing action-ready pose, three-quarter front view, solid white studio background, even neutral lighting, no text, no logo, no flag, no platform, no other character, volumetric sculpted form. Use reference only for colors where correct; the named character identity takes priority. Keep accessories close to the body and separated readable silhouette.",
+      "referenceSha256": "57dc61ad436093ed56424c3c4fd0434922ae849a1a795806d066e9d2efe3f049",
+      "taskId": "01a13358-935a-70fd-a63f-3d2b04966209",
+      "credits": 15,
+      "referenceImage": "/assets/references/mugiwara/king.png",
+      "rawSha256": "727c9f2a23cbc67bec4181da9807e46237ef7a00711970f23036eaf6b5d02fbd",
+      "sha256": "03dce377be5ce039f2c2629e6a9e4d3dcc0a24307ddbf5dec57a525d6fc3b88c",
+      "bytes": 403684,
+      "triangles": 10288,
+      "textures": [
+        {
+          "name": "Image_0",
+          "width": 512,
+          "height": 512
+        }
+      ]
+    },
+    {
+      "id": "mugiwara/queen",
+      "crew": "mugiwara",
+      "role": "queen",
+      "name": "Zoro",
+      "path": "/assets/models/mugiwara/queen.glb",
+      "sourceImage": "/assets/crews/mugiwara/queen.png",
+      "provider": "meshy",
+      "status": "ready",
+      "review": {
+        "status": "approved",
+        "views": [
+          "front",
+          "side",
+          "back",
+          "board"
+        ],
+        "sheet": "tools/assets/models1.jpg",
+        "reviewer": "asset agent visual inspection",
+        "observations": "Textured recognizable volumetric character viewed front/side/back/isolated three-quarter. Actual board QA is downstream."
+      },
+      "referenceTaskId": "56sv6ertfsrmt0d16de9cdv07r",
+      "referencePrompt": "A single full-body recognizable Zoro from One Piece, canonical anime character costume and distinctive face, high-quality stylized 3D game miniature. Full head, all limbs and shoes entirely visible, relaxed standing action-ready pose, three-quarter front view, solid white studio background, even neutral lighting, no text, no logo, no flag, no platform, no other character, volumetric sculpted form. Use reference only for colors where correct; the named character identity takes priority. Keep accessories close to the body and separated readable silhouette. ",
+      "referenceSha256": "17c15c1e1cc5ebab0a86c9cc99f52fa430f199e5a8743715c69070aedbbb2280",
+      "taskId": "01a1335c-ed48-70ef-9565-063733f9eece",
+      "credits": 15,
+      "referenceImage": "/assets/references/mugiwara/queen.png",
+      "rawSha256": "ba837f2face632a5b97a3aa489e5154206deff60305ea91b48d3cee52ff10fb9",
+      "sha256": "e9b7c1438ac2c9fb1d73c9697ec8514e7a6a945cf80bd1be7860961a51131e64",
+      "bytes": 404984,
+      "triangles": 10297,
+      "textures": [
+        {
+          "name": "Image_0",
+          "width": 512,
+          "height": 512
+        }
+      ]
+    },
+    {
+      "id": "mugiwara/rook",
+      "crew": "mugiwara",
+      "role": "rook",
+      "name": "Nami",
+      "path": "/assets/models/mugiwara/rook.glb",
+      "sourceImage": "/assets/crews/mugiwara/rook.png",
+      "provider": "meshy",
+      "status": "ready",
+      "review": {
+        "status": "approved",
+        "views": [
+          "front",
+          "side",
+          "back",
+          "board"
+        ],
+        "sheet": "tools/assets/models1.jpg",
+        "reviewer": "asset agent visual inspection",
+        "observations": "Textured recognizable volumetric character viewed front/side/back/isolated three-quarter. Actual board QA is downstream."
+      },
+      "referenceTaskId": "dd6nak0w2xrmy0d16dea6r7bjw",
+      "referencePrompt": "A single full-body recognizable Nami from One Piece, canonical anime character costume and distinctive face, high-quality stylized 3D game miniature. Full head, all limbs and shoes entirely visible, relaxed standing action-ready pose, three-quarter front view, solid white studio background, even neutral lighting, no text, no logo, no flag, no platform, no other character, volumetric sculpted form. Use reference only for colors where correct; the named character identity takes priority. Keep accessories close to the body and separated readable silhouette. ",
+      "referenceSha256": "37d51cf0ab9a5dd1fac14f023ca8ae4ee05d1710384be015171a50866c2807d0",
+      "taskId": "01a1335c-f3bd-74e1-be88-cbd75cca32e3",
+      "credits": 15,
+      "referenceImage": "/assets/references/mugiwara/rook.png",
+      "rawSha256": "238fa4d106ee3c7358ec8703a82cc884fad6cda42ff0f92d3bc3a62b3c699b3c",
+      "sha256": "aecb2bdd437db9ed64524d4028163753fb63e8ce2d217da6e53636abf521d594",
+      "bytes": 406140,
+      "triangles": 10869,
+      "textures": [
+        {
+          "name": "Image_0",
+          "width": 512,
+          "height": 512
+        }
+      ]
+    },
+    {
+      "id": "mugiwara/bishop",
+      "crew": "mugiwara",
+      "role": "bishop",
+      "name": "Sanji",
+      "path": "/assets/models/mugiwara/bishop.glb",
+      "sourceImage": "/assets/crews/mugiwara/bishop.png",
+      "provider": "meshy",
+      "status": "ready",
+      "review": {
+        "status": "approved",
+        "views": [
+          "front",
+          "side",
+          "back",
+          "board"
+        ],
+        "sheet": "tools/assets/models1.jpg",
+        "reviewer": "asset agent visual inspection",
+        "observations": "Textured recognizable volumetric character viewed front/side/back/isolated three-quarter. Actual board QA is downstream."
+      },
+      "referenceTaskId": "y143r2rxgdrmt0d16debe0x8er",
+      "referencePrompt": "A single full-body recognizable Sanji from One Piece, canonical anime character costume and distinctive face, high-quality stylized 3D game miniature. Full head, all limbs and shoes entirely visible, relaxed standing action-ready pose, three-quarter front view, solid white studio background, even neutral lighting, no text, no logo, no flag, no platform, no other character, volumetric sculpted form. Use reference only for colors where correct; the named character identity takes priority. Keep accessories close to the body and separated readable silhouette. ",
+      "referenceSha256": "3c1fa60ab53780df83a5fcfec2c0034a78d427c614836225cd2c32e3a4a06cd4",
+      "taskId": "01a1335c-fc67-7455-b161-1faa6148f197",
+      "credits": 15,
+      "referenceImage": "/assets/references/mugiwara/bishop.png",
+      "rawSha256": "e1cd399788ea150032c57c942c00569af5973de7818fecdc970a99d01c18830e",
+      "sha256": "9e32011c5147a7d0f722f2941259f3ef6226efa70ed1d9db09d6f11e956d3b7b",
+      "bytes": 382760,
+      "triangles": 10410,
+      "textures": [
+        {
+          "name": "Image_0",
+          "width": 512,
+          "height": 512
+        }
+      ]
+    },
+    {
+      "id": "mugiwara/knight",
+      "crew": "mugiwara",
+      "role": "knight",
+      "name": "Usopp",
+      "path": "/assets/models/mugiwara/knight.glb",
+      "sourceImage": "/assets/crews/mugiwara/knight.png",
+      "provider": "meshy",
+      "status": "ready",
+      "review": {
+        "status": "approved",
+        "views": [
+          "front",
+          "side",
+          "back",
+          "board"
+        ],
+        "sheet": "tools/assets/pilot-sheet.jpg",
+        "observations": "Recognizable textured volumetric front/side/back and isolated three-quarter view. Kaido club faceting accepted. Actual chess-board QA remains downstream renderer evidence.",
+        "reviewer": "orchestrator + asset agent"
+      },
+      "referenceTaskId": "mtm1jneg9srmy0d16dbr8n3sx4",
+      "referencePrompt": "A single full-body recognizable Usopp from One Piece, canonical anime character costume and distinctive face, high-quality stylized 3D game miniature. Full head, all limbs and shoes entirely visible, relaxed standing action-ready pose, three-quarter front view, solid white studio background, even neutral lighting, no text, no logo, no flag, no platform, no other character, volumetric sculpted form. Use reference only for colors where correct; the named character identity takes priority. Keep accessories close to the body and separated readable silhouette.",
+      "referenceSha256": "5929b134397220f79b10685464780e9af8b2ac1fcd1a0d8cc2f3860afe8c4d05",
+      "taskId": "01a13358-9967-70da-93ab-285397fcaa31",
+      "credits": 15,
+      "referenceImage": "/assets/references/mugiwara/knight.png",
+      "rawSha256": "067ff550beec5a05d202870813c81761a795c6cae3b1ba63e06d45c951900745",
+      "sha256": "90d74450931259cf87b9203a332860b2e0fa3f44a6b39c10f915dc5052d0e52c",
+      "bytes": 385180,
+      "triangles": 10367,
+      "textures": [
+        {
+          "name": "Image_0",
+          "width": 512,
+          "height": 512
+        }
+      ]
+    },
+    {
+      "id": "mugiwara/pawn",
+      "crew": "mugiwara",
+      "role": "pawn",
+      "name": "Chopper",
+      "path": "/assets/models/mugiwara/pawn.glb",
+      "sourceImage": "/assets/crews/mugiwara/pawn.png",
+      "provider": "meshy",
+      "status": "ready",
+      "review": {
+        "status": "approved",
+        "views": [
+          "front",
+          "side",
+          "back",
+          "board"
+        ],
+        "sheet": "tools/assets/models1.jpg",
+        "reviewer": "asset agent visual inspection",
+        "observations": "Textured recognizable volumetric character viewed front/side/back/isolated three-quarter. Actual board QA is downstream."
+      },
+      "referenceTaskId": "cxyhgsgyr9rmw0d16dea8ph7w0",
+      "referencePrompt": "A single full-body recognizable Chopper from One Piece, canonical anime character costume and distinctive face, high-quality stylized 3D game miniature. Full head, all limbs and shoes entirely visible, relaxed standing action-ready pose, three-quarter front view, solid white studio background, even neutral lighting, no text, no logo, no flag, no platform, no other character, volumetric sculpted form. Use reference only for colors where correct; the named character identity takes priority. Keep accessories close to the body and separated readable silhouette. A small brown reindeer doctor, blue nose, round pink hat with white X; not Usopp or a human.",
+      "referenceSha256": "eadf3efb1cef9bc50e728f116cd3cd519fbcba321bcc4119445796201818372b",
+      "taskId": "01a1335d-01a1-72b7-bf42-218d1b56a411",
+      "credits": 15,
+      "referenceImage": "/assets/references/mugiwara/pawn.png",
+      "rawSha256": "61f72b3ea60cfc873b2bf15fb93aa25634d8b7c7c8c96f484ef99d4702cee20e",
+      "sha256": "4f405c769504c99229b5ec76e8a77865c38764a78b2a47b0c60ea1b9ad7ea421",
+      "bytes": 389304,
+      "triangles": 10777,
+      "textures": [
+        {
+          "name": "Image_0",
+          "width": 512,
+          "height": 512
+        }
+      ]
+    },
+    {
+      "id": "buggy/king",
+      "crew": "buggy",
+      "role": "king",
+      "name": "Buggy",
+      "path": "/assets/models/buggy/king.glb",
+      "sourceImage": "/assets/crews/buggy/king.png",
+      "provider": "meshy",
+      "status": "ready",
+      "review": {
+        "status": "approved",
+        "views": [
+          "front",
+          "side",
+          "back",
+          "board"
+        ],
+        "sheet": "tools/assets/models1.jpg",
+        "reviewer": "asset agent visual inspection",
+        "observations": "Textured recognizable volumetric character viewed front/side/back/isolated three-quarter. Actual board QA is downstream."
+      },
+      "referenceTaskId": "f6h811gzzsrmy0d16deav9dfeg",
+      "referencePrompt": "A single full-body recognizable Buggy from One Piece, canonical anime character costume and distinctive face, high-quality stylized 3D game miniature. Full head, all limbs and shoes entirely visible, relaxed standing action-ready pose, three-quarter front view, solid white studio background, even neutral lighting, no text, no logo, no flag, no platform, no other character, volumetric sculpted form. Use reference only for colors where correct; the named character identity takes priority. Keep accessories close to the body and separated readable silhouette. ",
+      "referenceSha256": "6c953eea219beff78d473b1c31850248f22916072bb1412fa6222ca91f144389",
+      "taskId": "01a1335d-095f-7069-b7ac-ab7a1260243f",
+      "credits": 15,
+      "referenceImage": "/assets/references/buggy/king.png",
+      "rawSha256": "b3e11f0237fe41e31f3e0aa396cb0b78bade23b4c306d701f6d99cd107f5dbf5",
+      "sha256": "4f037e4ede15c70eb1aa0a911816d9c10749b24eae05af9baf264d0d822527e6",
+      "bytes": 411576,
+      "triangles": 10631,
+      "textures": [
+        {
+          "name": "Image_0",
+          "width": 512,
+          "height": 512
+        }
+      ]
+    },
+    {
+      "id": "buggy/queen",
+      "crew": "buggy",
+      "role": "queen",
+      "name": "Alvida",
+      "path": "/assets/models/buggy/queen.glb",
+      "sourceImage": "/assets/crews/buggy/queen.png",
+      "provider": "meshy",
+      "status": "ready",
+      "review": {
+        "status": "approved",
+        "views": [
+          "front",
+          "side",
+          "back",
+          "board"
+        ],
+        "sheet": "tools/assets/models1.jpg",
+        "reviewer": "asset agent visual inspection",
+        "observations": "Textured recognizable volumetric character viewed front/side/back/isolated three-quarter. Actual board QA is downstream."
+      },
+      "referenceTaskId": "jfs9xts19nrmt0d16debcc0rbr",
+      "referencePrompt": "A single full-body recognizable Alvida from One Piece, canonical anime character costume and distinctive face, high-quality stylized 3D game miniature. Full head, all limbs and shoes entirely visible, relaxed standing action-ready pose, three-quarter front view, solid white studio background, even neutral lighting, no text, no logo, no flag, no platform, no other character, volumetric sculpted form. Use reference only for colors where correct; the named character identity takes priority. Keep accessories close to the body and separated readable silhouette. ",
+      "referenceSha256": "24a4801a08723331341345db954ae1d4078ec99afac773b3a06ebb0c1c0b8b0f",
+      "taskId": "01a1335d-1016-771b-b9e8-9f4f0f869ce9",
+      "credits": 15,
+      "referenceImage": "/assets/references/buggy/queen.png",
+      "rawSha256": "b13abedaa3e0f814c509d8bcbfbcceb56c522ca9b57ccd93030afaef6035732b",
+      "sha256": "2ae88f529d779a6b7d50ae91a43b454dfac8a5eb28d4903a8b4dc5d9f0d466d0",
+      "bytes": 413700,
+      "triangles": 10655,
+      "textures": [
+        {
+          "name": "Image_0",
+          "width": 512,
+          "height": 512
+        }
+      ]
+    },
+    {
+      "id": "buggy/rook",
+      "crew": "buggy",
+      "role": "rook",
+      "name": "Mohji",
+      "path": "/assets/models/buggy/rook.glb",
+      "sourceImage": "/assets/crews/buggy/rook.png",
+      "provider": "meshy",
+      "status": "ready",
+      "review": {
+        "status": "approved",
+        "views": [
+          "front",
+          "side",
+          "back",
+          "board"
+        ],
+        "sheet": "tools/assets/models1.jpg",
+        "reviewer": "asset agent visual inspection",
+        "observations": "Textured recognizable volumetric character viewed front/side/back/isolated three-quarter. Actual board QA is downstream."
+      },
+      "referenceTaskId": "r2s51rh2g5rmr0d16de8bff9e4",
+      "referencePrompt": "A single full-body recognizable Mohji from One Piece, canonical anime character costume and distinctive face, high-quality stylized 3D game miniature. Full head, all limbs and shoes entirely visible, relaxed standing action-ready pose, three-quarter front view, solid white studio background, even neutral lighting, no text, no logo, no flag, no platform, no other character, volumetric sculpted form. Use reference only for colors where correct; the named character identity takes priority. Keep accessories close to the body and separated readable silhouette. A single white-haired animal tamer man wearing his white fur vest and bear-ear hood; no lion beside him.",
+      "referenceSha256": "ccaeab311e76f6c9d270f5d2e850cfce293441ef22bba9018e91cc4926a4704e",
+      "taskId": "01a1335d-1758-706e-8ee2-2fe846738bb3",
+      "credits": 15,
+      "referenceImage": "/assets/references/buggy/rook.png",
+      "rawSha256": "e9b9ccad29eda3b031ce316eab14b1452860a0de0535e7f7bad93609bab7a3b8",
+      "sha256": "47d7a4eea7f0c3fb7b787b505a8db74617c5fff27738dbe8385a4594016163ab",
+      "bytes": 404736,
+      "triangles": 10779,
+      "textures": [
+        {
+          "name": "Image_0",
+          "width": 512,
+          "height": 512
+        }
+      ]
+    },
+    {
+      "id": "buggy/bishop",
+      "crew": "buggy",
+      "role": "bishop",
+      "name": "Cabaji",
+      "path": "/assets/models/buggy/bishop.glb",
+      "sourceImage": "/assets/crews/buggy/bishop.png",
+      "provider": "meshy",
+      "status": "ready",
+      "review": {
+        "status": "approved",
+        "views": [
+          "front",
+          "side",
+          "back",
+          "board"
+        ],
+        "sheet": "tools/assets/models1.jpg",
+        "reviewer": "asset agent visual inspection",
+        "observations": "Textured recognizable volumetric character viewed front/side/back/isolated three-quarter. Actual board QA is downstream."
+      },
+      "referenceTaskId": "s5r24qs3p9rmt0d16de8gtj6am",
+      "referencePrompt": "A single full-body recognizable Cabaji from One Piece, canonical anime character costume and distinctive face, high-quality stylized 3D game miniature. Full head, all limbs and shoes entirely visible, relaxed standing action-ready pose, three-quarter front view, solid white studio background, even neutral lighting, no text, no logo, no flag, no platform, no other character, volumetric sculpted form. Use reference only for colors where correct; the named character identity takes priority. Keep accessories close to the body and separated readable silhouette. ",
+      "referenceSha256": "2bb54101ca813e0dfa13299f635154bbafedf771bed107abf263805a9252a63e",
+      "taskId": "01a1335d-1cb3-7535-8c7f-ccfa391c318d",
+      "credits": 15,
+      "referenceImage": "/assets/references/buggy/bishop.png",
+      "rawSha256": "2c79eb3fd2c3eaea67441510c3e2d975ca56b50896e0bfc44e83d2650f721c2f",
+      "sha256": "034e71d675a36d9ab592537081c05c97e311e5867b2f63af50a9be80bd5335e1",
+      "bytes": 429392,
+      "triangles": 10702,
+      "textures": [
+        {
+          "name": "Image_0",
+          "width": 512,
+          "height": 512
+        }
+      ]
+    },
+    {
+      "id": "buggy/knight",
+      "crew": "buggy",
+      "role": "knight",
+      "name": "Richie",
+      "path": "/assets/models/buggy/knight.glb",
+      "sourceImage": "/assets/crews/buggy/knight.png",
+      "provider": "meshy",
+      "status": "ready",
+      "review": {
+        "status": "approved",
+        "views": [
+          "front",
+          "side",
+          "back",
+          "board"
+        ],
+        "sheet": "tools/assets/models2.jpg",
+        "reviewer": "asset agent visual inspection",
+        "observations": "Textured recognizable volumetric character viewed front/side/back/isolated three-quarter. Actual board QA is downstream."
+      },
+      "referenceTaskId": "g8mrbnktb5rmr0d16df8cm1z7g",
+      "referencePrompt": "A single full-body recognizable Richie from One Piece, canonical anime character costume and distinctive face, high-quality stylized 3D game miniature. Full head, all limbs and shoes entirely visible, relaxed standing action-ready pose, three-quarter front view, solid white studio background, even neutral lighting, no text, no logo, no flag, no platform, no other character, volumetric sculpted form. Use reference only for colors where correct; the named character identity takes priority. Keep accessories close to the body and separated readable silhouette. A large golden lion with purple mane from the Buggy Pirates; quadruped animal, not a human.",
+      "referenceSha256": "baf6c46dce9183c8ec15f34a3ee55926024f6efb4bbc254fb845d62fcec136f5",
+      "taskId": "01a1335f-6eb8-70a7-80e3-9a341367855e",
+      "credits": 15,
+      "referenceImage": "/assets/references/buggy/knight.png",
+      "rawSha256": "780745fcdc6974027b2f9c0857c912de24dd07d414f038d1838289319644e40d",
+      "sha256": "7739a333c6b184f5138f2190a440b32c9cfc76075fbb192746cdfb9650bcfd23",
+      "bytes": 393912,
+      "triangles": 10163,
+      "textures": [
+        {
+          "name": "Image_0",
+          "width": 512,
+          "height": 512
+        }
+      ]
+    },
+    {
+      "id": "buggy/pawn",
+      "crew": "buggy",
+      "role": "pawn",
+      "name": "Crew",
+      "path": "/assets/models/buggy/pawn.glb",
+      "sourceImage": "/assets/crews/buggy/pawn.png",
+      "provider": "meshy",
+      "status": "ready",
+      "review": {
+        "status": "approved",
+        "views": [
+          "front",
+          "side",
+          "back",
+          "board"
+        ],
+        "sheet": "tools/assets/models2.jpg",
+        "reviewer": "asset agent visual inspection",
+        "observations": "Textured recognizable volumetric character viewed front/side/back/isolated three-quarter. Actual board QA is downstream."
+      },
+      "referenceTaskId": "hwmzvjkwgsrmt0d16dfaney3kr",
+      "referencePrompt": "A single full-body recognizable Crew from One Piece, canonical anime character costume and distinctive face, high-quality stylized 3D game miniature. Full head, all limbs and shoes entirely visible, relaxed standing action-ready pose, three-quarter front view, solid white studio background, even neutral lighting, no text, no logo, no flag, no platform, no other character, volumetric sculpted form. Use reference only for colors where correct; the named character identity takes priority. Keep accessories close to the body and separated readable silhouette. A generic adult male member of the buggy pirate crew, not its captain. ",
+      "referenceSha256": "b2f5007b83499f2fcfa0be7ff38a773e8c0c2f86d65f6ae3a4963e1d8aa0735b",
+      "taskId": "01a1335f-7488-7200-8bca-8576ae1fc129",
+      "credits": 15,
+      "referenceImage": "/assets/references/buggy/pawn.png",
+      "rawSha256": "44710f4cc6897a86e9f7d8ac35049e306975c9b979f8da6a5c4f3fa579723e8b",
+      "sha256": "f77745a658ad9648747e8ac247762098162004defb0a4d04657ef72313f7f46a",
+      "bytes": 384880,
+      "triangles": 10686,
+      "textures": [
+        {
+          "name": "Image_0",
+          "width": 512,
+          "height": 512
+        }
+      ]
+    },
+    {
+      "id": "shanks/king",
+      "crew": "shanks",
+      "role": "king",
+      "name": "Shanks",
+      "path": "/assets/models/shanks/king.glb",
+      "sourceImage": "/assets/crews/shanks/king.png",
+      "provider": "meshy",
+      "status": "ready",
+      "review": {
+        "status": "approved",
+        "views": [
+          "front",
+          "side",
+          "back",
+          "board"
+        ],
+        "sheet": "tools/assets/models2.jpg",
+        "reviewer": "asset agent visual inspection",
+        "observations": "Textured recognizable volumetric character viewed front/side/back/isolated three-quarter. Actual board QA is downstream."
+      },
+      "referenceTaskId": "hsryc5bz0drmw0d16dfb98ktcr",
+      "referencePrompt": "A single full-body recognizable Shanks from One Piece, canonical anime character costume and distinctive face, high-quality stylized 3D game miniature. Full head, all limbs and shoes entirely visible, relaxed standing action-ready pose, three-quarter front view, solid white studio background, even neutral lighting, no text, no logo, no flag, no platform, no other character, volumetric sculpted form. Use reference only for colors where correct; the named character identity takes priority. Keep accessories close to the body and separated readable silhouette. ",
+      "referenceSha256": "43c1c6a4cfbaab23307f8281bf5550286c6ba46bf3f9e191701472331358f1f1",
+      "taskId": "01a1335f-7a80-743c-8095-a6a568963c56",
+      "credits": 15,
+      "referenceImage": "/assets/references/shanks/king.png",
+      "rawSha256": "5b5a483e49f3f7bef76bc90b15cbc034f22126053d385aff6acecdc817033a5e",
+      "sha256": "afbcf3155f395ab2e0f2e521c93bc032678a2452bda451087607c15200dc120c",
+      "bytes": 387972,
+      "triangles": 10104,
+      "textures": [
+        {
+          "name": "Image_0",
+          "width": 512,
+          "height": 512
+        }
+      ]
+    },
+    {
+      "id": "shanks/queen",
+      "crew": "shanks",
+      "role": "queen",
+      "name": "Beckman",
+      "path": "/assets/models/shanks/queen.glb",
+      "sourceImage": "/assets/crews/shanks/queen.png",
+      "provider": "meshy",
+      "status": "ready",
+      "review": {
+        "status": "approved",
+        "views": [
+          "front",
+          "side",
+          "back",
+          "board"
+        ],
+        "sheet": "tools/assets/models2.jpg",
+        "reviewer": "asset agent visual inspection",
+        "observations": "Textured recognizable volumetric character viewed front/side/back/isolated three-quarter. Actual board QA is downstream."
+      },
+      "referenceTaskId": "wz3wpk40edrmy0d16df8v2202c",
+      "referencePrompt": "A single full-body recognizable Beckman from One Piece, canonical anime character costume and distinctive face, high-quality stylized 3D game miniature. Full head, all limbs and shoes entirely visible, relaxed standing action-ready pose, three-quarter front view, solid white studio background, even neutral lighting, no text, no logo, no flag, no platform, no other character, volumetric sculpted form. Use reference only for colors where correct; the named character identity takes priority. Keep accessories close to the body and separated readable silhouette. ",
+      "referenceSha256": "3fc590222f6031c045628030ec3b02f65e9e16923ed4f67a794d0f6132788aaf",
+      "taskId": "01a1335f-80ae-75f0-8f07-5f3c327870ab",
+      "credits": 15,
+      "referenceImage": "/assets/references/shanks/queen.png",
+      "rawSha256": "55cf413ee319bcda94c8e47cab825d3d8d621f19c06cd517f3b9b18b6ee8b31b",
+      "sha256": "48fb9d1ece3596a2666c15b238335d5a534f97bfc5d7a80351b6c18ee32b3071",
+      "bytes": 387640,
+      "triangles": 10675,
+      "textures": [
+        {
+          "name": "Image_0",
+          "width": 512,
+          "height": 512
+        }
+      ]
+    },
+    {
+      "id": "shanks/rook",
+      "crew": "shanks",
+      "role": "rook",
+      "name": "Yasopp",
+      "path": "/assets/models/shanks/rook.glb",
+      "sourceImage": "/assets/crews/shanks/rook.png",
+      "provider": "meshy",
+      "status": "ready",
+      "review": {
+        "status": "approved",
+        "views": [
+          "front",
+          "side",
+          "back",
+          "board"
+        ],
+        "sheet": "tools/assets/models2.jpg",
+        "reviewer": "asset agent visual inspection",
+        "observations": "Textured recognizable volumetric character viewed front/side/back/isolated three-quarter. Actual board QA is downstream."
+      },
+      "referenceTaskId": "20njycm2a5rmy0d16df93sdna8",
+      "referencePrompt": "A single full-body recognizable Yasopp from One Piece, canonical anime character costume and distinctive face, high-quality stylized 3D game miniature. Full head, all limbs and shoes entirely visible, relaxed standing action-ready pose, three-quarter front view, solid white studio background, even neutral lighting, no text, no logo, no flag, no platform, no other character, volumetric sculpted form. Use reference only for colors where correct; the named character identity takes priority. Keep accessories close to the body and separated readable silhouette. ",
+      "referenceSha256": "fab93a7f784ce3e3de8428b19fb5014464dbd058f2d1eb9a83d723935c2dc269",
+      "taskId": "01a1335f-8777-761f-953a-d382d8e7e841",
+      "credits": 15,
+      "referenceImage": "/assets/references/shanks/rook.png",
+      "rawSha256": "fbda8aa84a134ac21f16fb74904b0b30dba42a51fed151639ae4e18d02322dbc",
+      "sha256": "3b1e68e42220318480f105d2c64546b8b319c3f29471ff9381410aeb37c00371",
+      "bytes": 406044,
+      "triangles": 10730,
+      "textures": [
+        {
+          "name": "Image_0",
+          "width": 512,
+          "height": 512
+        }
+      ]
+    },
+    {
+      "id": "shanks/bishop",
+      "crew": "shanks",
+      "role": "bishop",
+      "name": "Lucky Roux",
+      "path": "/assets/models/shanks/bishop.glb",
+      "sourceImage": "/assets/crews/shanks/bishop.png",
+      "provider": "meshy",
+      "status": "ready",
+      "review": {
+        "status": "approved",
+        "views": [
+          "front",
+          "side",
+          "back",
+          "board"
+        ],
+        "sheet": "tools/assets/models2.jpg",
+        "reviewer": "asset agent visual inspection",
+        "observations": "Textured recognizable volumetric character viewed front/side/back/isolated three-quarter. Actual board QA is downstream."
+      },
+      "referenceTaskId": "4exckmc4j9rmt0d16df82s0sbm",
+      "referencePrompt": "A single full-body recognizable Lucky Roux from One Piece, canonical anime character costume and distinctive face, high-quality stylized 3D game miniature. Full head, all limbs and shoes entirely visible, relaxed standing action-ready pose, three-quarter front view, solid white studio background, even neutral lighting, no text, no logo, no flag, no platform, no other character, volumetric sculpted form. Use reference only for colors where correct; the named character identity takes priority. Keep accessories close to the body and separated readable silhouette. ",
+      "referenceSha256": "d6166eb962c6855f744522e9a4a2859911ea112426ece90317e9ed5d1d2beddd",
+      "taskId": "01a1335f-8e72-76f4-ac3d-709d61fef1a9",
+      "credits": 15,
+      "referenceImage": "/assets/references/shanks/bishop.png",
+      "rawSha256": "b53882706adf79d02a658095e77610a2fccf7abc824529144451352d5e9fbcdd",
+      "sha256": "e38fe292fa3226015f52be154679dcda49eb94809f5bfe5f6503596455343161",
+      "bytes": 401304,
+      "triangles": 10234,
+      "textures": [
+        {
+          "name": "Image_0",
+          "width": 512,
+          "height": 512
+        }
+      ]
+    },
+    {
+      "id": "shanks/knight",
+      "crew": "shanks",
+      "role": "knight",
+      "name": "Rockstar",
+      "path": "/assets/models/shanks/knight.glb",
+      "sourceImage": "/assets/crews/shanks/knight.png",
+      "provider": "meshy",
+      "status": "ready",
+      "review": {
+        "status": "approved",
+        "views": [
+          "front",
+          "side",
+          "back",
+          "board"
+        ],
+        "sheet": "tools/assets/models2.jpg",
+        "reviewer": "asset agent visual inspection",
+        "observations": "Textured recognizable volumetric character viewed front/side/back/isolated three-quarter. Actual board QA is downstream."
+      },
+      "referenceTaskId": "c2607jc6exrmy0d16dfbe18zaw",
+      "referencePrompt": "A single full-body recognizable Rockstar from One Piece, canonical anime character costume and distinctive face, high-quality stylized 3D game miniature. Full head, all limbs and shoes entirely visible, relaxed standing action-ready pose, three-quarter front view, solid white studio background, even neutral lighting, no text, no logo, no flag, no platform, no other character, volumetric sculpted form. Use reference only for colors where correct; the named character identity takes priority. Keep accessories close to the body and separated readable silhouette. ",
+      "referenceSha256": "29c811ac540b57b43d2456b18d0d5759fdc09eb25c17506d2351741662f0c2ec",
+      "taskId": "01a1335f-941b-7028-99a9-d2db83f2566d",
+      "credits": 15,
+      "referenceImage": "/assets/references/shanks/knight.png",
+      "rawSha256": "bc2a59e78d9c15b55b5c237c576a0ab3c58c6802a9aca211228dd392e1128818",
+      "sha256": "f183b076b681145bea8fff2ab5cf3f49f9194bc693b31d810ac12ab4f092831d",
+      "bytes": 447664,
+      "triangles": 10064,
+      "textures": [
+        {
+          "name": "Image_0",
+          "width": 512,
+          "height": 512
+        }
+      ]
+    },
+    {
+      "id": "shanks/pawn",
+      "crew": "shanks",
+      "role": "pawn",
+      "name": "Crew",
+      "path": "/assets/models/shanks/pawn.glb",
+      "sourceImage": "/assets/crews/shanks/pawn.png",
+      "provider": "meshy",
+      "status": "ready",
+      "review": {
+        "status": "approved",
+        "views": [
+          "front",
+          "side",
+          "back",
+          "board"
+        ],
+        "sheet": "tools/assets/models2.jpg",
+        "reviewer": "asset agent visual inspection",
+        "observations": "Textured recognizable volumetric character viewed front/side/back/isolated three-quarter. Actual board QA is downstream."
+      },
+      "referenceTaskId": "d0evfc47xxrmr0d16df9sbfhx4",
+      "referencePrompt": "A single full-body recognizable Crew from One Piece, canonical anime character costume and distinctive face, high-quality stylized 3D game miniature. Full head, all limbs and shoes entirely visible, relaxed standing action-ready pose, three-quarter front view, solid white studio background, even neutral lighting, no text, no logo, no flag, no platform, no other character, volumetric sculpted form. Use reference only for colors where correct; the named character identity takes priority. Keep accessories close to the body and separated readable silhouette. A generic adult male member of the shanks pirate crew, not its captain. ",
+      "referenceSha256": "a5a4125a8b0cbeabbd640f8b8716764e7fd3857a2b05c8f169b66daa27c4d55f",
+      "taskId": "01a1335f-9970-7571-b584-142441a51e09",
+      "credits": 15,
+      "referenceImage": "/assets/references/shanks/pawn.png",
+      "rawSha256": "1c23d8aac8c8c29fe7f1eae5a88fec08985927e7073eb43f44354f33f0e32850",
+      "sha256": "09aae78b625c60dad1517f6f789aec0bd4d54a5bd5c8ba162d8860c0090e62fe",
+      "bytes": 370304,
+      "triangles": 10389,
+      "textures": [
+        {
+          "name": "Image_0",
+          "width": 512,
+          "height": 512
+        }
+      ]
+    },
+    {
+      "id": "bigmom/king",
+      "crew": "bigmom",
+      "role": "king",
+      "name": "Big Mom",
+      "path": "/assets/models/bigmom/king.glb",
+      "sourceImage": "/assets/crews/bigmom/king.png",
+      "provider": "meshy",
+      "status": "ready",
+      "review": {
+        "status": "approved",
+        "views": [
+          "front",
+          "side",
+          "back",
+          "board"
+        ],
+        "sheet": "tools/assets/models3.jpg",
+        "reviewer": "asset agent visual inspection",
+        "observations": "Textured recognizable volumetric character viewed front/side/back/isolated three-quarter. Actual board QA is downstream."
+      },
+      "referenceTaskId": "kgm6pzqz89rmy0d16dg9dr113r",
+      "referencePrompt": "A single full-body recognizable Big Mom from One Piece, canonical anime character costume and distinctive face, high-quality stylized 3D game miniature. Full head, all limbs and shoes entirely visible, relaxed standing action-ready pose, three-quarter front view, solid white studio background, even neutral lighting, no text, no logo, no flag, no platform, no other character, volumetric sculpted form. Use reference only for colors where correct; the named character identity takes priority. Keep accessories close to the body and separated readable silhouette. ",
+      "referenceSha256": "06bd7661e832b96ca10e4f2914727975d42ab486a38c47390ae49aa7ce605f91",
+      "taskId": "01a13361-901f-73ca-aedb-0216d7e9170c",
+      "credits": 15,
+      "referenceImage": "/assets/references/bigmom/king.png",
+      "rawSha256": "f65aaffb886c7e7c68831884f1988ff9afa3cfbf394d44615f097978f8ada118",
+      "sha256": "acfe8bed853e25b37030a55cca75a17095cc3b1c76cbc2d7c95a25ed37e5d38d",
+      "bytes": 414352,
+      "triangles": 10663,
+      "textures": [
+        {
+          "name": "Image_0",
+          "width": 512,
+          "height": 512
+        }
+      ]
+    },
+    {
+      "id": "bigmom/queen",
+      "crew": "bigmom",
+      "role": "queen",
+      "name": "Katakuri",
+      "path": "/assets/models/bigmom/queen.glb",
+      "sourceImage": "/assets/crews/bigmom/queen.png",
+      "provider": "meshy",
+      "status": "ready",
+      "review": {
+        "status": "approved",
+        "views": [
+          "front",
+          "side",
+          "back",
+          "board"
+        ],
+        "sheet": "tools/assets/models3.jpg",
+        "reviewer": "asset agent visual inspection",
+        "observations": "Textured recognizable volumetric character viewed front/side/back/isolated three-quarter. Actual board QA is downstream."
+      },
+      "referenceTaskId": "s75fxp023nrmw0d16dgshqte5g",
+      "referencePrompt": "A single full-body recognizable Katakuri from One Piece, canonical anime character costume and distinctive face, high-quality stylized 3D game miniature. Full head, all limbs and shoes entirely visible, relaxed standing action-ready pose, three-quarter front view, solid white studio background, even neutral lighting, no text, no logo, no flag, no platform, no other character, volumetric sculpted form. Use reference only for colors where correct; the named character identity takes priority. Keep accessories close to the body and separated readable silhouette. ",
+      "referenceSha256": "20ded7af8c54fb32262c120edb719a497a63ce4fa63387d27ef596df90cd4bf0",
+      "taskId": "01a13361-967e-717e-92d9-ab508dc91ee0",
+      "credits": 15,
+      "referenceImage": "/assets/references/bigmom/queen.png",
+      "rawSha256": "fca3e274d8f237e3a4b1386c1562c83af2ef10aea8c823c93e13fc205af43da1",
+      "sha256": "2c294ca84c3b6eec629bb6ce46e900eef171cd7498d9f7e369de81a81bcf55e5",
+      "bytes": 395888,
+      "triangles": 10153,
+      "textures": [
+        {
+          "name": "Image_0",
+          "width": 512,
+          "height": 512
+        }
+      ]
+    },
+    {
+      "id": "bigmom/rook",
+      "crew": "bigmom",
+      "role": "rook",
+      "name": "Cracker",
+      "path": "/assets/models/bigmom/rook.glb",
+      "sourceImage": "/assets/crews/bigmom/rook.png",
+      "provider": "meshy",
+      "status": "ready",
+      "review": {
+        "status": "approved",
+        "views": [
+          "front",
+          "side",
+          "back",
+          "board"
+        ],
+        "sheet": "tools/assets/models6.jpg",
+        "reviewer": "asset agent visual inspection",
+        "observations": "Textured recognizable volumetric character viewed front/side/back/isolated three-quarter. Actual board QA is downstream."
+      },
+      "referenceTaskId": "5r9q3qdtp5rmy0d16dm8c56k64",
+      "referencePrompt": "Charlotte Cracker from One Piece, his instantly recognizable BISCuit SOLDIER ARMOR form shown in the supplied reference: huge broad muscular armored biscuit knight, ornate bronze biscuit armor, orange/red beard and mustache, tall crested helmet, massive round biscuit shield and sword. Single full-body stylized anime 3D game miniature, all legs shoes head visible, neutral standing pose, white studio background, NO long overcoat, NO burgundy jacket, NO generic pirate, no effects or other figures. Preserve the armor design of the reference and remove its surrounding effects.",
+      "referenceSha256": "7bde011273b714d3bdf6d35082ec17b20d6856eeb166d3541666c77286a31173",
+      "taskId": "01a1336a-67d0-7083-9b35-7096956a617a",
+      "credits": 15,
+      "referenceImage": "/assets/references/bigmom/rook.png",
+      "rawSha256": "4dba14df5bf811a224f802496d4dffa2d018c190e36e6cbf1e0737421d94843f",
+      "sha256": "6ee8333e8de0ba73eb924f7a948132508a747527e22536efa38c9ba5189b13da",
+      "bytes": 414348,
+      "triangles": 10603,
+      "textures": [
+        {
+          "name": "Image_0",
+          "width": 512,
+          "height": 512
+        }
+      ],
+      "taskHistory": [
+        {
+          "taskId": "01a13361-9cac-7021-82af-bef62fc49d57",
+          "referenceTaskId": "eg65q0r54xrmr0d16dgtnca6jg",
+          "sha256": "2dd27bbe34110dea3825669eadd525b7fa790224c94115629bdb2831c4a80111",
+          "status": "identity-rejected",
+          "reason": "Generic overcoat obscures canonical Cracker"
+        }
+      ]
+    },
+    {
+      "id": "bigmom/bishop",
+      "crew": "bigmom",
+      "role": "bishop",
+      "name": "Smoothie",
+      "path": "/assets/models/bigmom/bishop.glb",
+      "sourceImage": "/assets/crews/bigmom/bishop.png",
+      "provider": "meshy",
+      "status": "ready",
+      "review": {
+        "status": "approved",
+        "views": [
+          "front",
+          "side",
+          "back",
+          "board"
+        ],
+        "sheet": "tools/assets/models3.jpg",
+        "reviewer": "asset agent visual inspection",
+        "observations": "Textured recognizable volumetric character viewed front/side/back/isolated three-quarter. Actual board QA is downstream."
+      },
+      "referenceTaskId": "0nt6mfr6mhrmy0d16dgsc058q8",
+      "referencePrompt": "A single full-body recognizable Smoothie from One Piece, canonical anime character costume and distinctive face, high-quality stylized 3D game miniature. Full head, all limbs and shoes entirely visible, relaxed standing action-ready pose, three-quarter front view, solid white studio background, even neutral lighting, no text, no logo, no flag, no platform, no other character, volumetric sculpted form. Use reference only for colors where correct; the named character identity takes priority. Keep accessories close to the body and separated readable silhouette. ",
+      "referenceSha256": "e8d8a3f29f60b7fb08a90cf0aefc54a8d6ff47dfd54350083371b19dea1d3f4a",
+      "taskId": "01a13361-a19f-73b4-b9b0-d471bf0a3b63",
+      "credits": 15,
+      "referenceImage": "/assets/references/bigmom/bishop.png",
+      "rawSha256": "29cafcdeff99edd6b591d8a622735a68ca65dfbba3f1f304575c5fd91920e891",
+      "sha256": "6b5f29bb72e76db03743a1c9bf3170818c65a78ca8b3114c5aa478d1714815fa",
+      "bytes": 417840,
+      "triangles": 10748,
+      "textures": [
+        {
+          "name": "Image_0",
+          "width": 512,
+          "height": 512
+        }
+      ]
+    },
+    {
+      "id": "bigmom/knight",
+      "crew": "bigmom",
+      "role": "knight",
+      "name": "Perospero",
+      "path": "/assets/models/bigmom/knight.glb",
+      "sourceImage": "/assets/crews/bigmom/knight.png",
+      "provider": "meshy",
+      "status": "ready",
+      "review": {
+        "status": "approved",
+        "views": [
+          "front",
+          "side",
+          "back",
+          "board"
+        ],
+        "sheet": "tools/assets/models3.jpg",
+        "reviewer": "asset agent visual inspection",
+        "observations": "Textured recognizable volumetric character viewed front/side/back/isolated three-quarter. Actual board QA is downstream."
+      },
+      "referenceTaskId": "bex3frr835rmw0d16dgtcz2mvm",
+      "referencePrompt": "A single full-body recognizable Perospero from One Piece, canonical anime character costume and distinctive face, high-quality stylized 3D game miniature. Full head, all limbs and shoes entirely visible, relaxed standing action-ready pose, three-quarter front view, solid white studio background, even neutral lighting, no text, no logo, no flag, no platform, no other character, volumetric sculpted form. Use reference only for colors where correct; the named character identity takes priority. Keep accessories close to the body and separated readable silhouette. ",
+      "referenceSha256": "5f4da2031582b4567b4fbb36be8d5ae1c793d5700e5d3d52287aa15ad99a49b9",
+      "taskId": "01a13361-a8e8-7175-917b-026e24a4ddde",
+      "credits": 15,
+      "referenceImage": "/assets/references/bigmom/knight.png",
+      "rawSha256": "dd0572a5107216008d6d6547b50c572f758b96d257339a55e08e5e860a8406d0",
+      "sha256": "6b00543ef2de7c86d12415438b1174e4342501218957c906921b5dd64725d35b",
+      "bytes": 459020,
+      "triangles": 10695,
+      "textures": [
+        {
+          "name": "Image_0",
+          "width": 512,
+          "height": 512
+        }
+      ]
+    },
+    {
+      "id": "bigmom/pawn",
+      "crew": "bigmom",
+      "role": "pawn",
+      "name": "Crew",
+      "path": "/assets/models/bigmom/pawn.glb",
+      "sourceImage": "/assets/crews/bigmom/pawn.png",
+      "provider": "meshy",
+      "status": "ready",
+      "review": {
+        "status": "approved",
+        "views": [
+          "front",
+          "side",
+          "back",
+          "board"
+        ],
+        "sheet": "tools/assets/models3.jpg",
+        "reviewer": "asset agent visual inspection",
+        "observations": "Textured recognizable volumetric character viewed front/side/back/isolated three-quarter. Actual board QA is downstream."
+      },
+      "referenceTaskId": "gd4vq589wsrmw0d16dgrc25m9r",
+      "referencePrompt": "A single full-body recognizable Crew from One Piece, canonical anime character costume and distinctive face, high-quality stylized 3D game miniature. Full head, all limbs and shoes entirely visible, relaxed standing action-ready pose, three-quarter front view, solid white studio background, even neutral lighting, no text, no logo, no flag, no platform, no other character, volumetric sculpted form. Use reference only for colors where correct; the named character identity takes priority. Keep accessories close to the body and separated readable silhouette. A generic adult male member of the bigmom pirate crew, not its captain. ",
+      "referenceSha256": "777608da689a759d59d8185bd7b37da4d603527ba670be151a17a2d33b05c90e",
+      "taskId": "01a13361-ae2d-718d-9ff1-1cab4eade1c6",
+      "credits": 15,
+      "referenceImage": "/assets/references/bigmom/pawn.png",
+      "rawSha256": "40d7e1b4df04a6e5fc76c3d845c0d3ad1e8b8c2d406f70d31284a2c4ddea57a9",
+      "sha256": "cde58a3f94e797bfddf2a53cc79555126afbadfa511688352840114702ba5b6f",
+      "bytes": 423144,
+      "triangles": 10701,
+      "textures": [
+        {
+          "name": "Image_0",
+          "width": 512,
+          "height": 512
+        }
+      ]
+    },
+    {
+      "id": "kaido/king",
+      "crew": "kaido",
+      "role": "king",
+      "name": "Kaido",
+      "path": "/assets/models/kaido/king.glb",
+      "sourceImage": "/assets/crews/kaido/king.png",
+      "provider": "meshy",
+      "status": "ready",
+      "review": {
+        "status": "approved",
+        "views": [
+          "front",
+          "side",
+          "back",
+          "board"
+        ],
+        "sheet": "tools/assets/pilot-sheet.jpg",
+        "observations": "Recognizable textured volumetric front/side/back and isolated three-quarter view. Kaido club faceting accepted. Actual chess-board QA remains downstream renderer evidence.",
+        "reviewer": "orchestrator + asset agent"
+      },
+      "referenceTaskId": "1zw4dayje9rmr0d16dbsd871gm",
+      "referencePrompt": "A single full-body recognizable Kaido from One Piece, canonical anime character costume and distinctive face, high-quality stylized 3D game miniature. Full head, all limbs and shoes entirely visible, relaxed standing action-ready pose, three-quarter front view, solid white studio background, even neutral lighting, no text, no logo, no flag, no platform, no other character, volumetric sculpted form. Use reference only for colors where correct; the named character identity takes priority. Keep accessories close to the body and separated readable silhouette.",
+      "referenceSha256": "14553418124734e128af322d80c3c58f54234e2ae133357192ebbea6557c047f",
+      "taskId": "01a13358-9fd3-739f-b657-832dbc3fd240",
+      "credits": 15,
+      "referenceImage": "/assets/references/kaido/king.png",
+      "rawSha256": "0b304b0bb3b5bcc960a5238f263d0f94e23a080815673afa81140c560b84d92f",
+      "sha256": "cf5bbd277f72fbef1ddf20371b8530da6ffececb6602eff1c2fd0389a1f42525",
+      "bytes": 425176,
+      "triangles": 10712,
+      "textures": [
+        {
+          "name": "Image_0",
+          "width": 512,
+          "height": 512
+        }
+      ]
+    },
+    {
+      "id": "kaido/queen",
+      "crew": "kaido",
+      "role": "queen",
+      "name": "King",
+      "path": "/assets/models/kaido/queen.glb",
+      "sourceImage": "/assets/crews/kaido/queen.png",
+      "provider": "meshy",
+      "status": "ready",
+      "review": {
+        "status": "approved",
+        "views": [
+          "front",
+          "side",
+          "back",
+          "board"
+        ],
+        "sheet": "tools/assets/models3.jpg",
+        "reviewer": "asset agent visual inspection",
+        "observations": "Textured recognizable volumetric character viewed front/side/back/isolated three-quarter. Actual board QA is downstream."
+      },
+      "referenceTaskId": "qnsj898bfsrmt0d16dgtbsaxgr",
+      "referencePrompt": "A single full-body recognizable King from One Piece, canonical anime character costume and distinctive face, high-quality stylized 3D game miniature. Full head, all limbs and shoes entirely visible, relaxed standing action-ready pose, three-quarter front view, solid white studio background, even neutral lighting, no text, no logo, no flag, no platform, no other character, volumetric sculpted form. Use reference only for colors where correct; the named character identity takes priority. Keep accessories close to the body and separated readable silhouette. This is the Beast Pirates commander named King, not a chess royal. ",
+      "referenceSha256": "0fb8cd44e8f0d3f7d7f9ab47a2318ddd476fa218550e46252f62924b1dd4fe28",
+      "taskId": "01a13361-b402-718c-8d66-b3ec99f0479b",
+      "credits": 15,
+      "referenceImage": "/assets/references/kaido/queen.png",
+      "rawSha256": "835df0d25d1bcad87334511b96209ae223506567dfd73d16ec11098f914abc9f",
+      "sha256": "459420b711c22b75629cf07f3c719711def665ddb9b7742cace058a678efa3a2",
+      "bytes": 402044,
+      "triangles": 10579,
+      "textures": [
+        {
+          "name": "Image_0",
+          "width": 512,
+          "height": 512
+        }
+      ]
+    },
+    {
+      "id": "kaido/rook",
+      "crew": "kaido",
+      "role": "rook",
+      "name": "Queen",
+      "path": "/assets/models/kaido/rook.glb",
+      "sourceImage": "/assets/crews/kaido/rook.png",
+      "provider": "meshy",
+      "status": "ready",
+      "review": {
+        "status": "approved",
+        "views": [
+          "front",
+          "side",
+          "back",
+          "board"
+        ],
+        "sheet": "tools/assets/models3.jpg",
+        "reviewer": "asset agent visual inspection",
+        "observations": "Textured recognizable volumetric character viewed front/side/back/isolated three-quarter. Actual board QA is downstream."
+      },
+      "referenceTaskId": "q08eccgd31rmw0d16dgta9xepw",
+      "referencePrompt": "A single full-body recognizable Queen from One Piece, canonical anime character costume and distinctive face, high-quality stylized 3D game miniature. Full head, all limbs and shoes entirely visible, relaxed standing action-ready pose, three-quarter front view, solid white studio background, even neutral lighting, no text, no logo, no flag, no platform, no other character, volumetric sculpted form. Use reference only for colors where correct; the named character identity takes priority. Keep accessories close to the body and separated readable silhouette. This is the Beast Pirates commander named Queen, not a chess royal. ",
+      "referenceSha256": "60fe596819d29475ffcdc2428f8026e5943f4276a411d1b7d3f4d99f54c61fca",
+      "taskId": "01a13361-ba9d-77ad-9567-225dba63287b",
+      "credits": 15,
+      "referenceImage": "/assets/references/kaido/rook.png",
+      "rawSha256": "0382aaab09d6b9f9823fa44f70fa2ff6e23c9a61834b3fc0aa851e550440e9b5",
+      "sha256": "8a1bf9252fbe54db0e0bba2283db7728df8dc07eaf7f456301f5f69051dcfdd8",
+      "bytes": 476572,
+      "triangles": 10260,
+      "textures": [
+        {
+          "name": "Image_0",
+          "width": 512,
+          "height": 512
+        }
+      ]
+    },
+    {
+      "id": "kaido/bishop",
+      "crew": "kaido",
+      "role": "bishop",
+      "name": "Jack",
+      "path": "/assets/models/kaido/bishop.glb",
+      "sourceImage": "/assets/crews/kaido/bishop.png",
+      "provider": "meshy",
+      "status": "ready",
+      "review": {
+        "status": "approved",
+        "views": [
+          "front",
+          "side",
+          "back",
+          "board"
+        ],
+        "sheet": "tools/assets/models4.jpg",
+        "reviewer": "asset agent visual inspection",
+        "observations": "Textured recognizable volumetric character viewed front/side/back/isolated three-quarter. Actual board QA is downstream."
+      },
+      "referenceTaskId": "edks0cxz85rmr0d16dh853pdwr",
+      "referencePrompt": "A single full-body recognizable Jack from One Piece, canonical anime character costume and distinctive face, high-quality stylized 3D game miniature. Full head, all limbs and shoes entirely visible, relaxed standing action-ready pose, three-quarter front view, solid white studio background, even neutral lighting, no text, no logo, no flag, no platform, no other character, volumetric sculpted form. Use reference only for colors where correct; the named character identity takes priority. Keep accessories close to the body and separated readable silhouette. ",
+      "referenceSha256": "e98fd0b8abf6146f579718fb32baff251611946608855ff16414bd32581ec865",
+      "taskId": "01a13363-af07-75e4-ad6f-d79153b81933",
+      "credits": 15,
+      "referenceImage": "/assets/references/kaido/bishop.png",
+      "rawSha256": "b97d5644706c3d46a32cf4c7391ef06f82f3f7e29dc19f83bbf9e936819b86e5",
+      "sha256": "763aa0e41fd1e864182d6ccc7de7549d4e408811c5f92bfc14eeaf97e068870e",
+      "bytes": 409612,
+      "triangles": 10798,
+      "textures": [
+        {
+          "name": "Image_0",
+          "width": 512,
+          "height": 512
+        }
+      ]
+    },
+    {
+      "id": "kaido/knight",
+      "crew": "kaido",
+      "role": "knight",
+      "name": "Whos Who",
+      "path": "/assets/models/kaido/knight.glb",
+      "sourceImage": "/assets/crews/kaido/knight.png",
+      "provider": "meshy",
+      "status": "ready",
+      "review": {
+        "status": "approved",
+        "views": [
+          "front",
+          "side",
+          "back",
+          "board"
+        ],
+        "sheet": "tools/assets/models4.jpg",
+        "reviewer": "asset agent visual inspection",
+        "observations": "Textured recognizable volumetric character viewed front/side/back/isolated three-quarter. Actual board QA is downstream."
+      },
+      "referenceTaskId": "m4skqwy24nrmt0d16dh9t2m0mw",
+      "referencePrompt": "A single full-body recognizable Whos Who from One Piece, canonical anime character costume and distinctive face, high-quality stylized 3D game miniature. Full head, all limbs and shoes entirely visible, relaxed standing action-ready pose, three-quarter front view, solid white studio background, even neutral lighting, no text, no logo, no flag, no platform, no other character, volumetric sculpted form. Use reference only for colors where correct; the named character identity takes priority. Keep accessories close to the body and separated readable silhouette. ",
+      "referenceSha256": "d42b5b681b1549912a5bbd5502bbebaffb441c807c9c7228357df5b3c3c16f7b",
+      "taskId": "01a13363-b5bb-7086-8917-f52971ec7dda",
+      "credits": 15,
+      "referenceImage": "/assets/references/kaido/knight.png",
+      "rawSha256": "280c4884d42fe067e4ff61517c3d2d291c380d9d31b17faa607cdb115a5af3cb",
+      "sha256": "220f552db9f21f8befb509e3dd8455c1bae851bc3535d9703ec80378a564ec16",
+      "bytes": 416404,
+      "triangles": 10524,
+      "textures": [
+        {
+          "name": "Image_0",
+          "width": 512,
+          "height": 512
+        }
+      ]
+    },
+    {
+      "id": "kaido/pawn",
+      "crew": "kaido",
+      "role": "pawn",
+      "name": "Crew",
+      "path": "/assets/models/kaido/pawn.glb",
+      "sourceImage": "/assets/crews/kaido/pawn.png",
+      "provider": "meshy",
+      "status": "ready",
+      "review": {
+        "status": "approved",
+        "views": [
+          "front",
+          "side",
+          "back",
+          "board"
+        ],
+        "sheet": "tools/assets/models4.jpg",
+        "reviewer": "asset agent visual inspection",
+        "observations": "Textured recognizable volumetric character viewed front/side/back/isolated three-quarter. Actual board QA is downstream."
+      },
+      "referenceTaskId": "jn7nya659srmr0d16dhazyrkz4",
+      "referencePrompt": "A single full-body recognizable Crew from One Piece, canonical anime character costume and distinctive face, high-quality stylized 3D game miniature. Full head, all limbs and shoes entirely visible, relaxed standing action-ready pose, three-quarter front view, solid white studio background, even neutral lighting, no text, no logo, no flag, no platform, no other character, volumetric sculpted form. Use reference only for colors where correct; the named character identity takes priority. Keep accessories close to the body and separated readable silhouette. A generic adult male member of the kaido pirate crew, not its captain. ",
+      "referenceSha256": "63e9dbde37bfe3f31f1819557622184a6a9a1d551e918500fa90208c6bae03c6",
+      "taskId": "01a13363-bf1e-71f3-aabc-c310ff63aab4",
+      "credits": 15,
+      "referenceImage": "/assets/references/kaido/pawn.png",
+      "rawSha256": "d288bc0a9b5fdc29fdb8cb2ec8e2c5b50dd7638faf9d4a5b29178399589e312c",
+      "sha256": "24bec384afaf9159bfcf1e53547c8fa93a7ddfddd19e39a5b61256186f2b031e",
+      "bytes": 414344,
+      "triangles": 10730,
+      "textures": [
+        {
+          "name": "Image_0",
+          "width": 512,
+          "height": 512
+        }
+      ]
+    },
+    {
+      "id": "doflamingo/king",
+      "crew": "doflamingo",
+      "role": "king",
+      "name": "Doflamingo",
+      "path": "/assets/models/doflamingo/king.glb",
+      "sourceImage": "/assets/crews/doflamingo/king.png",
+      "provider": "meshy",
+      "status": "ready",
+      "review": {
+        "status": "approved",
+        "views": [
+          "front",
+          "side",
+          "back",
+          "board"
+        ],
+        "sheet": "tools/assets/models4.jpg",
+        "reviewer": "asset agent visual inspection",
+        "observations": "Textured recognizable volumetric character viewed front/side/back/isolated three-quarter. Actual board QA is downstream."
+      },
+      "referenceTaskId": "w6dk686855rmw0d16dhbavfj70",
+      "referencePrompt": "A single full-body recognizable Doflamingo from One Piece, canonical anime character costume and distinctive face, high-quality stylized 3D game miniature. Full head, all limbs and shoes entirely visible, relaxed standing action-ready pose, three-quarter front view, solid white studio background, even neutral lighting, no text, no logo, no flag, no platform, no other character, volumetric sculpted form. Use reference only for colors where correct; the named character identity takes priority. Keep accessories close to the body and separated readable silhouette. ",
+      "referenceSha256": "6655f6573d02c01dac153f2b5a0544835103d361d91164e96b9566a2aa28db10",
+      "taskId": "01a13363-c782-760a-9340-641860cde0c5",
+      "credits": 15,
+      "referenceImage": "/assets/references/doflamingo/king.png",
+      "rawSha256": "45674c127d98f5dd34224108c78562cbfefdde0248464a60c773075e2a01ceee",
+      "sha256": "31490c03f647a663fb95d7f6e30dfa4b038d8b3de303e183d8ebd4ce08c659c6",
+      "bytes": 432244,
+      "triangles": 9903,
+      "textures": [
+        {
+          "name": "Image_0",
+          "width": 512,
+          "height": 512
+        }
+      ]
+    },
+    {
+      "id": "doflamingo/queen",
+      "crew": "doflamingo",
+      "role": "queen",
+      "name": "Vergo",
+      "path": "/assets/models/doflamingo/queen.glb",
+      "sourceImage": "/assets/crews/doflamingo/queen.png",
+      "provider": "meshy",
+      "status": "ready",
+      "review": {
+        "status": "approved",
+        "views": [
+          "front",
+          "side",
+          "back",
+          "board"
+        ],
+        "sheet": "tools/assets/models4.jpg",
+        "reviewer": "asset agent visual inspection",
+        "observations": "Textured recognizable volumetric character viewed front/side/back/isolated three-quarter. Actual board QA is downstream."
+      },
+      "referenceTaskId": "yew0kmp9r9rmw0d16dha2ty13g",
+      "referencePrompt": "A single full-body recognizable Vergo from One Piece, canonical anime character costume and distinctive face, high-quality stylized 3D game miniature. Full head, all limbs and shoes entirely visible, relaxed standing action-ready pose, three-quarter front view, solid white studio background, even neutral lighting, no text, no logo, no flag, no platform, no other character, volumetric sculpted form. Use reference only for colors where correct; the named character identity takes priority. Keep accessories close to the body and separated readable silhouette. ",
+      "referenceSha256": "c9f075a0cb0adef38bc5db134664263bc0142862bcac51f8108da041176856e8",
+      "taskId": "01a13363-cfbd-7358-893c-e0990d7ae315",
+      "credits": 15,
+      "referenceImage": "/assets/references/doflamingo/queen.png",
+      "rawSha256": "7ba76d1032a5aebf5113508b118129ed8a9ca0f468f682bb8a10131c0910aeb6",
+      "sha256": "44a5f95984116812c837cff62fcba73cbd7a69a61c07ed5d3f5c3c226b815980",
+      "bytes": 407848,
+      "triangles": 10511,
+      "textures": [
+        {
+          "name": "Image_0",
+          "width": 512,
+          "height": 512
+        }
+      ]
+    },
+    {
+      "id": "doflamingo/rook",
+      "crew": "doflamingo",
+      "role": "rook",
+      "name": "Trebol",
+      "path": "/assets/models/doflamingo/rook.glb",
+      "sourceImage": "/assets/crews/doflamingo/rook.png",
+      "provider": "meshy",
+      "status": "ready",
+      "review": {
+        "status": "approved",
+        "views": [
+          "front",
+          "side",
+          "back",
+          "board"
+        ],
+        "sheet": "tools/assets/models4.jpg",
+        "reviewer": "asset agent visual inspection",
+        "observations": "Textured recognizable volumetric character viewed front/side/back/isolated three-quarter. Actual board QA is downstream."
+      },
+      "referenceTaskId": "m3zcpfebgdrmr0d16dh87dahq0",
+      "referencePrompt": "A single full-body recognizable Trebol from One Piece, canonical anime character costume and distinctive face, high-quality stylized 3D game miniature. Full head, all limbs and shoes entirely visible, relaxed standing action-ready pose, three-quarter front view, solid white studio background, even neutral lighting, no text, no logo, no flag, no platform, no other character, volumetric sculpted form. Use reference only for colors where correct; the named character identity takes priority. Keep accessories close to the body and separated readable silhouette. ",
+      "referenceSha256": "1a552e94b4c98934bef99e3b13c85d3dd0ac6f9a4af9cc3c50e92403c075ce48",
+      "taskId": "01a13363-d518-71d5-8b42-f2ef6617674e",
+      "credits": 15,
+      "referenceImage": "/assets/references/doflamingo/rook.png",
+      "rawSha256": "1b62e5c117d30e69f8fe1acf454ead01c27148b9e7c500fc312bc1db2de6ac8f",
+      "sha256": "6d46cf8d2e3e7bca5f3af9b68c5a515c7671f698ce2ae8c7e0ebdbd4f397acc4",
+      "bytes": 422556,
+      "triangles": 10765,
+      "textures": [
+        {
+          "name": "Image_0",
+          "width": 512,
+          "height": 512
+        }
+      ]
+    },
+    {
+      "id": "doflamingo/bishop",
+      "crew": "doflamingo",
+      "role": "bishop",
+      "name": "Diamante",
+      "path": "/assets/models/doflamingo/bishop.glb",
+      "sourceImage": "/assets/crews/doflamingo/bishop.png",
+      "provider": "meshy",
+      "status": "ready",
+      "review": {
+        "status": "approved",
+        "views": [
+          "front",
+          "side",
+          "back",
+          "board"
+        ],
+        "sheet": "tools/assets/models4.jpg",
+        "reviewer": "asset agent visual inspection",
+        "observations": "Textured recognizable volumetric character viewed front/side/back/isolated three-quarter. Actual board QA is downstream."
+      },
+      "referenceTaskId": "m45ty4ydb1rmy0d16dha4hxqyr",
+      "referencePrompt": "A single full-body recognizable Diamante from One Piece, canonical anime character costume and distinctive face, high-quality stylized 3D game miniature. Full head, all limbs and shoes entirely visible, relaxed standing action-ready pose, three-quarter front view, solid white studio background, even neutral lighting, no text, no logo, no flag, no platform, no other character, volumetric sculpted form. Use reference only for colors where correct; the named character identity takes priority. Keep accessories close to the body and separated readable silhouette. ",
+      "referenceSha256": "c528caa3e779c9048d47aa0dd87aa5c09c0f4e77b6425d827299fa40c0044d3c",
+      "taskId": "01a13363-dae5-76ff-840f-843b43cd0f2c",
+      "credits": 15,
+      "referenceImage": "/assets/references/doflamingo/bishop.png",
+      "rawSha256": "929c47a498436c4d7d21c9aab6781063f89a1cfefbbd64d8dce94146850b7dfc",
+      "sha256": "650e41df9da5d002a37eb8f708e2dc964e320c0a2ed345a375c5bf5adf11477b",
+      "bytes": 426992,
+      "triangles": 10761,
+      "textures": [
+        {
+          "name": "Image_0",
+          "width": 512,
+          "height": 512
+        }
+      ]
+    },
+    {
+      "id": "doflamingo/knight",
+      "crew": "doflamingo",
+      "role": "knight",
+      "name": "Pica",
+      "path": "/assets/models/doflamingo/knight.glb",
+      "sourceImage": "/assets/crews/doflamingo/knight.png",
+      "provider": "meshy",
+      "status": "ready",
+      "review": {
+        "status": "approved",
+        "views": [
+          "front",
+          "side",
+          "back",
+          "board"
+        ],
+        "sheet": "tools/assets/models4.jpg",
+        "reviewer": "asset agent visual inspection",
+        "observations": "Textured recognizable volumetric character viewed front/side/back/isolated three-quarter. Actual board QA is downstream."
+      },
+      "referenceTaskId": "t0x2f6yf9xrmt0d16dh8c7xgx8",
+      "referencePrompt": "A single full-body recognizable Pica from One Piece, canonical anime character costume and distinctive face, high-quality stylized 3D game miniature. Full head, all limbs and shoes entirely visible, relaxed standing action-ready pose, three-quarter front view, solid white studio background, even neutral lighting, no text, no logo, no flag, no platform, no other character, volumetric sculpted form. Use reference only for colors where correct; the named character identity takes priority. Keep accessories close to the body and separated readable silhouette. ",
+      "referenceSha256": "829c538ee90ec6d8072babdcb95570a26bf4abbe6357e2d27e8a410d7c2ce737",
+      "taskId": "01a13363-e478-7644-891f-f72bf7caa6bd",
+      "credits": 15,
+      "referenceImage": "/assets/references/doflamingo/knight.png",
+      "rawSha256": "e5f5ff93de5b8a5c4eb61813e7b9f0daa63d293822eb0f96c74b8ed79bef5128",
+      "sha256": "996fd233b5af08acb2cb80563a0aa2988c55605cf0895358735bfc5dfe899dcc",
+      "bytes": 377996,
+      "triangles": 10550,
+      "textures": [
+        {
+          "name": "Image_0",
+          "width": 512,
+          "height": 512
+        }
+      ]
+    },
+    {
+      "id": "doflamingo/pawn",
+      "crew": "doflamingo",
+      "role": "pawn",
+      "name": "Crew",
+      "path": "/assets/models/doflamingo/pawn.glb",
+      "sourceImage": "/assets/crews/doflamingo/pawn.png",
+      "provider": "meshy",
+      "status": "ready",
+      "review": {
+        "status": "approved",
+        "views": [
+          "front",
+          "side",
+          "back",
+          "board"
+        ],
+        "sheet": "tools/assets/models5.jpg",
+        "reviewer": "asset agent visual inspection",
+        "observations": "Textured recognizable volumetric character viewed front/side/back/isolated three-quarter. Actual board QA is downstream."
+      },
+      "referenceTaskId": "rrs7scyt85rmy0d16dj9jnqdyg",
+      "referencePrompt": "A single full-body recognizable Crew from One Piece, canonical anime character costume and distinctive face, high-quality stylized 3D game miniature. Full head, all limbs and shoes entirely visible, relaxed standing action-ready pose, three-quarter front view, solid white studio background, even neutral lighting, no text, no logo, no flag, no platform, no other character, volumetric sculpted form. Use reference only for colors where correct; the named character identity takes priority. Keep accessories close to the body and separated readable silhouette. A generic adult male member of the doflamingo pirate crew, not its captain. ",
+      "referenceSha256": "c8fd0599e8fd00e64fe14827b1db8b1d7b43c4bfa242f750a19f757caa6d9e96",
+      "taskId": "01a13366-83a9-7114-9c3f-c38cf1fc4076",
+      "credits": 15,
+      "referenceImage": "/assets/references/doflamingo/pawn.png",
+      "rawSha256": "9e32de6fb89a87d113d7aa8e336fc1d5c7894423178dda7a5d41a8f974a321e2",
+      "sha256": "8e598c4fe7dc752c42b0b87061a6b733ac9b3e6a2677cdd7fb5623234a7bbfe7",
+      "bytes": 463492,
+      "triangles": 10677,
+      "textures": [
+        {
+          "name": "Image_0",
+          "width": 512,
+          "height": 512
+        }
+      ]
+    },
+    {
+      "id": "heart/king",
+      "crew": "heart",
+      "role": "king",
+      "name": "Law",
+      "path": "/assets/models/heart/king.glb",
+      "sourceImage": "/assets/crews/heart/king.png",
+      "provider": "meshy",
+      "status": "ready",
+      "review": {
+        "status": "approved",
+        "views": [
+          "front",
+          "side",
+          "back",
+          "board"
+        ],
+        "sheet": "tools/assets/models5.jpg",
+        "reviewer": "asset agent visual inspection",
+        "observations": "Textured recognizable volumetric character viewed front/side/back/isolated three-quarter. Actual board QA is downstream."
+      },
+      "referenceTaskId": "mjb424f52hrmw0d16dj802fsqw",
+      "referencePrompt": "A single full-body recognizable Law from One Piece, canonical anime character costume and distinctive face, high-quality stylized 3D game miniature. Full head, all limbs and shoes entirely visible, relaxed standing action-ready pose, three-quarter front view, solid white studio background, even neutral lighting, no text, no logo, no flag, no platform, no other character, volumetric sculpted form. Use reference only for colors where correct; the named character identity takes priority. Keep accessories close to the body and separated readable silhouette. ",
+      "referenceSha256": "5c44c4c7b41bdfa3fabc83522a0894d86963ef398c17c97fcd348e4a47d82d08",
+      "taskId": "01a13366-896d-715e-af68-05b4224550b2",
+      "credits": 15,
+      "referenceImage": "/assets/references/heart/king.png",
+      "rawSha256": "ea80bcf559874f3a6c212d25d3022831c3a048e7a241d19a6f026f1debf40561",
+      "sha256": "9d740f3be0567c20fca2d8b02425e167cb8b8cde6f6e4c678cbb7f0663a7317d",
+      "bytes": 403624,
+      "triangles": 10592,
+      "textures": [
+        {
+          "name": "Image_0",
+          "width": 512,
+          "height": 512
+        }
+      ]
+    },
+    {
+      "id": "heart/queen",
+      "crew": "heart",
+      "role": "queen",
+      "name": "Bepo",
+      "path": "/assets/models/heart/queen.glb",
+      "sourceImage": "/assets/crews/heart/queen.png",
+      "provider": "meshy",
+      "status": "ready",
+      "review": {
+        "status": "approved",
+        "views": [
+          "front",
+          "side",
+          "back",
+          "board"
+        ],
+        "sheet": "tools/assets/models5.jpg",
+        "reviewer": "asset agent visual inspection",
+        "observations": "Textured recognizable volumetric character viewed front/side/back/isolated three-quarter. Actual board QA is downstream."
+      },
+      "referenceTaskId": "1nrw597cdxrmy0d16dj826g3gg",
+      "referencePrompt": "A single full-body recognizable Bepo from One Piece, canonical anime character costume and distinctive face, high-quality stylized 3D game miniature. Full head, all limbs and shoes entirely visible, relaxed standing action-ready pose, three-quarter front view, solid white studio background, even neutral lighting, no text, no logo, no flag, no platform, no other character, volumetric sculpted form. Use reference only for colors where correct; the named character identity takes priority. Keep accessories close to the body and separated readable silhouette. A white polar bear mink wearing an orange Heart Pirates jumpsuit; absolutely not a submarine.",
+      "referenceSha256": "490452c64afb58c4623525b4a24b02c8793841313d347298f1dce035117aff1c",
+      "taskId": "01a13366-980f-7286-bb39-edcf13da3e82",
+      "credits": 15,
+      "referenceImage": "/assets/references/heart/queen.png",
+      "rawSha256": "1a2d8bf4375c608bd123f6b15b9243881c5b19e02717e6a32722451a4f961e67",
+      "sha256": "55aaf1fd7d043368462062a79fe512cb343e01639a75a606b9382e20bcfeac7f",
+      "bytes": 391252,
+      "triangles": 10728,
+      "textures": [
+        {
+          "name": "Image_0",
+          "width": 512,
+          "height": 512
+        }
+      ]
+    },
+    {
+      "id": "heart/rook",
+      "crew": "heart",
+      "role": "rook",
+      "name": "Jean Bart",
+      "path": "/assets/models/heart/rook.glb",
+      "sourceImage": "/assets/crews/heart/rook.png",
+      "provider": "meshy",
+      "status": "ready",
+      "review": {
+        "status": "approved",
+        "views": [
+          "front",
+          "side",
+          "back",
+          "board"
+        ],
+        "sheet": "tools/assets/models5.jpg",
+        "reviewer": "asset agent visual inspection",
+        "observations": "Textured recognizable volumetric character viewed front/side/back/isolated three-quarter. Actual board QA is downstream."
+      },
+      "referenceTaskId": "q29504fhb9rmt0d16djae0fj9r",
+      "referencePrompt": "A single full-body recognizable Jean Bart from One Piece, canonical anime character costume and distinctive face, high-quality stylized 3D game miniature. Full head, all limbs and shoes entirely visible, relaxed standing action-ready pose, three-quarter front view, solid white studio background, even neutral lighting, no text, no logo, no flag, no platform, no other character, volumetric sculpted form. Use reference only for colors where correct; the named character identity takes priority. Keep accessories close to the body and separated readable silhouette. ",
+      "referenceSha256": "09cd02c44b998e2dfd29f370978ac1b0734b96a91ac9bebe73a3af0d33ae6c29",
+      "taskId": "01a13366-ae71-751d-b0bb-b59c112442d5",
+      "credits": 15,
+      "referenceImage": "/assets/references/heart/rook.png",
+      "rawSha256": "9f4d29eff4f6b882884e7f354f19abae79724e420b77e917420e51f280c446c7",
+      "sha256": "675091bda5984e9cdadf68b9e0c4d42c13ff6c04c1414f0918c6174818e73d45",
+      "bytes": 360968,
+      "triangles": 10366,
+      "textures": [
+        {
+          "name": "Image_0",
+          "width": 512,
+          "height": 512
+        }
+      ]
+    },
+    {
+      "id": "heart/bishop",
+      "crew": "heart",
+      "role": "bishop",
+      "name": "Shachi",
+      "path": "/assets/models/heart/bishop.glb",
+      "sourceImage": "/assets/crews/heart/bishop.png",
+      "provider": "meshy",
+      "status": "ready",
+      "review": {
+        "status": "approved",
+        "views": [
+          "front",
+          "side",
+          "back",
+          "board"
+        ],
+        "sheet": "tools/assets/models5.jpg",
+        "reviewer": "asset agent visual inspection",
+        "observations": "Textured recognizable volumetric character viewed front/side/back/isolated three-quarter. Actual board QA is downstream."
+      },
+      "referenceTaskId": "k3hr9pzncnrmt0d16djbagyvx0",
+      "referencePrompt": "A single full-body recognizable Shachi from One Piece, canonical anime character costume and distinctive face, high-quality stylized 3D game miniature. Full head, all limbs and shoes entirely visible, relaxed standing action-ready pose, three-quarter front view, solid white studio background, even neutral lighting, no text, no logo, no flag, no platform, no other character, volumetric sculpted form. Use reference only for colors where correct; the named character identity takes priority. Keep accessories close to the body and separated readable silhouette. One single man, orange hair, sunglasses and white Heart Pirates jumpsuit.",
+      "referenceSha256": "fb8297e0e667347503cd5b01fe6304bd24c170ecd6ce5c7ff4ec72c074287e6c",
+      "taskId": "01a13366-b964-774c-a677-6a7571fece37",
+      "credits": 15,
+      "referenceImage": "/assets/references/heart/bishop.png",
+      "rawSha256": "8202032a1502978175cc2c7ed23143fad79cfc77485994a2c467777c7597cd69",
+      "sha256": "a06eabfeeb857754cd9575a1d60a52a82c47d99f63eb325651c492e730f5404c",
+      "bytes": 398200,
+      "triangles": 9898,
+      "textures": [
+        {
+          "name": "Image_0",
+          "width": 512,
+          "height": 512
+        }
+      ]
+    },
+    {
+      "id": "heart/knight",
+      "crew": "heart",
+      "role": "knight",
+      "name": "Penguin",
+      "path": "/assets/models/heart/knight.glb",
+      "sourceImage": "/assets/crews/heart/knight.png",
+      "provider": "meshy",
+      "status": "ready",
+      "review": {
+        "status": "approved",
+        "views": [
+          "front",
+          "side",
+          "back",
+          "board"
+        ],
+        "sheet": "tools/assets/models5.jpg",
+        "reviewer": "asset agent visual inspection",
+        "observations": "Textured recognizable volumetric character viewed front/side/back/isolated three-quarter. Actual board QA is downstream."
+      },
+      "referenceTaskId": "yrwtvdqtr5rmr0d16djb77ygdr",
+      "referencePrompt": "A single full-body recognizable Penguin from One Piece, canonical anime character costume and distinctive face, high-quality stylized 3D game miniature. Full head, all limbs and shoes entirely visible, relaxed standing action-ready pose, three-quarter front view, solid white studio background, even neutral lighting, no text, no logo, no flag, no platform, no other character, volumetric sculpted form. Use reference only for colors where correct; the named character identity takes priority. Keep accessories close to the body and separated readable silhouette. One single man wearing his penguin-shaped cap and white Heart Pirates jumpsuit.",
+      "referenceSha256": "3f75c2c589edba1525f81813b6879d58641f6917c8b206b2eaa79a4685b273dc",
+      "taskId": "01a13366-cad2-703e-b733-474e615576ab",
+      "credits": 15,
+      "referenceImage": "/assets/references/heart/knight.png",
+      "rawSha256": "ed50e9420ee35c6ab3f487dbb1e5ffc81b00ee60370572e3379f7eda8df199f6",
+      "sha256": "399d4652ac734ce01b7dead52cc6a556494a929c444c0cc201a6017f273f344f",
+      "bytes": 381184,
+      "triangles": 10793,
+      "textures": [
+        {
+          "name": "Image_0",
+          "width": 512,
+          "height": 512
+        }
+      ]
+    },
+    {
+      "id": "heart/pawn",
+      "crew": "heart",
+      "role": "pawn",
+      "name": "Crew",
+      "path": "/assets/models/heart/pawn.glb",
+      "sourceImage": "/assets/crews/heart/pawn.png",
+      "provider": "meshy",
+      "status": "ready",
+      "review": {
+        "status": "approved",
+        "views": [
+          "front",
+          "side",
+          "back",
+          "board"
+        ],
+        "sheet": "tools/assets/models5.jpg",
+        "reviewer": "asset agent visual inspection",
+        "observations": "Textured recognizable volumetric character viewed front/side/back/isolated three-quarter. Actual board QA is downstream."
+      },
+      "referenceTaskId": "4r020n8391rmt0d16djtckjce0",
+      "referencePrompt": "A single full-body recognizable Crew from One Piece, canonical anime character costume and distinctive face, high-quality stylized 3D game miniature. Full head, all limbs and shoes entirely visible, relaxed standing action-ready pose, three-quarter front view, solid white studio background, even neutral lighting, no text, no logo, no flag, no platform, no other character, volumetric sculpted form. Use reference only for colors where correct; the named character identity takes priority. Keep accessories close to the body and separated readable silhouette. A generic adult male member of the heart pirate crew, not its captain. ",
+      "referenceSha256": "3b93a14cf39f2993bfb04c11893477f829902df1decb7a2ec95b4364c4e7f197",
+      "taskId": "01a13366-dd3e-7720-af98-c79dddc95140",
+      "credits": 15,
+      "referenceImage": "/assets/references/heart/pawn.png",
+      "rawSha256": "19522e2cb8cb1c9aaf0e10631912e402b19e945dbf61b1453102511a2991a6dd",
+      "sha256": "e816790a6ec17ca6711ab08ca53219f01c982e2f313ac9b9abe824adb0d46009",
+      "bytes": 360396,
+      "triangles": 10084,
+      "textures": [
+        {
+          "name": "Image_0",
+          "width": 512,
+          "height": 512
+        }
+      ]
+    },
+    {
+      "id": "kid/king",
+      "crew": "kid",
+      "role": "king",
+      "name": "Kid",
+      "path": "/assets/models/kid/king.glb",
+      "sourceImage": "/assets/crews/kid/king.png",
+      "provider": "meshy",
+      "status": "ready",
+      "review": {
+        "status": "approved",
+        "views": [
+          "front",
+          "side",
+          "back",
+          "board"
+        ],
+        "sheet": "tools/assets/models5.jpg",
+        "reviewer": "asset agent visual inspection",
+        "observations": "Textured recognizable volumetric character viewed front/side/back/isolated three-quarter. Actual board QA is downstream."
+      },
+      "referenceTaskId": "7ky70908ysrmw0d16djsxh9mg8",
+      "referencePrompt": "A single full-body recognizable Kid from One Piece, canonical anime character costume and distinctive face, high-quality stylized 3D game miniature. Full head, all limbs and shoes entirely visible, relaxed standing action-ready pose, three-quarter front view, solid white studio background, even neutral lighting, no text, no logo, no flag, no platform, no other character, volumetric sculpted form. Use reference only for colors where correct; the named character identity takes priority. Keep accessories close to the body and separated readable silhouette. ",
+      "referenceSha256": "78fc01d82386ac3497a02129520c226dc5e823bd8586ed7227d96df6c3bf815f",
+      "taskId": "01a13366-f263-741a-8718-af87f40fe307",
+      "credits": 15,
+      "referenceImage": "/assets/references/kid/king.png",
+      "rawSha256": "fb7a56e11255cdd2f752657b5493ae2a3d8057e4c4bdd7945d49a243ea77dec7",
+      "sha256": "f8a1f702fba2a1c224e24054cf44806f86ea9532328f5044d49f196b354d3a0e",
+      "bytes": 419608,
+      "triangles": 10701,
+      "textures": [
+        {
+          "name": "Image_0",
+          "width": 512,
+          "height": 512
+        }
+      ]
+    },
+    {
+      "id": "kid/queen",
+      "crew": "kid",
+      "role": "queen",
+      "name": "Killer",
+      "path": "/assets/models/kid/queen.glb",
+      "sourceImage": "/assets/crews/kid/queen.png",
+      "provider": "meshy",
+      "status": "ready",
+      "review": {
+        "status": "approved",
+        "views": [
+          "front",
+          "side",
+          "back",
+          "board"
+        ],
+        "sheet": "tools/assets/models6.jpg",
+        "reviewer": "asset agent visual inspection",
+        "observations": "Textured recognizable volumetric character viewed front/side/back/isolated three-quarter. Actual board QA is downstream."
+      },
+      "referenceTaskId": "1d0tby6345rmr0d16dmads8ysc",
+      "referencePrompt": "A single full-body recognizable Killer from One Piece, canonical anime character costume and distinctive face, high-quality stylized 3D game miniature. Full head, all limbs and shoes entirely visible, relaxed standing action-ready pose, three-quarter front view, solid white studio background, even neutral lighting, no text, no logo, no flag, no platform, no other character, volumetric sculpted form. Use reference only for colors where correct; the named character identity takes priority. Keep accessories close to the body and separated readable silhouette. ",
+      "referenceSha256": "f60734918c4f75201ba8ec43583477977684b381b9ca0894cdb55014f97a0384",
+      "taskId": "01a1336a-6ea8-7295-9779-dc49b487baa4",
+      "credits": 15,
+      "referenceImage": "/assets/references/kid/queen.png",
+      "rawSha256": "a81d571ff4782f3bfac8a7265ebdc911025a8a84e83a4d3075c09473976973ed",
+      "sha256": "cb0ae104e297ea13da4a982b048b34c45fdebfe8d795bb6b2ec0669e66015539",
+      "bytes": 390900,
+      "triangles": 10258,
+      "textures": [
+        {
+          "name": "Image_0",
+          "width": 512,
+          "height": 512
+        }
+      ]
+    },
+    {
+      "id": "kid/rook",
+      "crew": "kid",
+      "role": "rook",
+      "name": "Heat",
+      "path": "/assets/models/kid/rook.glb",
+      "sourceImage": "/assets/crews/kid/rook.png",
+      "provider": "meshy",
+      "status": "ready",
+      "review": {
+        "status": "approved",
+        "views": [
+          "front",
+          "side",
+          "back",
+          "board"
+        ],
+        "sheet": "tools/assets/models6.jpg",
+        "reviewer": "asset agent visual inspection",
+        "observations": "Textured recognizable volumetric character viewed front/side/back/isolated three-quarter. Actual board QA is downstream."
+      },
+      "referenceTaskId": "tnbtmj6fwxrmt0d16dm9rd7404",
+      "referencePrompt": "A single full-body recognizable Heat from One Piece, canonical anime character costume and distinctive face, high-quality stylized 3D game miniature. Full head, all limbs and shoes entirely visible, relaxed standing action-ready pose, three-quarter front view, solid white studio background, even neutral lighting, no text, no logo, no flag, no platform, no other character, volumetric sculpted form. Use reference only for colors where correct; the named character identity takes priority. Keep accessories close to the body and separated readable silhouette. ",
+      "referenceSha256": "be87f064e20a5acb518886546d2664426716d93d517927e406afae3ae34a0caf",
+      "taskId": "01a1336a-7568-7306-b347-23d86d339070",
+      "credits": 15,
+      "referenceImage": "/assets/references/kid/rook.png",
+      "rawSha256": "27ae6c3dc71f03ecae9d023d93317bf02ac9947376c8c02a7725938c8cf47d3b",
+      "sha256": "373f0856b1c4fa99081d662048e5bf6ec2ca3fdec3774326ee011209fe67555a",
+      "bytes": 409772,
+      "triangles": 10269,
+      "textures": [
+        {
+          "name": "Image_0",
+          "width": 512,
+          "height": 512
+        }
+      ]
+    },
+    {
+      "id": "kid/bishop",
+      "crew": "kid",
+      "role": "bishop",
+      "name": "Wire",
+      "path": "/assets/models/kid/bishop.glb",
+      "sourceImage": "/assets/crews/kid/bishop.png",
+      "provider": "meshy",
+      "status": "ready",
+      "review": {
+        "status": "approved",
+        "views": [
+          "front",
+          "side",
+          "back",
+          "board"
+        ],
+        "sheet": "tools/assets/models6.jpg",
+        "reviewer": "asset agent visual inspection",
+        "observations": "Textured recognizable volumetric character viewed front/side/back/isolated three-quarter. Actual board QA is downstream."
+      },
+      "referenceTaskId": "4g9bfeey6xrmt0d16dmb69ad00",
+      "referencePrompt": "A single full-body recognizable Wire from One Piece, canonical anime character costume and distinctive face, high-quality stylized 3D game miniature. Full head, all limbs and shoes entirely visible, relaxed standing action-ready pose, three-quarter front view, solid white studio background, even neutral lighting, no text, no logo, no flag, no platform, no other character, volumetric sculpted form. Use reference only for colors where correct; the named character identity takes priority. Keep accessories close to the body and separated readable silhouette. ",
+      "referenceSha256": "d4951b6774282d271f1acd4382933a478af60a78d03803f02d98007b333e7d99",
+      "taskId": "01a1336a-7b61-7379-a1a1-55a741ffc76f",
+      "credits": 15,
+      "referenceImage": "/assets/references/kid/bishop.png",
+      "rawSha256": "dceebbadb1a9d521117cbb8a54e094eeed27851629471c0c30916c96016310dd",
+      "sha256": "977234f77ba8cc0e2a642c73bd9ab95e440f3a3d9cf7b5abfe7efc991d77c11c",
+      "bytes": 401344,
+      "triangles": 10460,
+      "textures": [
+        {
+          "name": "Image_0",
+          "width": 512,
+          "height": 512
+        }
+      ]
+    },
+    {
+      "id": "kid/knight",
+      "crew": "kid",
+      "role": "knight",
+      "name": "Shark",
+      "path": "/assets/models/kid/knight.glb",
+      "sourceImage": "/assets/crews/kid/knight.png",
+      "provider": "meshy",
+      "status": "ready",
+      "review": {
+        "status": "approved",
+        "views": [
+          "front",
+          "side",
+          "back",
+          "board"
+        ],
+        "sheet": "tools/assets/models6.jpg",
+        "reviewer": "asset agent visual inspection",
+        "observations": "Textured recognizable volumetric character viewed front/side/back/isolated three-quarter. Actual board QA is downstream."
+      },
+      "referenceTaskId": "z0ypzkq851rmt0d16dm8avm5h8",
+      "referencePrompt": "A single full-body recognizable Shark from One Piece, canonical anime character costume and distinctive face, high-quality stylized 3D game miniature. Full head, all limbs and shoes entirely visible, relaxed standing action-ready pose, three-quarter front view, solid white studio background, even neutral lighting, no text, no logo, no flag, no platform, no other character, volumetric sculpted form. Use reference only for colors where correct; the named character identity takes priority. Keep accessories close to the body and separated readable silhouette. A single rugged adult male Kid Pirates crew member, pirate clothing, not an actual fish.",
+      "referenceSha256": "da952b7356f076d40235172c2eab06f656e993d6203ca0b601e2c15cd22bd86c",
+      "taskId": "01a1336a-827f-71d6-9d49-76c3e7d9868f",
+      "credits": 15,
+      "referenceImage": "/assets/references/kid/knight.png",
+      "rawSha256": "76b891834f747fcff10826b0bb27c5b3c4ca07adce4dd57302abc2e5b9d6b4c8",
+      "sha256": "44fbcfc23e4cf9599d8db01a6294ae7a6947a30cf8bd2fd7ee0c99c72b8bb4b7",
+      "bytes": 381568,
+      "triangles": 10683,
+      "textures": [
+        {
+          "name": "Image_0",
+          "width": 512,
+          "height": 512
+        }
+      ]
+    },
+    {
+      "id": "kid/pawn",
+      "crew": "kid",
+      "role": "pawn",
+      "name": "Crew",
+      "path": "/assets/models/kid/pawn.glb",
+      "sourceImage": "/assets/crews/kid/pawn.png",
+      "provider": "meshy",
+      "status": "ready",
+      "review": {
+        "status": "approved",
+        "views": [
+          "front",
+          "side",
+          "back",
+          "board"
+        ],
+        "sheet": "tools/assets/models6.jpg",
+        "reviewer": "asset agent visual inspection",
+        "observations": "Textured recognizable volumetric character viewed front/side/back/isolated three-quarter. Actual board QA is downstream."
+      },
+      "referenceTaskId": "b03zjefd7srmt0d16dmawkmbyg",
+      "referencePrompt": "A single full-body recognizable Crew from One Piece, canonical anime character costume and distinctive face, high-quality stylized 3D game miniature. Full head, all limbs and shoes entirely visible, relaxed standing action-ready pose, three-quarter front view, solid white studio background, even neutral lighting, no text, no logo, no flag, no platform, no other character, volumetric sculpted form. Use reference only for colors where correct; the named character identity takes priority. Keep accessories close to the body and separated readable silhouette. A generic adult male member of the kid pirate crew, not its captain. ",
+      "referenceSha256": "2cf8e97b4f837f4760f9f13ba16e8b6cf3f79e2cfdb6463215cd49fda6a0e120",
+      "taskId": "01a1336a-885b-7710-8cb6-79a5e6cf848d",
+      "credits": 15,
+      "referenceImage": "/assets/references/kid/pawn.png",
+      "rawSha256": "39cabedb577b008de34a00b46369c1c60b01cfc60f965c17fd38fea70dacae1c",
+      "sha256": "c53a5b86c74b42b2c0273cb26fa0aedb5c4a41cdbc872810fc1e5fab820bd7ac",
+      "bytes": 408192,
+      "triangles": 10324,
+      "textures": [
+        {
+          "name": "Image_0",
+          "width": 512,
+          "height": 512
+        }
+      ]
+    },
+    {
+      "id": "blackbeard/king",
+      "crew": "blackbeard",
+      "role": "king",
+      "name": "Blackbeard",
+      "path": "/assets/models/blackbeard/king.glb",
+      "sourceImage": "/assets/crews/blackbeard/king.png",
+      "provider": "meshy",
+      "status": "ready",
+      "review": {
+        "status": "approved",
+        "views": [
+          "front",
+          "side",
+          "back",
+          "board"
+        ],
+        "sheet": "tools/assets/models6.jpg",
+        "reviewer": "asset agent visual inspection",
+        "observations": "Textured recognizable volumetric character viewed front/side/back/isolated three-quarter. Actual board QA is downstream."
+      },
+      "referenceTaskId": "2fggy8fkgxrmt0d16dma6nesbr",
+      "referencePrompt": "A single full-body recognizable Blackbeard from One Piece, canonical anime character costume and distinctive face, high-quality stylized 3D game miniature. Full head, all limbs and shoes entirely visible, relaxed standing action-ready pose, three-quarter front view, solid white studio background, even neutral lighting, no text, no logo, no flag, no platform, no other character, volumetric sculpted form. Use reference only for colors where correct; the named character identity takes priority. Keep accessories close to the body and separated readable silhouette. ",
+      "referenceSha256": "6dd3d19111cf48850d8c0d5dfd4e3fe9a0cae15a221db70b083f204e4a4db719",
+      "taskId": "01a1336a-8f49-7149-ae04-ec0046248c86",
+      "credits": 15,
+      "referenceImage": "/assets/references/blackbeard/king.png",
+      "rawSha256": "4b6eebfbbf3b60f9839aeafb3513e4da2450d1010650dbe04ebcca191b6897a1",
+      "sha256": "584ae0a4ad91d5d538a7570524533afd0a318c304972d4eff2fe24128842cbf0",
+      "bytes": 410896,
+      "triangles": 10447,
+      "textures": [
+        {
+          "name": "Image_0",
+          "width": 512,
+          "height": 512
+        }
+      ]
+    },
+    {
+      "id": "blackbeard/queen",
+      "crew": "blackbeard",
+      "role": "queen",
+      "name": "Burgess",
+      "path": "/assets/models/blackbeard/queen.glb",
+      "sourceImage": "/assets/crews/blackbeard/queen.png",
+      "provider": "meshy",
+      "status": "ready",
+      "review": {
+        "status": "approved",
+        "views": [
+          "front",
+          "side",
+          "back",
+          "board"
+        ],
+        "sheet": "tools/assets/models6.jpg",
+        "reviewer": "asset agent visual inspection",
+        "observations": "Textured recognizable volumetric character viewed front/side/back/isolated three-quarter. Actual board QA is downstream."
+      },
+      "referenceTaskId": "nsa678zrksrmt0d16dmb6embbw",
+      "referencePrompt": "A single full-body recognizable Burgess from One Piece, canonical anime character costume and distinctive face, high-quality stylized 3D game miniature. Full head, all limbs and shoes entirely visible, relaxed standing action-ready pose, three-quarter front view, solid white studio background, even neutral lighting, no text, no logo, no flag, no platform, no other character, volumetric sculpted form. Use reference only for colors where correct; the named character identity takes priority. Keep accessories close to the body and separated readable silhouette. ",
+      "referenceSha256": "a8d96c6998b3b2ff74ce70c3f9e8f7081cfcdef06b5d2955906856ac6dbff115",
+      "taskId": "01a1336a-95d4-703e-983b-5222635aae75",
+      "credits": 15,
+      "referenceImage": "/assets/references/blackbeard/queen.png",
+      "rawSha256": "ec1ceaf400ab2ac1c3c5d9dc244b14a76d2d58faef1eb7e489670ec64d1edbcf",
+      "sha256": "5f33b1dc72a057b0a1fd4025fcae18d511cf20588a6270755740e873e4479181",
+      "bytes": 364964,
+      "triangles": 10297,
+      "textures": [
+        {
+          "name": "Image_0",
+          "width": 512,
+          "height": 512
+        }
+      ]
+    },
+    {
+      "id": "blackbeard/rook",
+      "crew": "blackbeard",
+      "role": "rook",
+      "name": "Shiryu",
+      "path": "/assets/models/blackbeard/rook.glb",
+      "sourceImage": "/assets/crews/blackbeard/rook.png",
+      "provider": "meshy",
+      "status": "ready",
+      "review": {
+        "status": "approved",
+        "views": [
+          "front",
+          "side",
+          "back",
+          "board"
+        ],
+        "sheet": "tools/assets/models7a.jpg",
+        "reviewer": "asset agent visual inspection",
+        "observations": "Textured recognizable volumetric character viewed front/side/back/isolated three-quarter. Actual board QA is downstream."
+      },
+      "referenceTaskId": "h4gmt9n381rmr0d16dntfdkkqw",
+      "referencePrompt": "A single full-body recognizable Shiryu from One Piece, canonical anime character costume and distinctive face, high-quality stylized 3D game miniature. Full head, all limbs and shoes entirely visible, relaxed standing action-ready pose, three-quarter front view, solid white studio background, even neutral lighting, no text, no logo, no flag, no platform, no other character, volumetric sculpted form. Use reference only for colors where correct; the named character identity takes priority. Keep accessories close to the body and separated readable silhouette. ",
+      "referenceSha256": "8234ed226781cbfe6ebbfc7af7d3d820c8bb5a4866cc422f8a9dd92112971aed",
+      "taskId": "01a1336d-54b3-7474-8af3-18f52ed62246",
+      "credits": 15,
+      "referenceImage": "/assets/references/blackbeard/rook.png",
+      "rawSha256": "80a199a1b0478055c800c518adf702881d2b081a4a77fc8ebe3aad120d90ec47",
+      "sha256": "70ecb5cd3bc980358cb768fce1ee5ef25ec328070ddd2242bcf5e637ebad247c",
+      "bytes": 394188,
+      "triangles": 10220,
+      "textures": [
+        {
+          "name": "Image_0",
+          "width": 512,
+          "height": 512
+        }
+      ]
+    },
+    {
+      "id": "blackbeard/bishop",
+      "crew": "blackbeard",
+      "role": "bishop",
+      "name": "Van Augur",
+      "path": "/assets/models/blackbeard/bishop.glb",
+      "sourceImage": "/assets/crews/blackbeard/bishop.png",
+      "provider": "meshy",
+      "status": "ready",
+      "review": {
+        "status": "approved",
+        "views": [
+          "front",
+          "side",
+          "back",
+          "board"
+        ],
+        "sheet": "tools/assets/models7a.jpg",
+        "reviewer": "asset agent visual inspection",
+        "observations": "Textured recognizable volumetric character viewed front/side/back/isolated three-quarter. Actual board QA is downstream."
+      },
+      "referenceTaskId": "w0zvv1d92hrmr0d16dnsxrxhbw",
+      "referencePrompt": "A single full-body recognizable Van Augur from One Piece, canonical anime character costume and distinctive face, high-quality stylized 3D game miniature. Full head, all limbs and shoes entirely visible, relaxed standing action-ready pose, three-quarter front view, solid white studio background, even neutral lighting, no text, no logo, no flag, no platform, no other character, volumetric sculpted form. Use reference only for colors where correct; the named character identity takes priority. Keep accessories close to the body and separated readable silhouette. ",
+      "referenceSha256": "99efc3fa1e632b49a371756182143f94c6511b8a7dae0ef0b6c60deb92c68abd",
+      "taskId": "01a1336d-5b54-7693-afc8-5a3954446a75",
+      "credits": 15,
+      "referenceImage": "/assets/references/blackbeard/bishop.png",
+      "rawSha256": "8c8b6c496f682fc1d876cd32186762b1f26ce1c298223144f9073ba1f6537c79",
+      "sha256": "27d4a57b8aae048c3811ea68e81d12a17ff8b8d4bae8cea873074f2a4575480b",
+      "bytes": 411632,
+      "triangles": 10946,
+      "textures": [
+        {
+          "name": "Image_0",
+          "width": 512,
+          "height": 512
+        }
+      ]
+    },
+    {
+      "id": "blackbeard/knight",
+      "crew": "blackbeard",
+      "role": "knight",
+      "name": "Laffitte",
+      "path": "/assets/models/blackbeard/knight.glb",
+      "sourceImage": "/assets/crews/blackbeard/knight.png",
+      "provider": "meshy",
+      "status": "ready",
+      "review": {
+        "status": "approved",
+        "views": [
+          "front",
+          "side",
+          "back",
+          "board"
+        ],
+        "sheet": "tools/assets/models7a.jpg",
+        "reviewer": "asset agent visual inspection",
+        "observations": "Textured recognizable volumetric character viewed front/side/back/isolated three-quarter. Actual board QA is downstream."
+      },
+      "referenceTaskId": "gkjgdfnd0srmt0d16dnrn48e28",
+      "referencePrompt": "A single full-body recognizable Laffitte from One Piece, canonical anime character costume and distinctive face, high-quality stylized 3D game miniature. Full head, all limbs and shoes entirely visible, relaxed standing action-ready pose, three-quarter front view, solid white studio background, even neutral lighting, no text, no logo, no flag, no platform, no other character, volumetric sculpted form. Use reference only for colors where correct; the named character identity takes priority. Keep accessories close to the body and separated readable silhouette. ",
+      "referenceSha256": "9cca2bcb712d499298eb6fc9889d416865d57d19579ec573f9545a6468fe61e4",
+      "taskId": "01a1336d-61fc-737c-81dd-2cf1093b3b12",
+      "credits": 15,
+      "referenceImage": "/assets/references/blackbeard/knight.png",
+      "rawSha256": "c8e8abd4188308e97a7b27cdbe026ecfc49f886be6cddc16f50ffdae47fb1aad",
+      "sha256": "b3c6fd37682402e0c60a1ef6b4203bc81f66333308d8d021b2f770572f9fcb58",
+      "bytes": 379632,
+      "triangles": 10503,
+      "textures": [
+        {
+          "name": "Image_0",
+          "width": 512,
+          "height": 512
+        }
+      ]
+    },
+    {
+      "id": "blackbeard/pawn",
+      "crew": "blackbeard",
+      "role": "pawn",
+      "name": "Crew",
+      "path": "/assets/models/blackbeard/pawn.glb",
+      "sourceImage": "/assets/crews/blackbeard/pawn.png",
+      "provider": "meshy",
+      "status": "ready",
+      "review": {
+        "status": "approved",
+        "views": [
+          "front",
+          "side",
+          "back",
+          "board"
+        ],
+        "sheet": "tools/assets/models7a.jpg",
+        "reviewer": "asset agent visual inspection",
+        "observations": "Textured recognizable volumetric character viewed front/side/back/isolated three-quarter. Actual board QA is downstream."
+      },
+      "referenceTaskId": "5a2azq5jk9rmt0d16dntatyp7g",
+      "referencePrompt": "A single full-body recognizable Crew from One Piece, canonical anime character costume and distinctive face, high-quality stylized 3D game miniature. Full head, all limbs and shoes entirely visible, relaxed standing action-ready pose, three-quarter front view, solid white studio background, even neutral lighting, no text, no logo, no flag, no platform, no other character, volumetric sculpted form. Use reference only for colors where correct; the named character identity takes priority. Keep accessories close to the body and separated readable silhouette. A generic adult male member of the blackbeard pirate crew, not its captain. ",
+      "referenceSha256": "6b5bf4fe69c59605a3312746e2e379d7c5280999e6e190ba108a7d0fd671f0d5",
+      "taskId": "01a1336d-67b1-7173-944e-72f29716d0c1",
+      "credits": 15,
+      "referenceImage": "/assets/references/blackbeard/pawn.png",
+      "rawSha256": "c9dfc2e5be2108bfcecd7333ad10f09153a10f40663448b541250020161f2771",
+      "sha256": "9919bc327764733c0cb4b1ff99df58992d961e4f2962fbb9c80ebbcb299aa265",
+      "bytes": 392308,
+      "triangles": 10441,
+      "textures": [
+        {
+          "name": "Image_0",
+          "width": 512,
+          "height": 512
+        }
+      ]
+    },
+    {
+      "id": "whitebeard/king",
+      "crew": "whitebeard",
+      "role": "king",
+      "name": "Whitebeard",
+      "path": "/assets/models/whitebeard/king.glb",
+      "sourceImage": "/assets/crews/whitebeard/king.png",
+      "provider": "meshy",
+      "status": "ready",
+      "review": {
+        "status": "approved",
+        "views": [
+          "front",
+          "side",
+          "back",
+          "board"
+        ],
+        "sheet": "tools/assets/models7b.jpg",
+        "reviewer": "asset agent visual inspection",
+        "observations": "Textured recognizable volumetric character viewed front/side/back/isolated three-quarter. Actual board QA is downstream."
+      },
+      "referenceTaskId": "at3cv85qh1rmr0d16dntzfxd30",
+      "referencePrompt": "A single full-body recognizable Whitebeard from One Piece, canonical anime character costume and distinctive face, high-quality stylized 3D game miniature. Full head, all limbs and shoes entirely visible, relaxed standing action-ready pose, three-quarter front view, solid white studio background, even neutral lighting, no text, no logo, no flag, no platform, no other character, volumetric sculpted form. Use reference only for colors where correct; the named character identity takes priority. Keep accessories close to the body and separated readable silhouette. ",
+      "referenceSha256": "1b1d4fb416c2b2461d52caeda5c48484e5258cd06cce057d17dcedd836cdbb9e",
+      "taskId": "01a1336d-6e7f-7014-b392-0e7657e0cab3",
+      "credits": 15,
+      "referenceImage": "/assets/references/whitebeard/king.png",
+      "rawSha256": "c365da68c3b56153063154d79e243355e185b30c867bdf3c58a5427d733b3b20",
+      "sha256": "27229cc6f881ee63c7ffc700e132ac338e96e76f0bc720149b5004f9bdbc74d7",
+      "bytes": 404848,
+      "triangles": 10578,
+      "textures": [
+        {
+          "name": "Image_0",
+          "width": 512,
+          "height": 512
+        }
+      ]
+    },
+    {
+      "id": "whitebeard/queen",
+      "crew": "whitebeard",
+      "role": "queen",
+      "name": "Marco",
+      "path": "/assets/models/whitebeard/queen.glb",
+      "sourceImage": "/assets/crews/whitebeard/queen.png",
+      "provider": "meshy",
+      "status": "ready",
+      "review": {
+        "status": "approved",
+        "views": [
+          "front",
+          "side",
+          "back",
+          "board"
+        ],
+        "sheet": "tools/assets/models7b.jpg",
+        "reviewer": "asset agent visual inspection",
+        "observations": "Textured recognizable volumetric character viewed front/side/back/isolated three-quarter. Actual board QA is downstream."
+      },
+      "referenceTaskId": "rvyqp7nw8hrmy0d16dnvsa09c8",
+      "referencePrompt": "A single full-body recognizable Marco from One Piece, canonical anime character costume and distinctive face, high-quality stylized 3D game miniature. Full head, all limbs and shoes entirely visible, relaxed standing action-ready pose, three-quarter front view, solid white studio background, even neutral lighting, no text, no logo, no flag, no platform, no other character, volumetric sculpted form. Use reference only for colors where correct; the named character identity takes priority. Keep accessories close to the body and separated readable silhouette. ",
+      "referenceSha256": "7619ccfa13db0bd6b49f475635b27ae6e830a7a14d5085dee79c81f7f0f26258",
+      "taskId": "01a1336d-751a-721e-a53c-a82aea2dd780",
+      "credits": 15,
+      "referenceImage": "/assets/references/whitebeard/queen.png",
+      "rawSha256": "29591ac9063bac110a45683a91aaea3117ac323ac1e90c844456af87654348c8",
+      "sha256": "b9ca84a7655206d9ec27d0711e4f3197447f313ecfd68b465e486414520981fe",
+      "bytes": 413404,
+      "triangles": 10621,
+      "textures": [
+        {
+          "name": "Image_0",
+          "width": 512,
+          "height": 512
+        }
+      ]
+    },
+    {
+      "id": "whitebeard/rook",
+      "crew": "whitebeard",
+      "role": "rook",
+      "name": "Ace",
+      "path": "/assets/models/whitebeard/rook.glb",
+      "sourceImage": "/assets/crews/whitebeard/rook.png",
+      "provider": "meshy",
+      "status": "ready",
+      "review": {
+        "status": "approved",
+        "views": [
+          "front",
+          "side",
+          "back",
+          "board"
+        ],
+        "sheet": "tools/assets/models7b.jpg",
+        "reviewer": "asset agent visual inspection",
+        "observations": "Textured recognizable volumetric character viewed front/side/back/isolated three-quarter. Actual board QA is downstream."
+      },
+      "referenceTaskId": "srn933p0c1rmt0d16dnv2s0kem",
+      "referencePrompt": "A single full-body recognizable Ace from One Piece, canonical anime character costume and distinctive face, high-quality stylized 3D game miniature. Full head, all limbs and shoes entirely visible, relaxed standing action-ready pose, three-quarter front view, solid white studio background, even neutral lighting, no text, no logo, no flag, no platform, no other character, volumetric sculpted form. Use reference only for colors where correct; the named character identity takes priority. Keep accessories close to the body and separated readable silhouette. ",
+      "referenceSha256": "ec3f897327d02f6da7a5867e273151e9a9d3f8b6f062991e19a0c4b0dfd8244f",
+      "taskId": "01a1336d-7be0-76c3-8315-cc5172e65f79",
+      "credits": 15,
+      "referenceImage": "/assets/references/whitebeard/rook.png",
+      "rawSha256": "7648e76f4005f11b23dca4800107006b5d6a779209a728cefc704ca7b1303189",
+      "sha256": "938ff2745d9de9d917926c77591ccc05c7730696eda0781aa740282f53875e9e",
+      "bytes": 385220,
+      "triangles": 10054,
+      "textures": [
+        {
+          "name": "Image_0",
+          "width": 512,
+          "height": 512
+        }
+      ]
+    },
+    {
+      "id": "whitebeard/bishop",
+      "crew": "whitebeard",
+      "role": "bishop",
+      "name": "Jozu",
+      "path": "/assets/models/whitebeard/bishop.glb",
+      "sourceImage": "/assets/crews/whitebeard/bishop.png",
+      "provider": "meshy",
+      "status": "ready",
+      "review": {
+        "status": "approved",
+        "views": [
+          "front",
+          "side",
+          "back",
+          "board"
+        ],
+        "sheet": "tools/assets/models7b.jpg",
+        "reviewer": "asset agent visual inspection",
+        "observations": "Textured recognizable volumetric character viewed front/side/back/isolated three-quarter. Actual board QA is downstream."
+      },
+      "referenceTaskId": "jrnhns64qxrmy0d16dnvcqjmn0",
+      "referencePrompt": "A single full-body recognizable Jozu from One Piece, canonical anime character costume and distinctive face, high-quality stylized 3D game miniature. Full head, all limbs and shoes entirely visible, relaxed standing action-ready pose, three-quarter front view, solid white studio background, even neutral lighting, no text, no logo, no flag, no platform, no other character, volumetric sculpted form. Use reference only for colors where correct; the named character identity takes priority. Keep accessories close to the body and separated readable silhouette. ",
+      "referenceSha256": "ab210a79dc321aabedb86a93826721c427b8c748ae240b0ababa3b74d2f27cda",
+      "taskId": "01a1336d-832c-71d7-a8c3-57acec4f090b",
+      "credits": 15,
+      "referenceImage": "/assets/references/whitebeard/bishop.png",
+      "rawSha256": "2417b35c4862daeef9cf880d1fb4d7adc7ef989830b1dee902d2502009661c67",
+      "sha256": "d44f2d9e787f3e03f87254499a73c1c6aba87490c85119697cbb84ea580de7b9",
+      "bytes": 368856,
+      "triangles": 9826,
+      "textures": [
+        {
+          "name": "Image_0",
+          "width": 512,
+          "height": 512
+        }
+      ]
+    },
+    {
+      "id": "whitebeard/knight",
+      "crew": "whitebeard",
+      "role": "knight",
+      "name": "Vista",
+      "path": "/assets/models/whitebeard/knight.glb",
+      "sourceImage": "/assets/crews/whitebeard/knight.png",
+      "provider": "meshy",
+      "status": "ready",
+      "review": {
+        "status": "approved",
+        "views": [
+          "front",
+          "side",
+          "back",
+          "board"
+        ],
+        "sheet": "tools/assets/models8c.jpg",
+        "reviewer": "asset agent visual inspection",
+        "observations": "Textured recognizable volumetric character viewed front/side/back/isolated three-quarter. Actual board QA is downstream."
+      },
+      "referenceTaskId": "86j7vb220nrmt0d16mnaa8hdem",
+      "referencePrompt": "A single full-body recognizable Vista from One Piece, canonical anime character costume and distinctive face, high-quality stylized 3D game miniature. Full head, all limbs and shoes entirely visible, relaxed standing action-ready pose, three-quarter front view, solid white studio background, even neutral lighting, no text, no logo, no flag, no platform, no other character, volumetric sculpted form. Use reference only for colors where correct; the named character identity takes priority. Keep accessories close to the body and separated readable silhouette. ",
+      "referenceTaskHistory": [
+        {
+          "taskId": "n9w8pnjd8xrmw0d16dqrjfe3bg",
+          "status": "expired-data-removed",
+          "actualUSD": 0.067,
+          "dataRemoved": true
+        }
+      ],
+      "referenceSha256": "6ae93a780dc80d93fd60865461a14252dc5f94741035e5082cd1534e26f1e301",
+      "taskId": "01a1352b-1d33-76ae-868c-0ef821457cf6",
+      "credits": 15,
+      "referenceImage": "/assets/references/whitebeard/knight.png",
+      "rawSha256": "b6bc2ee2825db009fe7562558824ff6e8f2a5d99dece34c967a798a8d3b0c6e1",
+      "sha256": "50a507bb7fad1d8ef72ff6015d3043233f43979e62ad571abe9ec9d3396004de",
+      "bytes": 409800,
+      "triangles": 10905,
+      "textures": [
+        {
+          "name": "Image_0",
+          "width": 512,
+          "height": 512
+        }
+      ]
+    },
+    {
+      "id": "whitebeard/pawn",
+      "crew": "whitebeard",
+      "role": "pawn",
+      "name": "Crew",
+      "path": "/assets/models/whitebeard/pawn.glb",
+      "sourceImage": "/assets/crews/whitebeard/pawn.png",
+      "provider": "meshy",
+      "status": "ready",
+      "review": {
+        "status": "approved",
+        "views": [
+          "front",
+          "side",
+          "back",
+          "board"
+        ],
+        "sheet": "tools/assets/models8c.jpg",
+        "reviewer": "asset agent visual inspection",
+        "observations": "Textured recognizable volumetric character viewed front/side/back/isolated three-quarter. Actual board QA is downstream."
+      },
+      "referenceTaskId": "68jtw924nhrmt0d16mnbnzm42m",
+      "referencePrompt": "A single full-body recognizable Crew from One Piece, canonical anime character costume and distinctive face, high-quality stylized 3D game miniature. Full head, all limbs and shoes entirely visible, relaxed standing action-ready pose, three-quarter front view, solid white studio background, even neutral lighting, no text, no logo, no flag, no platform, no other character, volumetric sculpted form. Use reference only for colors where correct; the named character identity takes priority. Keep accessories close to the body and separated readable silhouette. A generic adult male member of the whitebeard pirate crew, not its captain. ",
+      "referenceTaskHistory": [
+        {
+          "taskId": "f2mqka2fj9rmr0d16dqvknvxd8",
+          "status": "expired-data-removed",
+          "actualUSD": 0.067,
+          "dataRemoved": true
+        }
+      ],
+      "referenceSha256": "cba4936d332e9b1381548f6146f61c2314184d9255e96ae3157e58b0792ff709",
+      "taskId": "01a1352b-22fb-7726-9be1-11ea77f6d1b9",
+      "credits": 15,
+      "referenceImage": "/assets/references/whitebeard/pawn.png",
+      "rawSha256": "eec00514779d6418c98fa245ab3efc88dd32e2005666c249c559de63c7a9617f",
+      "sha256": "e27f150e5ccc334d2eef1f72db04db4b70e1f7c948d043033b124d0b606f3347",
+      "bytes": 394812,
+      "triangles": 10649,
+      "textures": [
+        {
+          "name": "Image_0",
+          "width": 512,
+          "height": 512
+        }
+      ]
+    },
+    {
+      "id": "marines/king",
+      "crew": "marines",
+      "role": "king",
+      "name": "Sengoku",
+      "path": "/assets/models/marines/king.glb",
+      "sourceImage": "/assets/marines/king.png",
+      "provider": "meshy",
+      "status": "ready",
+      "review": {
+        "status": "approved",
+        "views": [
+          "front",
+          "side",
+          "back",
+          "board"
+        ],
+        "sheet": "tools/assets/models8a.jpg",
+        "reviewer": "asset agent visual inspection",
+        "observations": "Textured recognizable volumetric character viewed front/side/back/isolated three-quarter. Actual board QA is downstream."
+      },
+      "referenceTaskId": "71pqh2t785rmr0d16mn9gmxrc8",
+      "referencePrompt": "A single full-body recognizable Sengoku from One Piece, canonical anime character costume and distinctive face, high-quality stylized 3D game miniature. Full head, all limbs and shoes entirely visible, relaxed standing action-ready pose, three-quarter front view, solid white studio background, even neutral lighting, no text, no logo, no flag, no platform, no other character, volumetric sculpted form. Use reference only for colors where correct; the named character identity takes priority. Keep accessories close to the body and separated readable silhouette. ",
+      "referenceTaskHistory": [
+        {
+          "taskId": "06xa2qahjdrmy0d16dqspb6xaw",
+          "status": "expired-data-removed",
+          "actualUSD": 0.067,
+          "dataRemoved": true
+        }
+      ],
+      "referenceSha256": "2e4e2cb0531eb48f203e3b1a2111f03d0b49ce15c49e9b87cf618226b63ed552",
+      "taskId": "01a1352b-28c7-7408-b9c6-d716c7d46d8f",
+      "credits": 15,
+      "referenceImage": "/assets/references/marines/king.png",
+      "rawSha256": "31c9ac9045a3ddb42996c92575b9d1366c79836bea6207ae48e5c77b4dbb2aa6",
+      "sha256": "0b27913a7ad9b24cdf2c483536aeb8355d8163c56b7336cb963bd4e106cc91e2",
+      "bytes": 410156,
+      "triangles": 10420,
+      "textures": [
+        {
+          "name": "Image_0",
+          "width": 512,
+          "height": 512
+        }
+      ]
+    },
+    {
+      "id": "marines/queen",
+      "crew": "marines",
+      "role": "queen",
+      "name": "Akainu",
+      "path": "/assets/models/marines/queen.glb",
+      "sourceImage": "/assets/marines/queen.png",
+      "provider": "meshy",
+      "status": "ready",
+      "review": {
+        "status": "approved",
+        "views": [
+          "front",
+          "side",
+          "back",
+          "board"
+        ],
+        "sheet": "tools/assets/models8a.jpg",
+        "reviewer": "asset agent visual inspection",
+        "observations": "Textured recognizable volumetric character viewed front/side/back/isolated three-quarter. Actual board QA is downstream."
+      },
+      "referenceTaskId": "3j70t229n9rmr0d16mn88c7y3r",
+      "referencePrompt": "A single full-body recognizable Akainu from One Piece, canonical anime character costume and distinctive face, high-quality stylized 3D game miniature. Full head, all limbs and shoes entirely visible, relaxed standing action-ready pose, three-quarter front view, solid white studio background, even neutral lighting, no text, no logo, no flag, no platform, no other character, volumetric sculpted form. Use reference only for colors where correct; the named character identity takes priority. Keep accessories close to the body and separated readable silhouette. ",
+      "referenceTaskHistory": [
+        {
+          "taskId": "29nrq6tkbdrmw0d16dqv8jq8x4",
+          "status": "expired-data-removed",
+          "actualUSD": 0.067,
+          "dataRemoved": true
+        }
+      ],
+      "referenceSha256": "444cc29a90c2488eb7f1eb5f37596555be0ee4ad13e117948f1617b771f47014",
+      "taskId": "01a1352b-2dfb-7324-aeb5-779f4bb01a98",
+      "credits": 15,
+      "referenceImage": "/assets/references/marines/queen.png",
+      "rawSha256": "3cf1c93c8ff335806d8a65763b4250ebb7d2c64de9cd522e0731a4044543e191",
+      "sha256": "3b6fb1d8f3f92697b903a1711f8081be9fa59b11acd784b1e4f24d77ac9fcf06",
+      "bytes": 406068,
+      "triangles": 10641,
+      "textures": [
+        {
+          "name": "Image_0",
+          "width": 512,
+          "height": 512
+        }
+      ]
+    },
+    {
+      "id": "marines/rook",
+      "crew": "marines",
+      "role": "rook",
+      "name": "Garp",
+      "path": "/assets/models/marines/rook.glb",
+      "sourceImage": "/assets/marines/rook.png",
+      "provider": "meshy",
+      "status": "ready",
+      "review": {
+        "status": "approved",
+        "views": [
+          "front",
+          "side",
+          "back",
+          "board"
+        ],
+        "sheet": "tools/assets/models8a.jpg",
+        "reviewer": "asset agent visual inspection",
+        "observations": "Textured recognizable volumetric character viewed front/side/back/isolated three-quarter. Actual board QA is downstream."
+      },
+      "referenceTaskId": "9jhfr3ac2drmt0d16mnaws7mv4",
+      "referencePrompt": "A single full-body recognizable Garp from One Piece, canonical anime character costume and distinctive face, high-quality stylized 3D game miniature. Full head, all limbs and shoes entirely visible, relaxed standing action-ready pose, three-quarter front view, solid white studio background, even neutral lighting, no text, no logo, no flag, no platform, no other character, volumetric sculpted form. Use reference only for colors where correct; the named character identity takes priority. Keep accessories close to the body and separated readable silhouette. ",
+      "referenceTaskHistory": [
+        {
+          "taskId": "kmbar5jmwnrmr0d16dqtbvpfpw",
+          "status": "expired-data-removed",
+          "actualUSD": 0.067,
+          "dataRemoved": true
+        }
+      ],
+      "referenceSha256": "7807b683511228fd531d34cef1771c25b00b6be7d74862dbfefb45a40cfe5fca",
+      "taskId": "01a1352b-34c6-748c-af7f-b933981927fe",
+      "credits": 15,
+      "referenceImage": "/assets/references/marines/rook.png",
+      "rawSha256": "0b2d5dc46176bc3040a9a4c42e534897756bd78e788979a5abbac2a0f6e92d7f",
+      "sha256": "30ce75c6ce06d3fe5f1bcea7e05fd0c5b147e9e5a17acf9eea4383c8f2616de7",
+      "bytes": 419744,
+      "triangles": 10619,
+      "textures": [
+        {
+          "name": "Image_0",
+          "width": 512,
+          "height": 512
+        }
+      ]
+    },
+    {
+      "id": "marines/bishop",
+      "crew": "marines",
+      "role": "bishop",
+      "name": "Smoker",
+      "path": "/assets/models/marines/bishop.glb",
+      "sourceImage": "/assets/marines/bishop.png",
+      "provider": "meshy",
+      "status": "ready",
+      "review": {
+        "status": "approved",
+        "views": [
+          "front",
+          "side",
+          "back",
+          "board"
+        ],
+        "sheet": "tools/assets/models8a.jpg",
+        "reviewer": "asset agent visual inspection",
+        "observations": "Textured recognizable volumetric character viewed front/side/back/isolated three-quarter. Actual board QA is downstream."
+      },
+      "referenceTaskId": "dd12nhaepdrmw0d16mnbyjwcxw",
+      "referencePrompt": "A single full-body recognizable Smoker from One Piece, canonical anime character costume and distinctive face, high-quality stylized 3D game miniature. Full head, all limbs and shoes entirely visible, relaxed standing action-ready pose, three-quarter front view, solid white studio background, even neutral lighting, no text, no logo, no flag, no platform, no other character, volumetric sculpted form. Use reference only for colors where correct; the named character identity takes priority. Keep accessories close to the body and separated readable silhouette. ",
+      "referenceTaskHistory": [
+        {
+          "taskId": "9bzsacasjsrmy0d16dqtm6fb5w",
+          "status": "expired-data-removed",
+          "actualUSD": 0.067,
+          "dataRemoved": true
+        }
+      ],
+      "referenceSha256": "685aa98a899e39ab34ed682418ffd25fb6b65a04c103907b18556e9d864fe829",
+      "taskId": "01a1352b-3a71-7246-9139-f0921967c94a",
+      "credits": 15,
+      "referenceImage": "/assets/references/marines/bishop.png",
+      "rawSha256": "9559cc906e05bfaa4227cb999cce7236e753ed1ce5e86a90c6490765d172f0d4",
+      "sha256": "ddeec72c5a8ed9884a237f4f7fed7d0d3a2b293a1f551539feebf9bcedee74c3",
+      "bytes": 384592,
+      "triangles": 10356,
+      "textures": [
+        {
+          "name": "Image_0",
+          "width": 512,
+          "height": 512
+        }
+      ]
+    },
+    {
+      "id": "marines/knight",
+      "crew": "marines",
+      "role": "knight",
+      "name": "Tashigi",
+      "path": "/assets/models/marines/knight.glb",
+      "sourceImage": "/assets/marines/knight.png",
+      "provider": "meshy",
+      "status": "ready",
+      "review": {
+        "status": "approved",
+        "views": [
+          "front",
+          "side",
+          "back",
+          "board"
+        ],
+        "sheet": "tools/assets/models8b.jpg",
+        "reviewer": "asset agent visual inspection",
+        "observations": "Textured recognizable volumetric character viewed front/side/back/isolated three-quarter. Actual board QA is downstream."
+      },
+      "referenceTaskId": "g8e4xv2h61rmt0d16mn8gmfvym",
+      "referencePrompt": "A single full-body recognizable Tashigi from One Piece, canonical anime character costume and distinctive face, high-quality stylized 3D game miniature. Full head, all limbs and shoes entirely visible, relaxed standing action-ready pose, three-quarter front view, solid white studio background, even neutral lighting, no text, no logo, no flag, no platform, no other character, volumetric sculpted form. Use reference only for colors where correct; the named character identity takes priority. Keep accessories close to the body and separated readable silhouette. ",
+      "referenceTaskHistory": [
+        {
+          "taskId": "zmgjqwkkdxrmy0d16dqvxew120",
+          "status": "expired-data-removed",
+          "actualUSD": 0.067,
+          "dataRemoved": true
+        }
+      ],
+      "referenceSha256": "bfe27344f79a26b870f2f32edb5f227d19c952ce95a86034389de69b5501856d",
+      "taskId": "01a1352b-3feb-75fa-8440-a2f6aca7a1a7",
+      "credits": 15,
+      "referenceImage": "/assets/references/marines/knight.png",
+      "rawSha256": "1ea1cec0dc793bad381386adb91a7edf23292c718873b7c9dfdc429aee44e614",
+      "sha256": "eaf11956dea007a726717be9a2bd44acf46726cf706ee52c7eb71f02a9088279",
+      "bytes": 425492,
+      "triangles": 10491,
+      "textures": [
+        {
+          "name": "Image_0",
+          "width": 512,
+          "height": 512
+        }
+      ]
+    },
+    {
+      "id": "marines/pawn",
+      "crew": "marines",
+      "role": "pawn",
+      "name": "Marine",
+      "path": "/assets/models/marines/pawn.glb",
+      "sourceImage": "/assets/marines/pawn.png",
+      "provider": "meshy",
+      "status": "ready",
+      "review": {
+        "status": "approved",
+        "views": [
+          "front",
+          "side",
+          "back",
+          "board"
+        ],
+        "sheet": "tools/assets/models8b.jpg",
+        "reviewer": "asset agent visual inspection",
+        "observations": "Textured recognizable volumetric character viewed front/side/back/isolated three-quarter. Actual board QA is downstream."
+      },
+      "referenceTaskId": "d1repz2kssrmt0d16mn9tqzgn8",
+      "referencePrompt": "A single full-body recognizable Marine from One Piece, canonical anime character costume and distinctive face, high-quality stylized 3D game miniature. Full head, all limbs and shoes entirely visible, relaxed standing action-ready pose, three-quarter front view, solid white studio background, even neutral lighting, no text, no logo, no flag, no platform, no other character, volumetric sculpted form. Use reference only for colors where correct; the named character identity takes priority. Keep accessories close to the body and separated readable silhouette. ",
+      "referenceTaskHistory": [
+        {
+          "taskId": "k2kpezw71hrmt0d16dqt5knn5c",
+          "status": "expired-data-removed",
+          "actualUSD": 0.067,
+          "dataRemoved": true
+        }
+      ],
+      "referenceSha256": "ba7a88d78fc90c6adb63c3b046f3d012371c7a214a2e7789a214b7416f58f1bf",
+      "taskId": "01a1352b-4581-759c-9053-65b4f6e51411",
+      "credits": 15,
+      "referenceImage": "/assets/references/marines/pawn.png",
+      "rawSha256": "bb9883d3c8a29f8761b86fae0e8b52037dc9ff8ec87e7cefb60c578f2faef016",
+      "sha256": "20f7c129e54ec85abe29acc2260dfac39c36e51c7abdbb017e39b358f6758303",
+      "bytes": 369544,
+      "triangles": 10198,
+      "textures": [
+        {
+          "name": "Image_0",
+          "width": 512,
+          "height": 512
+        }
+      ]
+    }
+  ]
+}

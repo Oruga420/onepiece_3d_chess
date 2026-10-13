@@ -87,3 +87,39 @@ test('voice actions and settings execute immediately; text and WebMCP preserve p
   assert.ok(c.runTool('propose_game_action',{action:'new_game'},{source}).proposal);
  }
 });
+
+
+test('online action interception queues without mutating local state and undefined preserves local mode',()=>{
+ const game=new ChessGame(),actions=[],changes=[],received=[];
+ const controller=createCommandController(game,{executeAction:action=>{actions.push(action);return{ok:true,queued:true,requestedAction:action,speak:'Enviando...'};},onChange:value=>changes.push(value),onResult:value=>received.push(value)});
+ const fen=game.fen(),version=game.version;
+ const queued=controller.move({from:'E2',to:'E4'},{source:'voice_asr'});
+ assert.equal(queued.queued,true);assert.equal(queued.action,undefined);assert.equal(game.fen(),fen);assert.equal(game.version,version);assert.deepEqual(changes,[]);
+ controller.runTool('propose_settings',{action:'crew',value:'heart'},{source:'voice'});
+ assert.equal(controller.crew,'mugiwara');assert.equal(game.fen(),fen);
+ const subscribed=[];controller.subscribe((event,value)=>{if(event==='onResult')subscribed.push(value);});
+ const ack={ok:true,action:actions[0],speak:'Jugada aceptada.'};assert.equal(controller.notifyResult(ack),ack);
+ assert.deepEqual(received,[ack]);assert.deepEqual(subscribed,[ack]);
+ const error={ok:false,requestedAction:actions[0],speak:'No es tu turno.'};controller.notifyResult(error);
+ assert.deepEqual(received,[ack,error]);assert.deepEqual(subscribed,[ack,error]);
+ createCommandController(game,{executeAction:()=>undefined}).move({from:'E2',to:'E4'});
+ assert.equal(game.history.length,1);
+});
+
+test('online player seats resolve only their own current-turn pieces; spectators resolve none',()=>{
+ const game=new ChessGame();let side='pirate';const c=createCommandController(game,{playerSide:()=>side});
+ assert.equal(c.select({from:'E2'}).ok,true);side='marine';assert.equal(c.select({from:'E2'}).ok,false);
+ game.move({from:'E2',to:'E4'});assert.equal(c.select({from:'E7'}).ok,true);
+ side='pirate';assert.equal(c.select({from:'E7'}).ok,false);assert.equal(c.move({from:'E7',to:'E5'}).ok,false);
+ side='spectator';assert.equal(c.select('peon').candidates.length,0);
+ side=undefined;assert.equal(c.select({from:'E7'}).ok,true);
+});
+
+test('online locks explain turn or pending state before dispatching writes',()=>{
+ const game=new ChessGame();let reason='Esperando la respuesta del servidor.',executions=0;
+ const c=createCommandController(game,{isLocked:()=>true,lockReason:()=>reason,executeAction:()=>executions++});
+ assert.equal(c.move({from:'E2',to:'E4'}).speak,reason);
+ reason='Es el turno de tu rival.';
+ assert.equal(c.runTool('propose_game_action',{action:'new_game'},{source:'mouse'}).speak,reason);
+ assert.equal(executions,0);assert.equal(game.history.length,0);
+});

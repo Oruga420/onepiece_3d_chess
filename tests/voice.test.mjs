@@ -300,3 +300,43 @@ test('microphone denial and missing device yield specific recoverable startup me
   await assert.rejects(voice.start(),pattern);
  }
 });
+
+
+test('online queued ASR and model echoes remain deduplicated through server acknowledgement and version advances',async t=>{
+ const {ChessGame}=await import('../src/rules.mjs');const {createCommandController}=await import('../src/commands.mjs');
+ const game=new ChessGame(),requests=[],acks=[];
+ const controller=createCommandController(game,{executeAction:action=>{requests.push(action);return{ok:true,queued:true,requestedAction:action,speak:'Enviando...'};}});
+ const f=await voiceFixture(t,{controller,onActionResult:value=>acks.push(value)});
+ f.config.onMessage({source:'user',message:'peon de E2 a E4',event_id:'first'});
+ assert.equal(requests.length,1);assert.equal(game.history.length,0);assert.equal(f.dispatches[0].executed,false);
+ assert.match(f.contexts.at(-1),/espera el resultado del servidor/);
+ game.version++;
+ let echo=JSON.parse(await f.config.clientTools.propose_move({from:'E2',to:'E4'}));
+ assert.equal(echo.deduplicated,true);assert.equal(echo.queued,true);assert.equal(echo.action,undefined);
+ f.config.onMessage({source:'user',message:'peon de E2 a E4',event_id:'new-duplicate'});
+ assert.equal(requests.length,1);assert.equal(f.dispatches.length,1);
+ game.move({from:'E2',to:'E4'});
+ controller.notifyResult({ok:true,action:{move:{to:'E4',from:'E2'},kind:'move'},speak:'Movimiento a E4 realizado.'});
+ assert.equal(acks.length,1);assert.match(f.contexts.at(-1),/Movimiento a E4 realizado/);
+ f.config.onMessage({source:'user',message:'gracias',event_id:'thanks'});game.move({from:'A7',to:'A6'});
+ echo=JSON.parse(await f.config.clientTools.propose_move({from:'E2',to:'E4'}));
+ assert.equal(echo.deduplicated,true);assert.equal(echo.queued,false);assert.equal(echo.action.kind,'move');
+ assert.equal(requests.length,1);assert.equal(game.history.length,2);
+});
+
+test('online client-tool-only queued writes cannot execute twice and server errors are reported honestly',async t=>{
+ const {ChessGame}=await import('../src/rules.mjs');const {createCommandController}=await import('../src/commands.mjs');
+ const game=new ChessGame(),requests=[],acks=[];
+ const controller=createCommandController(game,{executeAction:action=>{requests.push(action);return{ok:true,queued:true,requestedAction:action,speak:'Enviando...'};}});
+ const f=await voiceFixture(t,{controller,onActionResult:value=>acks.push(value)});
+ f.config.onMessage({source:'user',message:'Adelanta el soldado del rey dos pasos',event_id:'first'});
+ await f.config.clientTools.propose_move({from:'E2',to:'E4'});game.version++;
+ const duplicate=JSON.parse(await f.config.clientTools.propose_move({from:'E2',to:'E4'}));
+ assert.equal(duplicate.queued,true);assert.equal(duplicate.deduplicated,true);assert.equal(requests.length,1);
+ controller.notifyResult({ok:false,requestedAction:requests[0],speak:'La sala ya terminó.'});
+ assert.equal(acks[0].result.ok,false);assert.match(f.contexts.at(-1),/La sala ya terminó/);
+ f.config.onMessage({source:'user',message:'gracias',event_id:'thanks'});
+ const late=JSON.parse(await f.config.clientTools.propose_move({from:'E2',to:'E4'}));
+ assert.equal(late.ok,false);assert.equal(late.queued,false);assert.equal(late.deduplicated,true);assert.equal(late.speak,'La sala ya terminó.');
+ assert.equal(requests.length,1);assert.equal(game.history.length,0);
+});

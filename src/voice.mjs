@@ -15,12 +15,16 @@ function encodeResult(result){
  if(bytes(encoded)>4096&&result.pieces)encoded=JSON.stringify({...result,pieces:result.pieces.map(p=>({square:p.square,type:p.piece.type,side:p.piece.player,name:p.name}))});
  return bytes(encoded)<=4096?encoded:JSON.stringify({ok:false,speak:'Resultado demasiado largo. Solicita una pieza o casilla concreta.'});
 }
+function sameAction(left,right){
+ if(!left||!right||left.kind!==right.kind||left.value!==right.value||left.reason!==right.reason)return false;
+ return ['move','intendedMove'].every(key=>['from','to','promotion'].every(field=>left[key]?.[field]===right[key]?.[field]));
+}
 function sameIntent(entry,name,args,controller){
  if(entry.name!==name)return false;
- if(!entry.result.action&&entry.version!==controller.version)return false;
+ if(!entry.result.action&&!entry.result.requestedAction&&entry.version!==controller.version)return false;
  if(name==='select_piece')return args.from?String(args.from).toUpperCase()===entry.result.square:normalize(args.piece)===normalize(entry.args.piece);
  if(name==='propose_move'){
-  const move=entry.result.action?.move||entry.result.proposal?.action?.move;
+  const move=entry.result.action?.move||entry.result.requestedAction?.move||entry.result.proposal?.action?.move;
   return Boolean(move&&String(args.to).toUpperCase()===move.to&&(!args.from||String(args.from).toUpperCase()===move.from)&&(!args.piece||normalize(args.piece)===normalize(entry.args.piece))&&(args.promotion||null)===(move.promotion||null));
  }
  return JSON.stringify(args)===JSON.stringify(entry.args);
@@ -114,25 +118,25 @@ export function createVoiceSession(controller,callbacks={}){
   let context={tool:name,result:JSON.parse(encodeResult(result)),state:boardContext(),legalMoves:(result.moves||[]).map(move=>move.to)};
   if(bytes(JSON.stringify(context))>4096)context={tool:name,result:{ok:result.ok,speak:result.speak},state:boardContext(),legalMoves:context.legalMoves};
   const encoded=encodeResult(context);
-  const instruction='Modo de voz inmediato: no pidas confirmación ni ofrezcas cuenta atrás. Si result.ok y result.action existen, la orden YA se ejecutó. Alto solo detiene la voz; no revierte jugadas. Narra solo el resultado real.';
+  const instruction='Modo de voz inmediato: no pidas confirmación ni ofrezcas cuenta atrás. Si result.ok y (result.queued o result.requestedAction sin result.action) existen, espera el resultado del servidor: la orden aún NO está ejecutada; no la repitas ni anuncies éxito. Solo si result.ok y result.action existen, la orden YA se ejecutó. Si result.ok es false, comunica el error sin anunciar ejecución. Alto solo detiene la voz; no revierte jugadas. Narra solo el resultado real.';
   const text='Resultado real del tablero. La herramienta ya se procesó; NO repitas su llamada. '+instruction+' Datos: '+encoded;
   if(call.session)call.session.sendContextualUpdate?.(text,{contextId:'chess-turn-'+call.turn});else call.updates.push(text);
  }
  function dispatch(call,name,args,source){
   if(!count(call,{tool:true}))return {ok:false,speak:'Límite de llamada alcanzado.'};
   const result=controller.runTool(name,args,{source});
-  if(result.ok&&result.action){call.actions.push({turn:call.turn,name,args,result,version:controller.version,at:now()});call.actions=call.actions.slice(-10);}
-  notify('onToolResult',{name,args,result,source,asrTurn:call.turn,version:controller.version,executed:true});
+  if(result.ok&&(result.action||result.requestedAction)){call.actions.push({turn:call.turn,name,args,result,version:controller.version,at:now()});call.actions=call.actions.slice(-10);}
+  notify('onToolResult',{name,args,result,source,asrTurn:call.turn,version:controller.version,executed:!result.queued});
   updateContext(call,name,result);
   return result;
  }
  function clientTool(call,name,args){
   if(!active(call))return JSON.stringify({ok:false,speak:'La llamada ya terminó.'});
-  const previous=call.actions.findLast(entry=>entry.turn<call.turn&&now()-entry.at<30000&&sameIntent(entry,name,args,controller));
+  const previous=call.actions.findLast(entry=>entry.turn<call.turn&&(entry.result.queued||now()-entry.at<30000)&&sameIntent(entry,name,args,controller));
   if(previous){
    if(!count(call))return JSON.stringify({ok:false,speak:'Límite de llamada alcanzado.'});
    notify('onToolIgnored',{name,args,source:'voice_client_tool',reason:'recent_executed_intent',asrTurn:call.turn,version:controller.version});
-   return encodeResult({...previous.result,deduplicated:true,speak:'Esa orden ya se ejecutó.'});
+   return encodeResult({...previous.result,deduplicated:true,speak:previous.result.queued?'La orden sigue pendiente del servidor.':previous.result.ok?'Esa orden ya se ejecutó.':previous.result.speak});
   }
   const entry=call.lastASR;
   if(entry&&entry.turn===call.turn&&sameIntent(entry,name,args,controller)){
@@ -145,7 +149,7 @@ export function createVoiceSession(controller,callbacks={}){
    return encodeResult({ok:false,speak:'La orden hablada de este turno ya se procesó. Usa su resultado real.',state:boardContext()});
   }
   const result=dispatch(call,name,args,'voice_client_tool');
-  if(result.ok&&result.action)call.lastASR={turn:call.turn,name,args,result,version:controller.version};
+  if(result.ok&&(result.action||result.requestedAction))call.lastASR={turn:call.turn,name,args,result,version:controller.version};
   if(name==='stop_action')void close(call);
   return encodeResult(result);
  }
@@ -169,6 +173,13 @@ export function createVoiceSession(controller,callbacks={}){
   if(!command)return;
   const args={...command.args};
   if(command.name==='confirm_action')return;
+  const queued=call.actions.findLast(entry=>entry.result.queued&&sameIntent(entry,command.name,args,controller));
+  if(queued){
+   const result={...queued.result,deduplicated:true};
+   call.lastASR={turn:call.turn,name:command.name,args,result,version:controller.version};
+   notify('onToolIgnored',{name:command.name,args,source:'voice_asr',reason:'pending_intent',asrTurn:call.turn,version:controller.version});
+   updateContext(call,command.name,result);return;
+  }
   const result=dispatch(call,command.name,args,'voice_asr');
   call.lastASR={turn:call.turn,name:command.name,args,result,version:controller.version};
  }
@@ -178,6 +189,12 @@ export function createVoiceSession(controller,callbacks={}){
   current=call;notify('onStatus','connecting');
   call.unsubscribe=controller.subscribe?.((event,result)=>{
    if(!active(call)||event!=='onResult')return;
+   const action=result.action||result.requestedAction;
+   if(action){
+    const matches=entry=>entry?.result.queued&&sameAction(entry.result.requestedAction,action);
+    for(const entry of call.actions)if(matches(entry))entry.result={...result,queued:false,requestedAction:action};
+    if(matches(call.lastASR))call.lastASR.result={...result,queued:false,requestedAction:action};
+   }
    notify('onActionResult',{result,source:'voice_execution',version:controller.version});
    updateContext(call,'action_result',result);
   });

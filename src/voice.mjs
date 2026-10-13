@@ -1,5 +1,5 @@
-import {decodeVoiceCommand,isConfirmation,normalize} from './commands.mjs';
-import {TOOL_REGISTRY} from './voice-registry.mjs';
+import {decodeVoiceCommand,normalize} from './commands.mjs';
+import {TOOL_REGISTRY,VOICE_TOOL_REGISTRY} from './voice-registry.mjs';
 
 export async function registerWebMCP(controller,{document:doc=globalThis.document,navigator:nav=globalThis.navigator}={}) {
  let context=doc?.modelContext||nav?.modelContext,mode=context?'native':'polyfill';
@@ -16,13 +16,13 @@ function encodeResult(result){
  return bytes(encoded)<=4096?encoded:JSON.stringify({ok:false,speak:'Resultado demasiado largo. Solicita una pieza o casilla concreta.'});
 }
 function sameIntent(entry,name,args,controller){
- if(entry.name!==name||entry.version!==controller.version)return false;
+ if(entry.name!==name)return false;
+ if(!entry.result.action&&entry.version!==controller.version)return false;
  if(name==='select_piece')return args.from?String(args.from).toUpperCase()===entry.result.square:normalize(args.piece)===normalize(entry.args.piece);
  if(name==='propose_move'){
-  const move=entry.result.proposal?.action?.move;
+  const move=entry.result.action?.move||entry.result.proposal?.action?.move;
   return Boolean(move&&String(args.to).toUpperCase()===move.to&&(!args.from||String(args.from).toUpperCase()===move.from)&&(!args.piece||normalize(args.piece)===normalize(entry.args.piece))&&(args.promotion||null)===(move.promotion||null));
  }
- if(name==='confirm_action')return args.id===entry.args.id&&isConfirmation(args.words);
  return JSON.stringify(args)===JSON.stringify(entry.args);
 }
 export function createVoiceSession(controller,callbacks={}){
@@ -69,35 +69,38 @@ export function createVoiceSession(controller,callbacks={}){
   let context={tool:name,result:JSON.parse(encodeResult(result)),state:boardContext(),legalMoves:(result.moves||[]).map(move=>move.to)};
   if(bytes(JSON.stringify(context))>4096)context={tool:name,result:{ok:result.ok,speak:result.speak},state:boardContext(),legalMoves:context.legalMoves};
   const encoded=encodeResult(context);
-  const phase=context.state.pending?.state;
-  const instruction=phase==='proposed'?'PROPUESTA SIN CONFIRMAR: ninguna pieza se ha movido. Lee origen y destino y pregunta ¿Confirmas? Nunca digas confirmado.':phase==='armed'||phase==='countdown'?'CONFIRMACIÓN RECIBIDA: no pidas otra confirmación. Explica que aún puede decir alto. No anuncies ejecución antes de action_result.':'Narra solo el resultado real; no inventes confirmación ni ejecución.';
+  const instruction='Modo de voz inmediato: no pidas confirmación ni ofrezcas cuenta atrás. Si result.ok y result.action existen, la orden YA se ejecutó. Alto solo detiene la voz; no revierte jugadas. Narra solo el resultado real.';
   const text='Resultado real del tablero. La herramienta ya se procesó; NO repitas su llamada. '+instruction+' Datos: '+encoded;
   if(call.session)call.session.sendContextualUpdate?.(text,{contextId:'chess-turn-'+call.turn});else call.updates.push(text);
  }
  function dispatch(call,name,args,source){
   if(!count(call,{tool:true}))return {ok:false,speak:'Límite de llamada alcanzado.'};
   const result=controller.runTool(name,args,{source});
+  if(result.ok&&result.action){call.actions.push({turn:call.turn,name,args,result,version:controller.version,at:Date.now()});call.actions=call.actions.slice(-10);}
   notify('onToolResult',{name,args,result,source,asrTurn:call.turn,version:controller.version,executed:true});
   updateContext(call,name,result);
   return result;
  }
  function clientTool(call,name,args){
   if(!active(call))return JSON.stringify({ok:false,speak:'La llamada ya terminó.'});
+  const previous=call.actions.findLast(entry=>entry.turn<call.turn&&Date.now()-entry.at<30000&&sameIntent(entry,name,args,controller));
+  if(previous){
+   if(!count(call))return JSON.stringify({ok:false,speak:'Límite de llamada alcanzado.'});
+   notify('onToolIgnored',{name,args,source:'voice_client_tool',reason:'recent_executed_intent',asrTurn:call.turn,version:controller.version});
+   return encodeResult({...previous.result,deduplicated:true,speak:'Esa orden ya se ejecutó.'});
+  }
   const entry=call.lastASR;
   if(entry&&entry.turn===call.turn&&sameIntent(entry,name,args,controller)){
    if(!count(call))return JSON.stringify({ok:false,speak:'Límite de llamada alcanzado.'});
    notify('onToolIgnored',{name,args,source:'voice_client_tool',reason:'same_asr_intent',asrTurn:call.turn,version:controller.version});
    return encodeResult({...entry.result,deduplicated:true});
   }
-  if(name==='confirm_action'&&!isConfirmation(call.lastUser||'')){
-   if(!count(call))return JSON.stringify({ok:false,speak:'Límite de llamada alcanzado.'});
-   return JSON.stringify({ok:false,speak:'No se ha oído una confirmación explícita del usuario.'});
-  }
   if(entry&&entry.turn===call.turn&&name!=='get_board'&&name!=='stop_action'){
    if(!count(call))return JSON.stringify({ok:false,speak:'Límite de llamada alcanzado.'});
    return encodeResult({ok:false,speak:'La orden hablada de este turno ya se procesó. Usa su resultado real.',state:boardContext()});
   }
   const result=dispatch(call,name,args,'voice_client_tool');
+  if(result.ok&&result.action)call.lastASR={turn:call.turn,name,args,result,version:controller.version};
   if(name==='stop_action')void close(call);
   return encodeResult(result);
  }
@@ -120,13 +123,13 @@ export function createVoiceSession(controller,callbacks={}){
   call.turn++;call.lastUser=message.message||'';call.lastASR=null;
   if(!command)return;
   const args={...command.args};
-  if(command.name==='confirm_action'){args.id=controller.pending?.id||'';clearTimeout(call.speechEndTimer);}
+  if(command.name==='confirm_action')return;
   const result=dispatch(call,command.name,args,'voice_asr');
   call.lastASR={turn:call.turn,name:command.name,args,result,version:controller.version};
  }
  async function start(){
   if(current)return current.startPromise;
-  const call={id:++serial,closed:false,session:null,leaseId:null,csrfToken:null,events:0,tools:0,userBytes:0,turn:0,lastASR:null,lastUser:'',transcripts:new Set(),updates:[]};
+  const call={id:++serial,closed:false,session:null,leaseId:null,csrfToken:null,events:0,tools:0,userBytes:0,turn:0,lastASR:null,lastUser:'',actions:[],transcripts:new Set(),updates:[]};
   current=call;notify('onStatus','connecting');
   call.unsubscribe=controller.subscribe?.((event,result)=>{
    if(!active(call)||event!=='onResult')return;
@@ -143,20 +146,14 @@ export function createVoiceSession(controller,callbacks={}){
     if(!response.ok)throw Error(response.status===503?'Voz pendiente de configuración personal.':'No se pudo iniciar la llamada.');
     const data=await response.json();call.leaseId=data.leaseId;
     if(!active(call)){await finish(call);return;}
-    const clientTools=Object.fromEntries(TOOL_REGISTRY.map(def=>[def.name,async args=>clientTool(call,def.name,args)]));
+    const clientTools=Object.fromEntries(VOICE_TOOL_REGISTRY.map(def=>[def.name,async args=>clientTool(call,def.name,args)]));
     const connected=await sdk.Conversation.startSession({
      conversationToken:data.token,connectionType:'webrtc',clientTools,
      onStatusChange:({status})=>{if(active(call))notify('onStatus',status);},
      onMessage:message=>onMessage(call,message),
      onModeChange:({mode})=>{
       if(!active(call))return;
-      notify('onStatus',mode);clearTimeout(call.speechEndTimer);
-      if(mode==='speaking')controller.speechStarted?.();
-      if(mode==='listening')call.speechEndTimer=setTimeout(()=>{
-       if(!active(call))return;
-       if(controller.speechFinished)controller.speechFinished();else controller.speechEnded();
-       if(controller.pending?.state==='countdown')updateContext(call,'speech_finished',{ok:true,speak:'Cuenta atrás iniciada; aún puedes decir alto.'});
-      },callbacks.speechEndDelayMs??1000);
+      notify('onStatus',mode);
      },
      onDisconnect:()=>{void close(call);},
      onError:error=>{if(active(call))notify('onError',error);void close(call);}

@@ -15,6 +15,19 @@ export const TOOL_REGISTRY=Object.freeze([
  tool('confirm_action','Confirmar propuesta visible por ID; esperar fin de voz','control',{id:string('ID exacto de propuesta'),words:string('Palabras explícitas de confirmación')},['id','words']),
  tool('stop_action','Cancelar propuesta, cuenta atrás y reproducción','control')
 ]);
+// Voice orders are immediate; WebMCP retains its explicit proposal contract.
+const voiceDescriptions={
+ propose_move:'Mover una pieza legal inmediatamente, sin confirmación ni cuenta atrás.',
+ propose_game_action:'Iniciar nueva partida o reclamar tablas inmediatamente. No permite deshacer.',
+ propose_settings:'Cambiar tripulación o IA inmediatamente, sin confirmación.',
+ stop_action:'Detener la voz y desconectar. No revierte movimientos ya ejecutados.'
+};
+export const VOICE_TOOL_REGISTRY=Object.freeze(TOOL_REGISTRY.filter(t=>t.name!=='confirm_action').map(t=>{
+ const copy=structuredClone(t);
+ if(voiceDescriptions[t.name])copy.description=copy.inputSchema.description=voiceDescriptions[t.name];
+ if(t.name==='propose_game_action')copy.inputSchema.properties.action.enum=['new_game','claim_draw'];
+ return copy;
+}));
 function validateNode(schema,value,path){
  if(typeof value!==schema.type||value===null||schema.type==='object'&&Array.isArray(value))throw Error('Valor inválido: '+path);
  if(schema.enum&&!schema.enum.includes(value)||schema.pattern&&!new RegExp(schema.pattern).test(value)||schema.minimum!==undefined&&value<schema.minimum||schema.maximum!==undefined&&value>schema.maximum)throw Error('Valor inválido: '+path);

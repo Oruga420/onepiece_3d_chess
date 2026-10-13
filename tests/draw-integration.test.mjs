@@ -17,13 +17,13 @@ for(const source of ['mouse','text','webmcp','voice'])test(`${source} claim name
  const game=fifty(),controller=createCommandController(game,{countdownMs:5});const before=game.fen(),version=game.version;
  const response=source==='text'?controller.text('tablas con A1 a A2'):controller.runTool('propose_game_action',structuredClone(action),{source});
  assert.equal(response.ok,true,response.speak);
- if(source!=='mouse'){
+ if(source==='text'||source==='webmcp'){
   assert.ok(response.proposal);assert.equal(response.proposal.turn,'pirate');assert.equal(response.proposal.version,version);
   assert.deepEqual(response.proposal.action.intendedMove,{from:'A1',to:'A2'});assert.equal(game.status().over,false);
   assert.equal(controller.runTool('confirm_action',{id:response.proposal.id,words:'confirmo'},{source}).ok,true);
-  if(source==='voice')controller.speechFinished();
   await wait();
  }
+ if(source==='voice'){assert.equal(controller.pending,null);assert.equal(response.action.kind,'claim_draw');}
  assert.equal(game.status().reason,'fifty-move');assert.equal(game.fen(),before);assert.equal(game.turn,'pirate');assert.equal(game.history.length,0);assert.ok(game.version>version);controller.stop();
 });
 test('intended threefold claim belongs to original side and does not play the move',()=>{

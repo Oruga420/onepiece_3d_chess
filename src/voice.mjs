@@ -25,33 +25,68 @@ function sameIntent(entry,name,args,controller){
  }
  return JSON.stringify(args)===JSON.stringify(entry.args);
 }
+export function classifyVoiceError(error){
+ const text=typeof error==='string'?error:`${error?.name||''} ${error?.message||''}`;
+ if(/NotAllowedError|PermissionDenied|permission|denied|not allowed/i.test(text))return Error('Permite el micrófono en el navegador y vuelve a conectar.');
+ if(/NotFoundError|NotReadableError|NotSupportedError|OverconstrainedError|SecurityError|getUserMedia|mediaDevices|no microphone/i.test(text))return Error('No se pudo abrir el micrófono. Comprueba que está conectado y disponible.');
+ if(/network|connect|websocket|webrtc|livekit|timeout|timed out|socket|offline|fetch|\bice\b|1006/i.test(text))return Error('La conexión de voz no respondió. Comprueba tu conexión y vuelve a intentar.');
+ return Error('El servicio de voz tuvo un problema. Si la llamada termina, vuelve a conectar.');
+}
+function bounded(task,ms,{signal,message='La conexión de voz no respondió a tiempo.'}={}){
+ return new Promise((resolve,reject)=>{
+  let timer,settled=false;
+  const done=(fn,value)=>{if(settled)return;settled=true;clearTimeout(timer);signal?.removeEventListener('abort',abort);fn(value);};
+  const abort=()=>done(reject,Object.assign(Error('Llamada cancelada.'),{name:'AbortError'}));
+  Promise.resolve(task).then(value=>done(resolve,value),error=>done(reject,error));
+  if(signal?.aborted){abort();return;}
+  signal?.addEventListener('abort',abort,{once:true});
+  timer=setTimeout(()=>done(reject,Error(message)),ms);
+ });
+}
 export function createVoiceSession(controller,callbacks={}){
  let current=null,serial=0,lastClosing=null;
  const notify=(name,value)=>callbacks[name]?.(value);
  const fetcher=callbacks.fetch||globalThis.fetch;
  const load=callbacks.loadSDK||(()=>import('../vendor/voice/index.mjs'));
  const now=callbacks.now||Date.now;
+ const requestTimeoutMs=callbacks.requestTimeoutMs??15000,connectTimeoutMs=callbacks.connectTimeoutMs??45000,cleanupTimeoutMs=callbacks.cleanupTimeoutMs??3000;
  const active=call=>current===call&&!call.closed;
+ async function request(url,init={},signal){
+  const aborter=new AbortController();
+  const abort=()=>aborter.abort();signal?.addEventListener('abort',abort,{once:true});
+  if(signal?.aborted)abort();
+  try{return await bounded(fetcher(url,{...init,signal:aborter.signal}).then(async response=>({response,data:await response.json().catch(()=>({}))})),requestTimeoutMs,{signal});}
+  finally{abort();signal?.removeEventListener('abort',abort);}
+ }
  async function finish(call){
   if(!call.leaseId)return;
   const lease=call.leaseId;call.leaseId=null;
-  await fetcher('/api/voice/finish',{method:'POST',headers:{'Content-Type':'application/json','X-CSRF-Token':call.csrfToken},body:JSON.stringify({leaseId:lease})}).catch(()=>{});
+  const aborter=new AbortController();
+  try{await bounded(fetcher('/api/voice/finish',{method:'POST',headers:{'Content-Type':'application/json','X-CSRF-Token':call.csrfToken},body:JSON.stringify({leaseId:lease}),signal:aborter.signal}),cleanupTimeoutMs);}catch{}finally{aborter.abort();}
+ }
+ async function endSession(session){
+  if(!session)return;
+  // A stuck audio operation must not prevent the actual hangup or lease release.
+  try{await bounded(session.setVolume?.({volume:0}),cleanupTimeoutMs);}catch{}
+  try{await bounded(session.endSession?.(),cleanupTimeoutMs);}catch{}
  }
  function close(call,{reason='stopped',error=null}={}){
   if(!call)return lastClosing;
   if(call.closed)return call.closePromise;
   call.closed=true;
+  call.aborter.abort();
   call.endReason=reason;
   if(current===call)current=null;
   clearTimeout(call.hardTimer);clearTimeout(call.speechEndTimer);clearInterval(call.meter);call.unsubscribe?.();
   controller.stop();
   const session=call.session;call.session=null;
+  // Publish failure before network cleanup: the user must always see the result
+  // of clicking Connect, even if provider hangup or quota settlement is slow.
+  if(serial===call.id){notify('onStatus','disconnected');if(error)notify('onError',error);}
   call.closePromise=(async()=>{
-   if(session){try{await session.setVolume({volume:0});}catch{}try{await session.endSession();}catch{}}
+   await endSession(session);
    await finish(call);
-   // A slow lease release from an old call must not overwrite a new connection.
-   if(serial===call.id){notify('onStatus','disconnected');if(error)notify('onError',error);}
-   notify('onEnd',{reason:call.endReason,callId:call.id,events:call.events,tools:call.tools});
+   if(serial===call.id)notify('onEnd',{reason:call.endReason,callId:call.id,events:call.events,tools:call.tools});
   })();
   lastClosing=call.closePromise;
   return call.closePromise;
@@ -139,7 +174,7 @@ export function createVoiceSession(controller,callbacks={}){
  }
  async function start(){
   if(current)return current.startPromise;
-  const call={id:++serial,closed:false,session:null,leaseId:null,csrfToken:null,events:0,tools:0,userBytes:0,recent:[],turn:0,lastASR:null,lastUser:'',actions:[],transcripts:new Set(),updates:[]};
+  const call={id:++serial,closed:false,aborter:new AbortController(),session:null,leaseId:null,csrfToken:null,events:0,tools:0,userBytes:0,recent:[],turn:0,lastASR:null,lastUser:'',actions:[],transcripts:new Set(),updates:[]};
   current=call;notify('onStatus','connecting');
   call.unsubscribe=controller.subscribe?.((event,result)=>{
    if(!active(call)||event!=='onResult')return;
@@ -148,16 +183,24 @@ export function createVoiceSession(controller,callbacks={}){
   });
   call.startPromise=(async()=>{
    try{
-    const sdk=await load();if(!active(call))return;
-    const auth=await fetcher('/api/session');
-    if(!auth.ok)throw Error('Inicia sesión para usar voz.');
-    call.csrfToken=(await auth.json()).csrfToken;if(!active(call))return;
-    const response=await fetcher('/api/voice/token',{method:'POST',headers:{'X-CSRF-Token':call.csrfToken}});
-    if(!response.ok)throw Error(response.status===503?'Voz pendiente de configuración personal.':'No se pudo iniciar la llamada.');
-    const data=await response.json();call.leaseId=data.leaseId;
+    const sdk=await bounded(load(),requestTimeoutMs,{signal:call.aborter.signal,message:'No se pudo cargar el cliente de voz. Recarga la página e intenta otra vez.'});if(!active(call))return;
+    const auth=await request('/api/session',{},call.aborter.signal);
+    if(!auth.response.ok)throw Error('Inicia sesión para usar voz.');
+    call.csrfToken=auth.data.csrfToken;if(!active(call))return;
+    // Track a token arriving after cancellation so only its own lease is released.
+    const tokenTask=fetcher('/api/voice/token',{method:'POST',headers:{'X-CSRF-Token':call.csrfToken},signal:call.aborter.signal}).then(async response=>{
+     const data=await response.json().catch(()=>({}));
+     if(response.ok){call.leaseId=data.leaseId;if(!active(call))await finish(call);}
+     return {response,data};
+    });
+    const {response,data}=await bounded(tokenTask,requestTimeoutMs,{signal:call.aborter.signal});
+    if(!response.ok){
+     const messages={active:'Hay otra llamada activa o cerrándose. Espera unos segundos y vuelve a conectar.',rate:'Has iniciado varias llamadas seguidas. Espera un momento y vuelve a conectar.',budget:'Se alcanzó el presupuesto disponible para la voz.'};
+     throw Error(messages[data.error]||(response.status===503?'Voz pendiente de configuración personal.':'No se pudo iniciar la llamada.'));
+    }
     if(!active(call)){await finish(call);return;}
     const clientTools=Object.fromEntries(VOICE_TOOL_REGISTRY.map(def=>[def.name,async args=>clientTool(call,def.name,args)]));
-    const connected=await sdk.Conversation.startSession({
+    const connection=sdk.Conversation.startSession({
      conversationToken:data.token,connectionType:'webrtc',clientTools,
      onStatusChange:({status})=>{if(active(call))notify('onStatus',status);},
      onMessage:message=>onMessage(call,message),
@@ -166,16 +209,18 @@ export function createVoiceSession(controller,callbacks={}){
       notify('onStatus',mode);
      },
      onDisconnect:()=>{void close(call,{reason:'connection_ended'});},
-     onError:error=>{void close(call,{reason:'connection_error',error});}
+     // Like Saloon, an SDK notice alone is not proof that the transport ended.
+     onError:(error,context)=>{if(active(call))notify('onError',classifyVoiceError(context instanceof Error?context:error));}
     });
-    if(!active(call)){try{await connected.setVolume({volume:0});await connected.endSession();}catch{}await finish(call);return;}
+    const connected=await bounded(Promise.resolve(connection).then(async session=>{if(!active(call)){await endSession(session);return null;}return session;}),connectTimeoutMs,{signal:call.aborter.signal});
+    if(!active(call))return;
     call.session=connected;
     for(const text of call.updates)connected.sendContextualUpdate?.(text);
     call.updates=[];
     call.hardTimer=setTimeout(()=>void close(call,{reason:'duration_limit',error:Error('La sesión alcanzó sus 5 minutos. Puedes conectar otra llamada si queda presupuesto.')}),300000);
     call.meter=setInterval(()=>notify('onVolume',call.session?.getOutputVolume?.()||0),100);
     notify('onStatus','connected');return connected;
-   }catch(error){await close(call,{reason:'connection_error',error});throw error;}
+   }catch(error){if(!active(call))return;const visible=/NotAllowedError|PermissionDenied|NotFoundError|NotReadableError|NotSupportedError|OverconstrainedError|SecurityError|network|fetch|SessionConnectionError/i.test(`${error?.name} ${error?.message}`)?classifyVoiceError(error):error;await close(call,{reason:'connection_error',error:visible});throw visible;}
   })();
   return call.startPromise;
  }

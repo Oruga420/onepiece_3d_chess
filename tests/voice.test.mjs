@@ -188,7 +188,7 @@ test('stop while token is pending releases only that lease and never starts the 
   loadSDK:async()=>({Conversation:{startSession:async()=>{configurations++;return{};}}})
  });
  const pending=voice.start();while(!resolveToken)await new Promise(resolve=>setTimeout(resolve,0));
- await voice.stop();resolveToken({ok:true,json:async()=>({token:'x',leaseId:'cancelled-lease'})});await pending;
+ await voice.stop();resolveToken({ok:true,json:async()=>({token:'x',leaseId:'cancelled-lease'})});await pending;await new Promise(resolve=>setImmediate(resolve));
  assert.equal(configurations,0);assert.deepEqual(finishes,[{leaseId:'cancelled-lease'}]);
 });
 
@@ -242,4 +242,61 @@ test('a fresh explicit ASR new-game command executes even when the same action i
  const afterReset=f.game.version;
  const duplicate=JSON.parse(await f.config.clientTools.propose_game_action({action:'new_game'}));
  assert.equal(duplicate.deduplicated,true);assert.equal(f.game.version,afterReset);assert.equal(f.dispatches.length,2);
+});
+
+test('recoverable SDK errors show a notice while the same connection keeps executing moves',async t=>{
+ const errors=[];const f=await voiceFixture(t,{onError:error=>errors.push(error.message)});
+ f.config.onError('Temporary network error');
+ assert.match(errors.at(-1),/conexión/i);assert.ok(f.voice.session);assert.equal(f.ends,0);
+ f.config.onMessage({source:'user',message:'peón de E2 a E4',event_id:'after-warning'});
+ assert.equal(f.game.history.length,1);assert.equal(f.ends,0);
+ f.config.onDisconnect();await f.voice.stop();assert.equal(f.voice.session,null);assert.equal(f.ends,1);
+});
+
+test('startup HTTP timeout aborts the request and permits a clean retry',async t=>{
+ let first=true,signal;const statuses=[],errors=[];
+ const voice=createVoiceSession({stop(){}},{requestTimeoutMs:10,cleanupTimeoutMs:10,onStatus:value=>statuses.push(value),onError:error=>errors.push(error.message),
+  fetch:async(url,init)=>{if(url==='/api/session'&&first){first=false;signal=init.signal;return new Promise(()=>{});}return{ok:true,json:async()=>url==='/api/session'?{csrfToken:'x'}:{token:'x',leaseId:'test'}};},
+  loadSDK:async()=>({Conversation:{startSession:async()=>({endSession(){},setVolume(){},getOutputVolume:()=>0})}})
+ });t.after(()=>voice.stop());
+ await assert.rejects(voice.start(),/no respondió/);assert.equal(signal.aborted,true);assert.equal(statuses.at(-1),'disconnected');assert.ok(errors.length);
+ await voice.start();assert.ok(voice.session);assert.equal(statuses.at(-1),'connected');
+});
+
+test('SDK connection timeout releases its lease and a late session cannot replace a retry',async t=>{
+ let late,started=0,lateEnded=0;const statuses=[],ends=[],finished=[];
+ const session={endSession(){},setVolume(){},getOutputVolume:()=>0};
+ const voice=createVoiceSession({stop(){}},{connectTimeoutMs:10,cleanupTimeoutMs:10,onStatus:value=>statuses.push(value),onEnd:value=>ends.push(value),
+  fetch:async(url,init)=>{if(url==='/api/voice/finish')finished.push(JSON.parse(init.body).leaseId);return{ok:true,json:async()=>url==='/api/session'?{csrfToken:'x'}:{token:'x',leaseId:`lease-${started}`}};},
+  loadSDK:async()=>({Conversation:{startSession:()=>++started===1?new Promise(resolve=>{late=resolve;}):Promise.resolve(session)}})
+ });t.after(()=>voice.stop());
+ await assert.rejects(voice.start(),/no respondió/);assert.deepEqual(finished,['lease-0']);
+ await voice.start();assert.equal(voice.session,session);const count=ends.length;
+ late({endSession(){lateEnded++;},setVolume(){}});await new Promise(resolve=>setImmediate(resolve));
+ assert.equal(lateEnded,1);assert.equal(voice.session,session);assert.equal(statuses.at(-1),'connected');assert.equal(ends.length,count);
+});
+
+test('failure is visible immediately even when hangup and lease cleanup never answer',async t=>{
+ let configuration;const statuses=[],errors=[];
+ const voice=createVoiceSession({stop(){}},{cleanupTimeoutMs:10,onStatus:value=>statuses.push(value),onError:error=>errors.push(error.message),
+  fetch:async url=>url==='/api/voice/finish'?new Promise(()=>{}):{ok:true,json:async()=>url==='/api/session'?{csrfToken:'x'}:{token:'x',leaseId:'test'}},
+  loadSDK:async()=>({Conversation:{startSession:async options=>{configuration=options;return{setVolume(){return new Promise(()=>{});},endSession(){return new Promise(()=>{});},getOutputVolume:()=>0};}}})
+ });t.after(()=>voice.stop());await voice.start();
+ for(let i=0;i<81;i++)configuration.onMessage({source:'user',message:'hola'});
+ assert.equal(statuses.at(-1),'disconnected');assert.match(errors.at(-1),/bucle/);assert.equal(voice.session,null);
+ await voice.stop();
+});
+
+test('voice token rejections explain active call, rate limit and budget separately',async()=>{
+ for(const [code,pattern] of [['active',/otra llamada activa/],['rate',/varias llamadas/],['budget',/presupuesto/]]){
+  const voice=createVoiceSession({stop(){}},{fetch:async url=>({ok:url==='/api/session',status:429,json:async()=>url==='/api/session'?{csrfToken:'x'}:{error:code}}),loadSDK:async()=>({})});
+  await assert.rejects(voice.start(),pattern);
+ }
+});
+
+test('microphone denial and missing device yield specific recoverable startup messages',async()=>{
+ for(const [name,pattern] of [['NotAllowedError',/Permite el micrófono/],['NotFoundError',/conectado y disponible/]]){
+  const voice=createVoiceSession({stop(){}},{fetch:async url=>({ok:true,json:async()=>url==='/api/session'?{csrfToken:'x'}:{token:'x',leaseId:'test'}}),loadSDK:async()=>({Conversation:{startSession:async()=>{throw Object.assign(Error('SDK startup failed'),{name});}}})});
+  await assert.rejects(voice.start(),pattern);
+ }
 });

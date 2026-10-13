@@ -7,16 +7,37 @@ const SETTLEMENT_MARGIN_USD=0.01;
 const RESERVE = `local now=tonumber(ARGV[1]); local active=redis.call('GET',KEYS[2]); if active then return {0,'active'} end; local count=tonumber(redis.call('GET',KEYS[3]) or '0'); if count>=20 then return {0,'rate'} end; local spent=tonumber(redis.call('GET',KEYS[1]) or '0'); local cost=tonumber(ARGV[2]); if spent+cost>tonumber(ARGV[3]) then return {0,'budget'} end; redis.call('INCRBY',KEYS[1],cost); redis.call('SET',KEYS[2],ARGV[4],'PX',ARGV[5]); redis.call('INCR',KEYS[3]); if count==0 then redis.call('PEXPIRE',KEYS[3],600000) end; return {1,spent+cost}`;
 const FINISH = `if redis.call('GET',KEYS[1])==ARGV[1] then redis.call('DEL',KEYS[1]); return 1 end; return 0`;
 
+function rejectedBeforeAcceptance(value,agent){
+ const metadata=value.metadata,charging=metadata?.charging,error=metadata?.error;
+ const emptyObject=value=>value!==null&&typeof value==='object'&&!Array.isArray(value)&&Object.keys(value).length===0;
+ const emptyArray=value=>Array.isArray(value)&&value.length===0;
+ const emptyGeneration=value=>emptyObject(value?.model_usage)&&emptyArray(value?.detailed_model_usage)&&Object.keys(value).length===2;
+ const reasonPrefix=`Agent ${agent} has exceeded its daily call limit of `;
+ return value.status==='failed'&&error?.code===4300&&error.error_type==='call_initialization_error'
+  &&typeof error.reason==='string'&&error.reason.startsWith(reasonPrefix)&&/^[1-9]\d*\.$/.test(error.reason.slice(reasonPrefix.length))
+  &&metadata.accepted_time_unix_secs===null&&metadata.call_duration_secs===0
+  &&['has_audio','has_user_audio','has_response_audio','has_auxiliary_audio'].every(key=>value[key]===false)&&emptyArray(value.transcript)
+  &&metadata.cost===null&&metadata.cost_fiat===null
+  &&charging!==null&&typeof charging==='object'
+  &&['llm_price','llm_charge','call_charge','platform_charge','platform_price','tts_usage','asr_usage','analysis'].every(key=>charging[key]===null)
+  &&charging.free_minutes_consumed===0&&charging.free_llm_dollars_consumed===0
+  &&emptyGeneration(charging.llm_usage?.irreversible_generation)&&emptyGeneration(charging.llm_usage?.initiated_generation)
+  &&Object.keys(charging.llm_usage).length===2&&emptyObject(charging.platform_usage?.category_usage)&&Object.keys(charging.platform_usage).length===1;
+}
+
 function providerBill(value,conversation,agent){
  if(value?.conversation_id!==conversation||value.agent_id!==agent)throw Error('billing_unverified');
  if(!['done','failed'].includes(value.status))return null;
- const cost=value.metadata?.cost_fiat,llm=value.metadata?.charging?.llm_price;
+ // Only this provider-verified pre-acceptance rejection can derive zero from
+ // null billing. Unknown failures retain their reservation until costs exist.
+ const rejected=rejectedBeforeAcceptance(value,agent);
+ const cost=rejected?0:value.metadata?.cost_fiat,llm=rejected?0:value.metadata?.charging?.llm_price;
  if(typeof cost!=='number'||typeof llm!=='number'||!Number.isFinite(cost)||!Number.isFinite(llm)||cost<0||llm<0)throw Error('billing_unverified');
  // cost_fiat can include LLM charges. Counting llm_price again, plus one cent,
  // deliberately overstates the verified final charge instead of understating it.
  const chargedMicrousd=Math.ceil((cost+llm+SETTLEMENT_MARGIN_USD)*1000000);
  if(!Number.isSafeInteger(chargedMicrousd)||chargedMicrousd<10000)throw Error('billing_unverified');
- return {status:value.status,cost,llm,chargedMicrousd};
+ return {status:value.status,cost,llm,chargedMicrousd,basis:rejected?'rejected_before_acceptance_daily_limit':'provider_final_charges'};
 }
 
 class Quota {

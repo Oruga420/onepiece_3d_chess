@@ -30,16 +30,18 @@ export function createVoiceSession(controller,callbacks={}){
  const notify=(name,value)=>callbacks[name]?.(value);
  const fetcher=callbacks.fetch||globalThis.fetch;
  const load=callbacks.loadSDK||(()=>import('../vendor/voice/index.mjs'));
+ const now=callbacks.now||Date.now;
  const active=call=>current===call&&!call.closed;
  async function finish(call){
   if(!call.leaseId)return;
   const lease=call.leaseId;call.leaseId=null;
   await fetcher('/api/voice/finish',{method:'POST',headers:{'Content-Type':'application/json','X-CSRF-Token':call.csrfToken},body:JSON.stringify({leaseId:lease})}).catch(()=>{});
  }
- function close(call){
+ function close(call,{reason='stopped',error=null}={}){
   if(!call)return lastClosing;
   if(call.closed)return call.closePromise;
   call.closed=true;
+  call.endReason=reason;
   if(current===call)current=null;
   clearTimeout(call.hardTimer);clearTimeout(call.speechEndTimer);clearInterval(call.meter);call.unsubscribe?.();
   controller.stop();
@@ -47,18 +49,26 @@ export function createVoiceSession(controller,callbacks={}){
   call.closePromise=(async()=>{
    if(session){try{await session.setVolume({volume:0});}catch{}try{await session.endSession();}catch{}}
    await finish(call);
-   notify('onStatus','disconnected');
+   // A slow lease release from an old call must not overwrite a new connection.
+   if(serial===call.id){notify('onStatus','disconnected');if(error)notify('onError',error);}
+   notify('onEnd',{reason:call.endReason,callId:call.id,events:call.events,tools:call.tools});
   })();
   lastClosing=call.closePromise;
   return call.closePromise;
  }
  async function stop(){return close(current);}
- function budgetStop(call){notify('onError',Error('Límite de seguridad de la llamada alcanzado.'));void close(call);}
+ function budgetStop(call){void close(call,{reason:'rate_limit',error:Error('Demasiadas solicitudes de voz seguidas. La llamada se detuvo para evitar un bucle.')});}
  function count(call,{tool=false,message=null}={}){
   if(!active(call))return false;
-  call.events++;if(tool)call.tools++;
-  if(message?.source==='user')call.userBytes+=bytes(message.message||'');
-  if(call.events>20||call.tools>10||call.userBytes>8192){budgetStop(call);return false;}
+  const userBytes=message?.source==='user'?bytes(message.message||''):0;
+  call.events++;if(tool)call.tools++;call.userBytes+=userBytes;
+  // Count bursts, not the lifetime of a conversation: a normal move generates
+  // ASR, a dispatch, an LLM tool echo and narration. Cost stays bounded by the
+  // server lease and the independent five-minute hard timer below.
+  const at=now();
+  call.recent=call.recent.filter(entry=>at-entry.at<10000);
+  call.recent.push({at,tool,userBytes});
+  if(call.recent.length>80||call.recent.filter(entry=>entry.tool).length>24||call.recent.reduce((sum,entry)=>sum+entry.userBytes,0)>8192){budgetStop(call);return false;}
   return true;
  }
  function boardContext(){
@@ -76,14 +86,14 @@ export function createVoiceSession(controller,callbacks={}){
  function dispatch(call,name,args,source){
   if(!count(call,{tool:true}))return {ok:false,speak:'Límite de llamada alcanzado.'};
   const result=controller.runTool(name,args,{source});
-  if(result.ok&&result.action){call.actions.push({turn:call.turn,name,args,result,version:controller.version,at:Date.now()});call.actions=call.actions.slice(-10);}
+  if(result.ok&&result.action){call.actions.push({turn:call.turn,name,args,result,version:controller.version,at:now()});call.actions=call.actions.slice(-10);}
   notify('onToolResult',{name,args,result,source,asrTurn:call.turn,version:controller.version,executed:true});
   updateContext(call,name,result);
   return result;
  }
  function clientTool(call,name,args){
   if(!active(call))return JSON.stringify({ok:false,speak:'La llamada ya terminó.'});
-  const previous=call.actions.findLast(entry=>entry.turn<call.turn&&Date.now()-entry.at<30000&&sameIntent(entry,name,args,controller));
+  const previous=call.actions.findLast(entry=>entry.turn<call.turn&&now()-entry.at<30000&&sameIntent(entry,name,args,controller));
   if(previous){
    if(!count(call))return JSON.stringify({ok:false,speak:'Límite de llamada alcanzado.'});
    notify('onToolIgnored',{name,args,source:'voice_client_tool',reason:'recent_executed_intent',asrTurn:call.turn,version:controller.version});
@@ -114,12 +124,12 @@ export function createVoiceSession(controller,callbacks={}){
    notify('onToolResult',{name:'stop_action',args:{},result,source:'voice_asr',asrTurn:++call.turn,version:controller.version,executed:true});
    void close(call);return;
   }
+  const eventId=message.event_id;
+  if(message.source==='user'&&eventId!==undefined&&call.transcripts.has(String(eventId)))return;
   if(!count(call,{message}))return;
   notify('onMessage',message);
   if(message.source!=='user')return;
-  const eventId=message.event_id;
-  if(eventId!==undefined&&call.transcripts.has(String(eventId)))return;
-  if(eventId!==undefined)call.transcripts.add(String(eventId));
+  if(eventId!==undefined){call.transcripts.add(String(eventId));if(call.transcripts.size>256)call.transcripts.delete(call.transcripts.values().next().value);}
   call.turn++;call.lastUser=message.message||'';call.lastASR=null;
   if(!command)return;
   const args={...command.args};
@@ -129,7 +139,7 @@ export function createVoiceSession(controller,callbacks={}){
  }
  async function start(){
   if(current)return current.startPromise;
-  const call={id:++serial,closed:false,session:null,leaseId:null,csrfToken:null,events:0,tools:0,userBytes:0,turn:0,lastASR:null,lastUser:'',actions:[],transcripts:new Set(),updates:[]};
+  const call={id:++serial,closed:false,session:null,leaseId:null,csrfToken:null,events:0,tools:0,userBytes:0,recent:[],turn:0,lastASR:null,lastUser:'',actions:[],transcripts:new Set(),updates:[]};
   current=call;notify('onStatus','connecting');
   call.unsubscribe=controller.subscribe?.((event,result)=>{
    if(!active(call)||event!=='onResult')return;
@@ -155,17 +165,17 @@ export function createVoiceSession(controller,callbacks={}){
       if(!active(call))return;
       notify('onStatus',mode);
      },
-     onDisconnect:()=>{void close(call);},
-     onError:error=>{if(active(call))notify('onError',error);void close(call);}
+     onDisconnect:()=>{void close(call,{reason:'connection_ended'});},
+     onError:error=>{void close(call,{reason:'connection_error',error});}
     });
     if(!active(call)){try{await connected.setVolume({volume:0});await connected.endSession();}catch{}await finish(call);return;}
     call.session=connected;
     for(const text of call.updates)connected.sendContextualUpdate?.(text);
     call.updates=[];
-    call.hardTimer=setTimeout(()=>void close(call),300000);
+    call.hardTimer=setTimeout(()=>void close(call,{reason:'duration_limit',error:Error('La sesión alcanzó sus 5 minutos. Puedes conectar otra llamada si queda presupuesto.')}),300000);
     call.meter=setInterval(()=>notify('onVolume',call.session?.getOutputVolume?.()||0),100);
     notify('onStatus','connected');return connected;
-   }catch(error){await close(call);notify('onError',error);throw error;}
+   }catch(error){await close(call,{reason:'connection_error',error});throw error;}
   })();
   return call.startPromise;
  }

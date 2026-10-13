@@ -56,6 +56,24 @@ try{
  assert.equal(await page.locator('#voice-confirm').isVisible(),false);
  report.final=await page.evaluate(()=>({fen:window.chessApp.game.fen(),history:window.chessApp.game.history.length,pending:window.chessApp.commands.pending}));
  assert.equal(report.final.fen,r.immediate.fen);assert.equal(report.final.history,1);assert.equal(report.final.pending,null);
+ report.persistence=await page.evaluate(async()=>{
+  const app=window.chessApp,{createVoiceSession}=await import('/src/voice.mjs');let config,ends=0,clock=0;
+  const voice=createVoiceSession(app.commands,{now:()=>clock,fetch:async url=>({ok:true,json:async()=>url==='/api/session'?{csrfToken:'TEST_NOT_LIVE'}:{token:'TEST_NOT_LIVE',leaseId:'TEST_NOT_LIVE'}}),loadSDK:async()=>({Conversation:{startSession:async c=>{config=c;return{setVolume:async()=>{},endSession:async()=>ends++,getOutputVolume:()=>0,sendContextualUpdate(){}};}}})});
+  await voice.start();const initial=app.game.history.length;let moves=0;
+  try{for(let i=0;i<12;i++){
+   const move=app.game.legalMoves()[0];if(!move)throw Error('No legal move in persistence fixture');
+   const piece=app.game.board[Number(move.from[1])-1][move.from.charCodeAt(0)-65];
+   const roles={pawn:'peón',rook:'torre',knight:'caballo',bishop:'alfil',queen:'reina',king:'rey'};
+   clock+=2000;config.onMessage({source:'user',message:`${roles[piece.type]} de ${move.from} a ${move.to}${move.promotion?' '+roles[move.promotion]:''}`,event_id:'persist-'+i});
+   config.onMessage({source:'ai',message:'Movimiento realizado.'});
+   const duplicate=JSON.parse(await config.clientTools.propose_move(move));if(!duplicate.ok)throw Error('Move callback rejected');
+   const deadline=performance.now()+15000;while(app.busy){if(performance.now()>deadline)throw Error("Animation did not settle: "+i);await new Promise(resolve=>setTimeout(resolve,25));}
+   if(!voice.session||ends)throw Error('Voice disconnected during normal moves');moves++;
+  }
+  return{mode:'FREE_BROWSER_CALLBACK_INJECTION_NOT_LIVE',moves,historyAdded:app.game.history.length-initial,endsDuringPlay:ends,connected:Boolean(voice.session),metrics:voice.metrics};
+  }finally{await voice.stop();}
+ });
+ assert.equal(report.persistence.moves,12);assert.equal(report.persistence.historyAdded,12);assert.equal(report.persistence.endsDuringPlay,0);assert.equal(report.persistence.connected,true);
  report.consoleErrors=errors;report.httpErrors=httpErrors;
  assert.deepEqual(errors,[]);assert.deepEqual(httpErrors,[]);
  report.passed=true;

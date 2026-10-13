@@ -2,7 +2,7 @@ import test from 'node:test';import assert from 'node:assert/strict';import{crea
 test('native WebMCP registers exactly same11 and executes shared controller',async()=>{const tools=[];const doc={modelContext:{registerTool:t=>{tools.push(t);}}};let called;const bridge=await registerWebMCP({runTool:(...args)=>{called=args;return{ok:true};}},{document:doc,navigator:{}});assert.equal(bridge.mode,'native');assert.deepEqual(tools.map(t=>t.name),TOOL_REGISTRY.map(t=>t.name));const r=await tools[1].execute({from:'E2'});assert.equal(JSON.parse(r.content[0].text).ok,true);assert.equal(called[2].source,'webmcp');});
 test('real SDK-shaped voice tools omit confirmation and speech never starts a countdown',async()=>{let config,stops=0,ended=0,speech=0,calls=[];const controller={runTool:(name,args)=>({ok:true,speak:name,...args}),stop:()=>stops++,speechEnded:()=>speech++};const fetch=async(url,init)=>{calls.push([url,init]);return{ok:true,json:async()=>url==='/api/session'?{csrfToken:'csrf'}:{token:'ephemeral',leaseId:'lease'}};};const voice=createVoiceSession(controller,{speechEndDelayMs:0,fetch,loadSDK:async()=>({Conversation:{startSession:async options=>{config=options;return{setVolume:async()=>{},endSession:async()=>ended++,getOutputVolume:()=>0.2};}}})});await voice.start();assert.equal(config.connectionType,'webrtc');assert.equal(Object.keys(config.clientTools).length,10);assert.equal(config.clientTools.confirm_action,undefined);assert.equal(JSON.parse(await config.clientTools.select_piece({from:'E2'})).speak,'select_piece');config.onModeChange({mode:'listening'});await new Promise(r=>setTimeout(r,2));assert.equal(speech,0);await voice.stop();assert.equal(ended,1);assert.ok(stops);assert.ok(calls.some(([url])=>url==='/api/voice/finish'));});
 test('missing configuration fails honestly and does not call SDK',async()=>{let started=false;const voice=createVoiceSession({stop(){}},{fetch:async url=>({ok:url==='/api/session',status:503,json:async()=>({csrfToken:'csrf'})}),loadSDK:async()=>({Conversation:{startSession(){started=true;}}})});await assert.rejects(()=>voice.start(),/configuración personal/);assert.equal(started,false);});
-test('voice budget disconnects after event cap and never returns oversized tool payload',async()=>{let config,ended=0;const voice=createVoiceSession({runTool:()=>({ok:true,speak:'x'.repeat(5000)}),stop(){},speechEnded(){}},{fetch:async url=>({ok:true,json:async()=>url==='/api/session'?{csrfToken:'csrf'}:{token:'x',leaseId:'y'}}),loadSDK:async()=>({Conversation:{startSession:async c=>{config=c;return{setVolume:async()=>{},endSession:async()=>ended++,getOutputVolume:()=>0};}}})});await voice.start();const reply=JSON.parse(await config.clientTools.get_board({}));assert.equal(reply.ok,false);assert.match(reply.speak,/demasiado largo/);for(let i=0;i<21;i++)config.onMessage({source:'user',message:'hola'});await new Promise(r=>setTimeout(r,5));assert.ok(ended>=1);await voice.stop();});
+test('voice burst guard disconnects a message flood and never returns oversized tool payload',async()=>{let config,ended=0;const voice=createVoiceSession({runTool:()=>({ok:true,speak:'x'.repeat(5000)}),stop(){},speechEnded(){}},{fetch:async url=>({ok:true,json:async()=>url==='/api/session'?{csrfToken:'csrf'}:{token:'x',leaseId:'y'}}),loadSDK:async()=>({Conversation:{startSession:async c=>{config=c;return{setVolume:async()=>{},endSession:async()=>ended++,getOutputVolume:()=>0};}}})});await voice.start();const reply=JSON.parse(await config.clientTools.get_board({}));assert.equal(reply.ok,false);assert.match(reply.speak,/demasiado largo/);for(let i=0;i<81;i++)config.onMessage({source:'user',message:'hola'});await new Promise(r=>setTimeout(r,5));assert.ok(ended>=1);await voice.stop();});
 test('ElevenLabs ASR primary adapter executes immediately through shared registry',async t=>{
  const f=await voiceFixture(t);
  f.config.onMessage({source:'user',message:'Mueve a la reina.',event_id:1});
@@ -105,17 +105,75 @@ test('ambiguous spoken piece asks for its square without moving or creating a co
  assert.equal(f.game.version,version);assert.equal(f.controller.pending,null);
  assert.match(result.speak,/casilla de origen/i);assert.doesNotMatch(result.speak,/confirma/i);
 });
-test('combined messages and dispatches obey 20 events and real tools obey 10',async t=>{
- const f=await voiceFixture(t);
- for(let i=0;i<10;i++)await f.config.clientTools.get_board({});
- assert.equal(f.dispatches.length,10);assert.equal(f.voice.metrics.tools,10);
- await f.config.clientTools.get_board({});assert.equal(f.voice.session,null);assert.equal(f.dispatches.length,10);
+test('burst guard limits real tools and messages within ten seconds',async t=>{
+ const errors=[],ends=[];
+ const f=await voiceFixture(t,{onError:error=>errors.push(error.message),onEnd:value=>ends.push(value)});
+ for(let i=0;i<24;i++)await f.config.clientTools.get_board({});
+ assert.equal(f.dispatches.length,24);assert.equal(f.voice.metrics.tools,24);
+ await f.config.clientTools.get_board({});await f.voice.stop();
+ assert.equal(f.voice.session,null);assert.equal(f.dispatches.length,24);
+ assert.equal(ends[0].reason,'rate_limit');assert.match(errors.at(-1),/bucle/);
  const g=await voiceFixture(t);
- for(let i=0;i<10;i++)g.config.onMessage({source:'ai',message:'mensaje'});
- for(let i=0;i<5;i++)g.config.onMessage({source:'user',message:'Zoro',event_id:i});
- assert.deepEqual(g.voice.metrics,{events:20,tools:5,userBytes:20,asrTurn:5});
+ for(let i=0;i<80;i++)g.config.onMessage({source:'ai',message:'mensaje'});
+ assert.equal(g.voice.metrics.events,80);assert.ok(g.voice.session);
  g.config.onMessage({source:'ai',message:'uno más'});assert.equal(g.voice.session,null);
 });
+
+test('36 spoken move turns with narration and duplicate SDK tools retain one connection',async t=>{
+ let clock=0;
+ const f=await voiceFixture(t,{now:()=>clock});
+ for(let turn=0;turn<36;turn++){
+  clock+=2000;
+  const moves=f.game.legalMoves();
+  const move=moves.find(m=>f.game.board[Number(m.from[1])-1][m.from.charCodeAt(0)-65]?.type==='pawn'&&!m.promotion)||moves.find(m=>!m.promotion);
+  assert.ok(move,`legal move on turn ${turn}`);
+  const role={pawn:'peon',rook:'torre',knight:'caballo',bishop:'alfil',queen:'reina',king:'rey'}[f.game.board[Number(move.from[1])-1][move.from.charCodeAt(0)-65].type];
+  const message={source:'user',message:`${role} de ${move.from} a ${move.to}`,event_id:turn};
+  f.config.onMessage(message);
+  assert.equal(f.dispatches.at(-1).result.ok,true,`move ${turn}`);
+  f.config.onMessage(message);
+  const echo=JSON.parse(await f.config.clientTools.propose_move({from:move.from,to:move.to}));
+  assert.equal(echo.deduplicated,true);
+  f.config.onMessage({source:'ai',message:'Jugada ejecutada.'});
+  f.config.onModeChange({mode:'speaking'});f.config.onModeChange({mode:'listening'});
+  assert.ok(f.voice.session,`connection remains on turn ${turn}`);
+ }
+ assert.equal(f.game.history.length,36);assert.equal(f.dispatches.length,36);
+ assert.equal(f.voice.metrics.tools,36);assert.equal(f.voice.metrics.asrTurn,36);assert.equal(f.ends,0);
+ await f.voice.stop();assert.equal(f.ends,1);
+});
+
+test('transcript retransmissions do not consume quotas or reexecute',async t=>{
+ const f=await voiceFixture(t);
+ const message={source:'user',message:'peon de E2 a E4',event_id:'one-move'};
+ f.config.onMessage(message);
+ for(let i=0;i<100;i++)f.config.onMessage(message);
+ assert.equal(f.game.history.length,1);assert.equal(f.dispatches.length,1);
+ assert.equal(f.voice.metrics.events,2);assert.ok(f.voice.session);assert.equal(f.ends,0);
+});
+
+test('five-minute hard timeout stays enforced and preserves its reason',async t=>{
+ t.mock.timers.enable({apis:['setTimeout','setInterval']});
+ const statuses=[],errors=[],ends=[];
+ const f=await voiceFixture(t,{onStatus:value=>statuses.push(value),onError:error=>errors.push(error.message),onEnd:value=>ends.push(value)});
+ t.mock.timers.tick(299999);assert.ok(f.voice.session);
+ t.mock.timers.tick(1);await f.voice.stop();
+ assert.equal(f.voice.session,null);assert.equal(f.ends,1);assert.equal(ends[0].reason,'duration_limit');
+ assert.equal(statuses.at(-1),'disconnected');assert.match(errors.at(-1),/5 minutos/);
+});
+
+test('delayed old lease release cannot overwrite a reconnected call status',async t=>{
+ let finishFirst;let releases=0;const statuses=[];
+ const f=await voiceFixture(t,{onStatus:value=>statuses.push(value),fetch:async url=>{
+  if(url==='/api/voice/finish'&&++releases===1)return new Promise(resolve=>{finishFirst=resolve;});
+  return {ok:true,json:async()=>url==='/api/session'?{csrfToken:'test'}:{token:'MOCK_NOT_LIVE',leaseId:'mock'}};
+ }});
+ const stopped=f.voice.stop();while(!finishFirst)await Promise.resolve();
+ await f.voice.start();assert.equal(statuses.at(-1),'connected');
+ finishFirst({ok:true});await stopped;
+ assert.equal(statuses.at(-1),'connected');assert.ok(f.voice.session);
+});
+
 test('UTF8 user cap counts bytes and get_board reply stays below 4KiB',async t=>{
  const f=await voiceFixture(t);
  const encoded=await f.config.clientTools.get_board({});

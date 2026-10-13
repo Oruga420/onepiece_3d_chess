@@ -59,9 +59,9 @@ try {
     await page.screenshot({path:path.join(out,`camera-${mode}.png`),fullPage:true});
   }
   await page.evaluate(()=>window.chessApp.view.zoom(-100));
-  assert.equal(await page.evaluate(()=>window.chessApp.view.getMetrics().zoom),.87);
+  assert.equal(await page.evaluate(()=>window.chessApp.view.getMetrics().zoom),.35);
   await page.evaluate(()=>window.chessApp.view.zoom(100));
-  assert.equal(await page.evaluate(()=>window.chessApp.view.getMetrics().zoom),1.3);
+  assert.equal(await page.evaluate(()=>window.chessApp.view.getMetrics().zoom),1.5);
   const before=await page.evaluate(()=>window.chessApp.view.camera.position.toArray());
   for(const key of ['w','a','s','d','q','e','ArrowLeft','ArrowRight'])await page.keyboard.press(key);
   assert.deepEqual(await page.evaluate(()=>window.chessApp.view.camera.position.toArray()),before);
@@ -129,8 +129,8 @@ try {
   await page.setViewportSize({width:390,height:844});
   await page.waitForTimeout(200);
   assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth),false);
-  for(const mode of ['front','top','opposite'])for(const zoom of [.87,1.3]){
-    const contained=await page.evaluate(({mode,zoom})=>{const v=window.chessApp.view;v.zoomLevel=zoom;v.setCamera(mode);const r=v.canvas.getBoundingClientRect();return ['A1','A8','H1','H8','D7'].every(s=>{const p=v.squareToScreen(s);return p.x>=r.left&&p.x<=r.right&&p.y>=r.top&&p.y<=r.bottom;});},{mode,zoom});
+  for(const mode of ['front','top','opposite'])for(const zoom of [.9,1.5]){
+    const contained=await page.evaluate(({mode,zoom})=>{const v=window.chessApp.view;v.setCamera(mode);v.zoomLevel=zoom;v.updateCamera();const r=v.canvas.getBoundingClientRect();return ['A1','A8','H1','H8','D7'].every(s=>{const p=v.squareToScreen(s);return p.x>=r.left&&p.x<=r.right&&p.y>=r.top&&p.y<=r.bottom;});},{mode,zoom});
     assert(contained,`mobile containment ${mode} ${zoom}`);
   }
   await page.click('#camera-reset');

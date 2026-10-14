@@ -1,6 +1,6 @@
-import test from 'node:test';import assert from 'node:assert/strict';import{createVoiceSession,registerWebMCP}from'../src/voice.mjs';import{TOOL_REGISTRY}from'../src/voice-registry.mjs';
-test('native WebMCP registers exactly same11 and executes shared controller',async()=>{const tools=[];const doc={modelContext:{registerTool:t=>{tools.push(t);}}};let called;const bridge=await registerWebMCP({runTool:(...args)=>{called=args;return{ok:true};}},{document:doc,navigator:{}});assert.equal(bridge.mode,'native');assert.deepEqual(tools.map(t=>t.name),TOOL_REGISTRY.map(t=>t.name));const r=await tools[1].execute({from:'E2'});assert.equal(JSON.parse(r.content[0].text).ok,true);assert.equal(called[2].source,'webmcp');});
-test('real SDK-shaped voice tools omit confirmation and speech never starts a countdown',async()=>{let config,stops=0,ended=0,speech=0,calls=[];const controller={runTool:(name,args)=>({ok:true,speak:name,...args}),stop:()=>stops++,speechEnded:()=>speech++};const fetch=async(url,init)=>{calls.push([url,init]);return{ok:true,json:async()=>url==='/api/session'?{csrfToken:'csrf'}:{token:'ephemeral',leaseId:'lease'}};};const voice=createVoiceSession(controller,{speechEndDelayMs:0,fetch,loadSDK:async()=>({Conversation:{startSession:async options=>{config=options;return{setVolume:async()=>{},endSession:async()=>ended++,getOutputVolume:()=>0.2};}}})});await voice.start();assert.equal(config.connectionType,'webrtc');assert.equal(Object.keys(config.clientTools).length,10);assert.equal(config.clientTools.confirm_action,undefined);assert.equal(JSON.parse(await config.clientTools.select_piece({from:'E2'})).speak,'select_piece');config.onModeChange({mode:'listening'});await new Promise(r=>setTimeout(r,2));assert.equal(speech,0);await voice.stop();assert.equal(ended,1);assert.ok(stops);assert.ok(calls.some(([url])=>url==='/api/voice/finish'));});
+import test from 'node:test';import assert from 'node:assert/strict';import{createVoiceSession,registerWebMCP}from'../src/voice.mjs';import{TOOL_REGISTRY,VOICE_TOOL_REGISTRY}from'../src/voice-registry.mjs';
+test('native WebMCP registers the shared registry and executes shared controller',async()=>{const tools=[];const doc={modelContext:{registerTool:t=>{tools.push(t);}}};let called;const bridge=await registerWebMCP({runTool:(...args)=>{called=args;return{ok:true};}},{document:doc,navigator:{}});assert.equal(bridge.mode,'native');assert.deepEqual(tools.map(t=>t.name),TOOL_REGISTRY.map(t=>t.name));const r=await tools[1].execute({from:'E2'});assert.equal(JSON.parse(r.content[0].text).ok,true);assert.equal(called[2].source,'webmcp');});
+test('real SDK-shaped voice tools omit confirmation and speech never starts a countdown',async()=>{let config,stops=0,ended=0,speech=0,calls=[];const controller={runTool:(name,args)=>({ok:true,speak:name,...args}),stop:()=>stops++,speechEnded:()=>speech++};const fetch=async(url,init)=>{calls.push([url,init]);return{ok:true,json:async()=>url==='/api/session'?{csrfToken:'csrf'}:{token:'ephemeral',leaseId:'lease'}};};const voice=createVoiceSession(controller,{speechEndDelayMs:0,fetch,loadSDK:async()=>({Conversation:{startSession:async options=>{config=options;return{setVolume:async()=>{},endSession:async()=>ended++,getOutputVolume:()=>0.2};}}})});await voice.start();assert.equal(config.connectionType,'webrtc');assert.equal(Object.keys(config.clientTools).length,VOICE_TOOL_REGISTRY.length);assert.equal(config.clientTools.confirm_action,undefined);assert.equal(JSON.parse(await config.clientTools.select_piece({from:'E2'})).speak,'select_piece');config.onModeChange({mode:'listening'});await new Promise(r=>setTimeout(r,2));assert.equal(speech,0);await voice.stop();assert.equal(ended,1);assert.ok(stops);assert.ok(calls.some(([url])=>url==='/api/voice/finish'));});
 test('missing configuration fails honestly and does not call SDK',async()=>{let started=false;const voice=createVoiceSession({stop(){}},{fetch:async url=>({ok:url==='/api/session',status:503,json:async()=>({csrfToken:'csrf'})}),loadSDK:async()=>({Conversation:{startSession(){started=true;}}})});await assert.rejects(()=>voice.start(),/configuración personal/);assert.equal(started,false);});
 test('voice burst guard disconnects a message flood and never returns oversized tool payload',async()=>{let config,ended=0;const voice=createVoiceSession({runTool:()=>({ok:true,speak:'x'.repeat(5000)}),stop(){},speechEnded(){}},{fetch:async url=>({ok:true,json:async()=>url==='/api/session'?{csrfToken:'csrf'}:{token:'x',leaseId:'y'}}),loadSDK:async()=>({Conversation:{startSession:async c=>{config=c;return{setVolume:async()=>{},endSession:async()=>ended++,getOutputVolume:()=>0};}}})});await voice.start();const reply=JSON.parse(await config.clientTools.get_board({}));assert.equal(reply.ok,false);assert.match(reply.speak,/demasiado largo/);for(let i=0;i<81;i++)config.onMessage({source:'user',message:'hola'});await new Promise(r=>setTimeout(r,5));assert.ok(ended>=1);await voice.stop();});
 test('ElevenLabs ASR primary adapter executes immediately through shared registry',async t=>{
@@ -206,7 +206,7 @@ test('ElevenLabs agent configuration exposes only direct voice tools and instruc
  const {buildAgentConfig}=await import('../scripts/sync-voice-agent.mjs');
  const {VOICE_TOOL_REGISTRY}=await import('../src/voice-registry.mjs');
  const {agent}=buildAgentConfig().conversation_config;
- assert.equal(agent.prompt.tools.length,10);
+ assert.equal(agent.prompt.tools.length,VOICE_TOOL_REGISTRY.length);
  assert.deepEqual(agent.prompt.tools.map(tool=>tool.name),VOICE_TOOL_REGISTRY.map(tool=>tool.name));
  assert.equal(agent.prompt.tools.some(tool=>tool.name==='confirm_action'),false);
  const actions=agent.prompt.tools.find(tool=>tool.name==='propose_game_action').parameters.properties.action.enum;
@@ -339,4 +339,93 @@ test('online client-tool-only queued writes cannot execute twice and server erro
  const late=JSON.parse(await f.config.clientTools.propose_move({from:'E2',to:'E4'}));
  assert.equal(late.ok,false);assert.equal(late.queued,false);assert.equal(late.deduplicated,true);assert.equal(late.speak,'La sala ya terminó.');
  assert.equal(requests.length,1);assert.equal(game.history.length,0);
+});
+
+test('fruit ASR and SDK echoes transform once while the same voice call stays connected',async t=>{
+ const f=await voiceFixture(t);
+ const initial=JSON.parse(f.contexts[0].split(' Datos: ')[1]);
+ assert.equal(initial.tool,'get_board');assert.equal(initial.result.fruits.length,4);
+ assert.ok(initial.result.eligiblePawns.includes('E2'));
+ const before=f.game.version;
+ const transcript={source:'user',message:'Dale Gomu Gomu al peón de E2',event_id:'fruit'};
+ f.config.onMessage(transcript);
+ assert.equal(f.dispatches.at(-1).name,'propose_fruit');
+ assert.equal(f.dispatches.at(-1).result.ok,true);
+ assert.equal(f.game.board[1][4].type,'queen');
+ assert.equal(f.game.version,before+1);assert.equal(f.game.history.length,1);
+ assert.equal(f.controller.pending,null);
+ f.config.onMessage(transcript);
+ const echo=JSON.parse(await f.config.clientTools.propose_fruit({square:'e2',fruit:'gomu-gomu'}));
+ assert.equal(echo.deduplicated,true);assert.equal(echo.action.kind,'fruit');
+ assert.equal(f.game.history.length,1);assert.equal(f.dispatches.length,1);
+ f.config.onMessage({source:'user',message:'Dale Mera Mera al peón de D2',event_id:'other-fruit'});
+ assert.equal(f.game.board[1][3].type,'knight');assert.equal(f.game.history.length,2);
+ assert.equal(f.dispatches.length,2);assert.ok(f.voice.session);assert.equal(f.ends,0);
+});
+
+test('queued fruit dedup and acknowledgements compare both fruit ID and origin square',async t=>{
+ const {ChessGame}=await import('../src/rules.mjs');const {createCommandController}=await import('../src/commands.mjs');
+ const game=new ChessGame(),requests=[];
+ const controller=createCommandController(game,{executeAction:action=>{requests.push(action);return{ok:true,queued:true,requestedAction:action,speak:'Enviando...'};}});
+ const f=await voiceFixture(t,{controller});
+ const commands=[['E2','gomu-gomu','Dale Gomu Gomu al peón de E2'],['E2','ope-ope','Dale Ope Ope al peón de E2'],['D2','gomu-gomu','Dale Gomu Gomu al peón de D2']];
+ for(const [square,fruit,message] of commands){
+  f.config.onMessage({source:'user',message,event_id:fruit+square});
+  const echo=JSON.parse(await f.config.clientTools.propose_fruit({square,fruit}));
+  assert.equal(echo.deduplicated,true);assert.equal(echo.queued,true);
+ }
+ assert.equal(requests.length,3);assert.equal(game.history.length,0);
+ game.useDevilFruit({square:'E2',fruit:'gomu-gomu'});
+ controller.notifyResult({ok:true,action:{kind:'fruit',square:'E2',fruit:'gomu-gomu'},speak:'Peón de E2 transformado en reina.'});
+ f.config.onMessage({source:'user',message:'gracias',event_id:'after-ack'});
+ const first=JSON.parse(await f.config.clientTools.propose_fruit({square:'e2',fruit:'gomu-gomu'}));
+ assert.equal(first.deduplicated,true);assert.equal(first.queued,false);assert.equal(first.action.fruit,'gomu-gomu');
+ for(const [square,fruit] of commands.slice(1)){
+  const pending=JSON.parse(await f.config.clientTools.propose_fruit({square,fruit}));
+  assert.equal(pending.deduplicated,true);assert.equal(pending.queued,true);assert.equal(pending.action,undefined);
+ }
+ controller.notifyResult({ok:false,requestedAction:{kind:'fruit',square:'E2',fruit:'ope-ope'},speak:'La pieza ya no es un peón.'});
+ const failed=JSON.parse(await f.config.clientTools.propose_fruit({square:'E2',fruit:'ope-ope'}));
+ assert.equal(failed.ok,false);assert.equal(failed.queued,false);assert.match(failed.speak,/ya no es un peón/);
+ const unrelated=JSON.parse(await f.config.clientTools.propose_fruit({square:'D2',fruit:'gomu-gomu'}));
+ assert.equal(unrelated.queued,true);assert.equal(unrelated.ok,true);
+ assert.equal(requests.length,3);assert.equal(game.history.length,1);assert.ok(f.voice.session);assert.equal(f.ends,0);
+});
+
+test('client-tool fruit calls execute unrecognized language once and preserve direct mode',async t=>{
+ const f=await voiceFixture(t);
+ f.config.onMessage({source:'user',message:'Quiero darle elasticidad al soldado del rey',event_id:'unparsed'});
+ assert.equal(f.dispatches.length,0);
+ const result=JSON.parse(await f.config.clientTools.propose_fruit({square:'E2',fruit:'gomu-gomu'}));
+ assert.equal(result.ok,true);assert.equal(result.action.kind,'fruit');assert.equal(f.game.board[1][4].type,'queen');
+ assert.equal(f.controller.pending,null);assert.equal(f.game.history.length,1);
+ const echo=JSON.parse(await f.config.clientTools.propose_fruit({square:'E2',fruit:'gomu-gomu'}));
+ assert.equal(echo.deduplicated,true);assert.equal(f.game.history.length,1);assert.ok(f.voice.session);
+});
+
+test('voice configuration teaches all fruit powers within the existing provider budget',async()=>{
+ const {buildAgentConfig}=await import('../scripts/sync-voice-agent.mjs');
+ const config=buildAgentConfig(),agent=config.conversation_config.agent;
+ assert.ok(Buffer.byteLength(JSON.stringify(agent),'utf8')<=8192);
+ for(const [fruit,piece] of [['gomu-gomu','reina'],['mera-mera','caballo'],['ope-ope','torre'],['gora-gora','alfil']])assert.ok(agent.prompt.prompt.includes(`(${fruit})=${piece}`));
+ assert.match(agent.prompt.prompt,/consulta get_board/);assert.match(agent.prompt.prompt,/propose_fruit/);
+ assert.match(agent.prompt.prompt,/Si da jaque pasa turno al rival/);
+ const tool=agent.prompt.tools.find(tool=>tool.name==='propose_fruit');assert.ok(tool);
+ assert.deepEqual(tool.parameters.required,['square','fruit']);
+ assert.equal(agent.prompt.max_tokens,128);assert.equal(config.conversation_config.conversation.max_duration_seconds,300);
+ assert.deepEqual(config.platform_settings.call_limits,{agent_concurrency_limit:1,daily_limit:20,bursting_enabled:false});
+ assert.equal(config.platform_settings.auth.enable_auth,true);assert.equal(config.platform_settings.privacy.record_voice,false);
+});
+
+test('initial voice context includes fruit stock and eligible pawns for every crew',async t=>{
+ const {ChessGame}=await import('../src/rules.mjs');const {createCommandController}=await import('../src/commands.mjs');
+ const {CREWS}=await import('../src/roster.mjs');
+ for(const crew of Object.keys(CREWS)){
+  const controller=createCommandController(new ChessGame(),{crew});
+  const f=await voiceFixture(t,{controller});
+  const initial=JSON.parse(f.contexts[0].split(' Datos: ')[1]);
+  assert.equal(initial.result.fruits?.length,4,crew);assert.equal(initial.result.eligiblePawns?.length,8,crew);
+  assert.ok(Buffer.byteLength(JSON.stringify(initial),'utf8')<=4096,crew);
+  await f.voice.stop();
+ }
 });

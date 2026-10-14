@@ -337,15 +337,15 @@
   },
   {
     "screen": "(root)",
-    "file": "script.js",
-    "line": 2285,
+    "file": "src/app.mjs",
+    "line": 27,
     "element": "dynamic handler",
-    "label": "Available devil fruit",
-    "action": "useDevilFruit",
-    "Kind": "skip",
-    "RoleGate": "authenticated player",
-    "voiceTool": "",
-    "reason": "Remove nonstandard chess power-up controls from classic chess"
+    "label": "Four devil fruits",
+    "action": "useFruit -> commands.runTool(propose_fruit)",
+    "Kind": "consequential",
+    "RoleGate": "authenticated current player; own pawn and available fruit",
+    "voiceTool": "propose_fruit",
+    "reason": "Restored power-ups are available to voice and WebMCP via the shared authoritative engine"
   },
   {
     "screen": "(root)",

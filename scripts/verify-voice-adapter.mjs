@@ -41,7 +41,7 @@ try{
   }finally{await voice.stop();}
  });
  const r=report.direct;
- assert.equal(r.selected,'D1');assert.equal(r.tools.length,10);assert.equal(r.tools.includes('confirm_action'),false);
+ assert.equal(r.selected,'D1');assert.equal(r.tools.length,11);assert.equal(r.tools.includes('confirm_action'),false);
  assert.equal(r.immediate.origin,null);assert.equal(r.immediate.destination?.type,'pawn');
  assert.equal(r.immediate.pending,null);assert.equal(r.immediate.history,1);assert.equal(r.immediate.historyCount,'01');
  assert.match(r.immediate.historyText,/E2\s*→\s*E4/);assert.equal(r.immediate.confirmVisible,false);

@@ -16,13 +16,17 @@ function encodeResult(result){
  return bytes(encoded)<=4096?encoded:JSON.stringify({ok:false,speak:'Resultado demasiado largo. Solicita una pieza o casilla concreta.'});
 }
 function sameAction(left,right){
- if(!left||!right||left.kind!==right.kind||left.value!==right.value||left.reason!==right.reason)return false;
+ if(!left||!right||left.kind!==right.kind||left.value!==right.value||left.reason!==right.reason||left.square!==right.square||left.fruit!==right.fruit)return false;
  return ['move','intendedMove'].every(key=>['from','to','promotion'].every(field=>left[key]?.[field]===right[key]?.[field]));
 }
 function sameIntent(entry,name,args,controller){
  if(entry.name!==name)return false;
  if(!entry.result.action&&!entry.result.requestedAction&&entry.version!==controller.version)return false;
  if(name==='select_piece')return args.from?String(args.from).toUpperCase()===entry.result.square:normalize(args.piece)===normalize(entry.args.piece);
+ if(name==='propose_fruit'){
+  const action=entry.result.action||entry.result.requestedAction||entry.result.proposal?.action;
+  return Boolean(action&&String(args.square).toUpperCase()===action.square&&args.fruit===action.fruit);
+ }
  if(name==='propose_move'){
   const move=entry.result.action?.move||entry.result.requestedAction?.move||entry.result.proposal?.action?.move;
   return Boolean(move&&String(args.to).toUpperCase()===move.to&&(!args.from||String(args.from).toUpperCase()===move.from)&&(!args.piece||normalize(args.piece)===normalize(entry.args.piece))&&(args.promotion||null)===(move.promotion||null));
@@ -234,6 +238,8 @@ export function createVoiceSession(controller,callbacks={}){
     call.session=connected;
     for(const text of call.updates)connected.sendContextualUpdate?.(text);
     call.updates=[];
+    const board=controller.runTool?.('get_board',{}, {source:'voice_context'});
+    if(board?.ok)updateContext(call,'get_board',board);
     call.hardTimer=setTimeout(()=>void close(call,{reason:'duration_limit',error:Error('La sesión alcanzó sus 5 minutos. Puedes conectar otra llamada si queda presupuesto.')}),300000);
     call.meter=setInterval(()=>notify('onVolume',call.session?.getOutputVolume?.()||0),100);
     notify('onStatus','connected');return connected;

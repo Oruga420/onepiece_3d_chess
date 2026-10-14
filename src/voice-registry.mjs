@@ -1,11 +1,13 @@
+import {DEVIL_FRUITS} from './rules.mjs';
 const string = (description, extra={}) => ({type:'string',description,...extra});
 const enumeration = (description,values) => string(description,{enum:values});
 const tool = (name,description,kind,properties={},required=[]) => ({name,description,kind,inputSchema:{type:'object',description,properties,required,additionalProperties:false},annotations:{readOnlyHint:kind==='read',destructiveHint:kind==='consequential'}});
 const square=string('Casilla del tablero A1 a H8',{pattern:'^[A-Ha-h][1-8]$'});
 export const TOOL_REGISTRY=Object.freeze([
- tool('get_board','Leer el tablero, turno y estado','read'),
+ tool('get_board','Leer tablero, turno, selección, frutas disponibles y casillas de peones propios que pueden comerlas','read'),
  tool('select_piece','Iluminar una pieza y sus movimientos legales sin moverla','view',{piece:string('Nombre del personaje o pieza en español'),from:square}),
  tool('propose_move','Proponer un movimiento legal; requiere confirmación','consequential',{piece:string('Nombre del personaje o pieza en español'),from:square,to:square,promotion:enumeration('Pieza de promoción',['queen','rook','bishop','knight'])},['to']),
+ tool('propose_fruit','Proponer que un peón propio coma una fruta disponible y cambie de pieza en su casilla; requiere confirmación. Consulta get_board para stock y peones. Gomu Gomu: reina; Mera Mera: caballo; Ope Ope: torre; Gora Gora: alfil. Si da jaque, pasa el turno al rival.','consequential',{square,fruit:enumeration('ID de la fruta del diablo disponible',DEVIL_FRUITS.map(f=>f.id))},['square','fruit']),
  tool('propose_game_action','Proponer nueva partida o deshacer','consequential',{action:enumeration('Acción',['new_game','undo','claim_draw']),reason:enumeration('Motivo de tablas',['fifty-move','threefold-repetition']),intendedMove:{type:'object',description:'Movimiento legal que permitiría reclamar tablas sin jugarlo',properties:{from:square,to:square,promotion:enumeration('Promoción prevista',['queen','rook','bishop','knight'])},required:['from','to'],additionalProperties:false}},['action']),
  tool('propose_settings','Proponer cambios de tripulación o IA','consequential',{action:enumeration('Ajuste',['crew','ai_enabled','ai_difficulty']),value:string('Tripulación, true/false o dificultad')},['action','value']),
  tool('open_crew_selection','Abrir selector de tripulación','view'),
@@ -18,6 +20,7 @@ export const TOOL_REGISTRY=Object.freeze([
 // Voice orders are immediate; WebMCP retains its explicit proposal contract.
 const voiceDescriptions={
  propose_move:'Mover una pieza legal inmediatamente, sin confirmación ni cuenta atrás.',
+ propose_fruit:'Dar inmediatamente una fruta disponible a un peón propio, sin confirmación: gomu-gomu→reina, mera-mera→caballo, ope-ope→torre, gora-gora→alfil. Consulta get_board para stock y peones. Cambia en la misma casilla; si da jaque, pasa el turno al rival.',
  propose_game_action:'Iniciar nueva partida o reclamar tablas inmediatamente. No permite deshacer.',
  propose_settings:'Cambiar tripulación o IA inmediatamente, sin confirmación.',
  stop_action:'Detener la voz y desconectar. No revierte movimientos ya ejecutados.'

@@ -52,7 +52,7 @@ try {
   assert(observed.frames.some(frame=>frame.effects>0),'visible effect objects exist during combat');
   const final=await page.evaluate(()=>({metrics:window.chessApp.view.getMetrics(),legal:window.chessApp.game.board[4][3]?.player==='pirate'&&!window.chessApp.game.board[3][4],piece:window.chessApp.view.pieces.get('D5')?.position.toArray()}));
   assert(final.legal,'rendered fight must preserve the committed legal capture');
-  assert.deepEqual(final.piece,[-.5,.17,-.5]);
+  assert.deepEqual(final.piece,[-.5,.146,-.5]);
   assert.equal(await page.evaluate(()=>window.chessApp.view.getMetrics().effects),0);
   assert.equal(await page.evaluate(()=>window.chessApp.view.getMetrics().pieceCount),3);
   await page.screenshot({path:path.join(out,'capture-after.png'),fullPage:true});

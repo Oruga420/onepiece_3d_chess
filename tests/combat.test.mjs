@@ -5,8 +5,10 @@ import {createMoveAnimation} from '../src/combat.mjs';
 
 function actor(position = [0, .17, 0], yaw = Math.PI) {
  const root = new THREE.Group(), body = new THREE.Group();
- body.add(new THREE.Mesh(new THREE.BoxGeometry(.3, .8, .3), new THREE.MeshStandardMaterial()));
- root.add(body, new THREE.Group()); root.position.fromArray(position); root.rotation.y = yaw;
+ body.add(new THREE.Mesh(new THREE.BoxGeometry(.3, .8, .3).translate(0, .4, 0), new THREE.MeshStandardMaterial()));
+ body.userData.combatBounds = {halfWidth: .15, halfDepth: .15, height: .8};
+ root.userData.combatBody = body;
+ root.add(body); root.position.fromArray(position); root.rotation.y = yaw;
  return root;
 }
 
@@ -71,7 +73,7 @@ test('a capture stages approach, anticipation, counterattack, strike, defeat and
  assert.equal(timer.pending, 0);
 });
 
-test('cancellation in every phase restores both bodies, pedestals and rook exactly', async () => {
+test('cancellation in every phase restores both actor roots, bodies and rook exactly', async () => {
  for (const progress of [0, .15, .35, .48, .58, .64, .76, .85, .93]) {
   const f = fixture();
   f.timer.advance(progress * 2400);
@@ -114,7 +116,7 @@ test('ordinary moves use a body gait, knight moves leap, and castling moves the 
   timer.advance(300);
   assert.equal(attacker.position.x, 1);
   assert.equal(rook.position.x, 2);
-  assert.equal(attacker.position.y, .17, 'pedestal remains on the board');
+  assert.equal(attacker.position.y, .17, 'actor root stays at board level');
   if (role === 'knight') assert.ok(attacker.children[0].position.y >= .64);
   assert.equal(scene.children.length, 0, 'no battle effects allocated for an ordinary move');
   timer.advance(600);
@@ -208,4 +210,85 @@ test('a phase callback can cancel before the strike without emitting a late impa
  timer.advance(1600);
  assert.deepEqual(await animation.finished, {cancelled: true});
  assert.equal(impacts, 0); assert.equal(timer.pending, 0);
+});
+
+test('ordinary travel faces its destination and restores the inward orientation on arrival', async () => {
+ const timer = clock(), attacker = actor(), rook = actor([3, .17, 0]);
+ const original = [attacker, rook].map(transform);
+ const animation = createMoveAnimation({attacker, rook, end: new THREE.Vector3(2, .17, 0), rookEnd: new THREE.Vector3(1, .17, 0), capture: false, ...timer});
+ timer.advance(150);
+ assert.ok(new THREE.Vector3(0, 0, 1).applyQuaternion(attacker.quaternion).x > .99, 'attacker looks along +X travel');
+ assert.ok(new THREE.Vector3(0, 0, 1).applyQuaternion(rook.quaternion).x < -.99, 'rook looks along its opposite travel');
+ assert.notDeepEqual(transform(rook.children[0]), original[1].children[0], 'rook has its own gait');
+ timer.advance(600); await animation.finished;
+ assert.deepEqual(attacker.quaternion.toArray(), original[0].quaternion);
+ assert.deepEqual(rook.quaternion.toArray(), original[1].quaternion);
+ assert.deepEqual(transform(rook.children[0]), original[1].children[0]);
+});
+
+test('acceleration and braking keep launch and arrival slower than mid-travel', () => {
+ const timer = clock(), attacker = actor();
+ const animation = createMoveAnimation({attacker, end: new THREE.Vector3(4, .17, 0), capture: false, ...timer});
+ const positions = [];
+ for (const time of [60, 240, 300, 540, 600]) {timer.advance(time); positions.push(attacker.position.x);}
+ assert.ok(positions[0] < .05);
+ assert.ok(positions[2] - positions[1] > positions[0] * 5);
+ assert.ok(positions[4] - positions[3] < .05);
+ animation.cancel();
+});
+
+test('defender sidesteps before contact and is physically knocked away after impact', () => {
+ const f = fixture();
+ f.timer.advance(1200);
+ assert.ok(Math.abs(f.victim.position.x) > .1, 'defender root leaves the attack line');
+ assert.equal(f.impacts.length, 0);
+ const preHitAttackerZ = f.attacker.position.z;
+ f.timer.advance(1580);
+ assert.ok(f.attacker.position.z < preHitAttackerZ - .15, 'attacker root lunges into the strike');
+ assert.ok(f.victim.position.z < -2.05, 'impact displaces defender root away from attacker');
+ assert.equal(f.impacts.length, 1);
+ f.animation.cancel();
+});
+
+test('cached bounds keep leaning, falling and dissolving characters above the board', () => {
+ const f = fixture();
+ for (let time = 0; time < 2112; time += 16) {
+  f.timer.advance(time);
+  for (const root of [f.attacker, f.victim]) {
+   root.updateMatrixWorld(true);
+   const bounds = new THREE.Box3().setFromObject(root);
+   assert.ok(bounds.min.y >= root.position.y - 1e-8, `floor penetration at ${time}: ${bounds.min.y}`);
+   if (time > 1990 && root === f.victim) assert.ok(Math.abs(bounds.min.y - root.position.y) < 1e-8, 'dissolving corpse rests on the floor instead of floating');
+  }
+ }
+ f.animation.cancel();
+});
+
+test('ordinary move and castle poses are frame independent and cancel at every point', async () => {
+ for (const progress of [.05, .22, .49, .72, .87, .98]) {
+  const make = () => {
+   const timer = clock(), attacker = actor(), rook = actor([3, .17, 0]);
+   const original = [attacker, rook].map(transform);
+   const animation = createMoveAnimation({attacker, rook, end: new THREE.Vector3(2, .17, 0), rookEnd: new THREE.Vector3(1, .17, 0), role: 'knight', capture: false, ...timer});
+   return {timer, attacker, rook, original, animation};
+  };
+  const dense = make(), sparse = make(), time = progress * 600;
+  for (let t = 8; t < time; t += 8) dense.timer.advance(t);
+  dense.timer.advance(time); sparse.timer.advance(time);
+  assert.deepEqual([dense.attacker, dense.rook].map(transform), [sparse.attacker, sparse.rook].map(transform));
+  for (const f of [dense, sparse]) {
+   f.animation.cancel(); f.timer.stale(1200);
+   assert.deepEqual(await f.animation.finished, {cancelled: true});
+   assert.deepEqual([f.attacker, f.rook].map(transform), f.original);
+  }
+ }
+});
+
+test('impact flash remains compact and translucent so combat silhouettes stay visible', () => {
+ const f = fixture(); f.timer.advance(1465);
+ const effects = f.scene.getObjectByName('chess-combat-effects');
+ const flash = effects.children[3];
+ assert.ok(flash.material.opacity <= .52);
+ assert.ok(flash.geometry.parameters.radius * flash.scale.x < .20);
+ f.animation.cancel();
 });

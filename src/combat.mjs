@@ -2,6 +2,7 @@ import * as THREE from '../vendor/three/three.module.js';
 
 const clamp = value => Math.max(0, Math.min(1, value));
 const smooth = value => { const p = clamp(value); return p * p * (3 - 2 * p); };
+const travel = value => { const p = clamp(value); return p * p * p * (p * (p * 6 - 15) + 10); };
 const segment = (p, from, to) => clamp((p - from) / (to - from));
 const pulse = (p, from, to) => Math.sin(segment(p, from, to) * Math.PI);
 
@@ -65,14 +66,14 @@ function createEffects(scene, origin, direction, side, seed) {
   count: group.children.length,
   update(p) {
    const hit = segment(p, .61, .96), parry = pulse(p, .465, .54), slash = pulse(p, .555, .68);
-   ringMaterial.opacity = p >= .61 ? (1 - hit) * .75 : 0;
+   ringMaterial.opacity = p >= .61 ? (1 - hit) * .42 : 0;
    ring.scale.setScalar(1 + hit * 2.8);
-   arcMaterial.opacity = slash * .94;
+   arcMaterial.opacity = slash * .58;
    arc.rotation.z = -.9 + segment(p, .555, .68) * 2.3;
    arc.scale.setScalar(.7 + slash * .45);
-   sparkMaterial.opacity = Math.max(parry * .8, p >= .61 ? Math.max(0, 1 - hit * 6) : 0);
+   sparkMaterial.opacity = Math.max(parry * .40, p >= .61 ? Math.max(0, 1 - hit * 8) * .52 : 0);
    counterArc.scale.setScalar(.6 + parry * .45);
-   flash.scale.setScalar(.4 + Math.max(parry, pulse(p, .61, .69)) * 2.1);
+   flash.scale.setScalar(.25 + Math.max(parry, pulse(p, .61, .69)) * .85);
    debrisMaterial.opacity = p >= .65 ? (1 - hit) * .9 : 0;
    for (const {mesh, velocity, spin} of shards) {
     mesh.visible = p >= .65 && p < .96;
@@ -107,8 +108,9 @@ export function createMoveAnimation({
 }) {
  const body = attacker.userData.combatBody || attacker.children[0] || null;
  const defenderBody = victim?.userData.combatBody || victim?.children[0] || null;
- const savedAttacker = snapshot(attacker), savedBody = snapshot(body), savedVictim = snapshot(victim), savedDefenderBody = snapshot(defenderBody), savedRook = snapshot(rook);
- const originals = [savedAttacker, savedBody, savedVictim, savedDefenderBody, savedRook];
+ const rookBody = rook?.userData.combatBody || rook?.children[0] || null;
+ const savedAttacker = snapshot(attacker), savedBody = snapshot(body), savedVictim = snapshot(victim), savedDefenderBody = snapshot(defenderBody), savedRook = snapshot(rook), savedRookBody = snapshot(rookBody);
+ const originals = [savedAttacker, savedBody, savedVictim, savedDefenderBody, savedRook, savedRookBody];
  const from = start.clone(), destination = end.clone(), rookDestination = rookEnd?.clone();
  const target = victim ? victim.position.clone() : destination.clone();
  const direction = target.clone().sub(from); direction.y = 0;
@@ -120,7 +122,9 @@ export function createMoveAnimation({
  const profile = PROFILES[role] || PROFILES.pawn;
  const facing = new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(0, 1, 0), Math.atan2(direction.x, direction.z));
  const defenderFacing = new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(0, 1, 0), Math.atan2(-direction.x, -direction.z));
- const scratch = new THREE.Vector3(), inverse = new THREE.Quaternion(), poseRotation = new THREE.Quaternion(), poseEuler = new THREE.Euler();
+ const rookDirection = rookDestination && savedRook ? rookDestination.clone().sub(savedRook.position).setY(0).normalize() : null;
+ const rookFacing = rookDirection ? new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(0, 1, 0), Math.atan2(rookDirection.x, rookDirection.z)) : null;
+ const scratch = new THREE.Vector3(), corner = new THREE.Vector3(), inverse = new THREE.Quaternion(), poseRotation = new THREE.Quaternion(), poseEuler = new THREE.Euler();
  const duration = reducedMotion ? 0 : capture ? 2400 : 600;
  const metrics = {phase: 'approach', progress: 0, impactCount: 0, effects: 0, profile: profile.name, duration};
  let frameId = null, settled = false, effects = null, resolveFinished;
@@ -145,24 +149,52 @@ export function createMoveAnimation({
  };
  const controller = {finished, cancel: () => finish(true), metrics};
 
- // Body translations are specified in board space, converted into the rotating
- // pedestal's local coordinates. The base stays level while the figure fights.
- function pose(saved, parent, forward, lateral, height, lean, twist = 0, roll = 0) {
+ // Translate in board space; cached local bounds keep a tilted figure above the
+ // floor without traversing model geometry during animation.
+ function ground(saved, intendedHeight = saved.object.position.y) {
+  const bounds = saved.object.userData.combatBounds;
+  if (!bounds) return;
+  let bottom = Infinity;
+  for (let i = 0; i < 8; i++) {
+   corner.set(i & 1 ? bounds.halfWidth : -bounds.halfWidth, i & 2 ? bounds.height : 0, i & 4 ? bounds.halfDepth : -bounds.halfDepth)
+    .multiply(saved.object.scale).applyQuaternion(saved.object.quaternion);
+   bottom = Math.min(bottom, corner.y);
+  }
+  saved.object.position.y = Math.max(intendedHeight, -bottom);
+ }
+
+ function pose(saved, parent, forward, lateral, height, lean, twist = 0, roll = 0, moveDirection = direction) {
   if (!saved) return;
-  scratch.copy(direction).multiplyScalar(forward).addScaledVector(sideways, lateral);
+  scratch.set(moveDirection.x * forward + moveDirection.z * lateral, 0, moveDirection.z * forward - moveDirection.x * lateral);
   scratch.y = height; inverse.copy(parent.quaternion).invert(); scratch.applyQuaternion(inverse);
   saved.object.position.copy(saved.position).add(scratch);
   poseEuler.set(lean, twist, roll); poseRotation.setFromEuler(poseEuler);
   saved.object.quaternion.copy(saved.quaternion).multiply(poseRotation);
   saved.object.scale.copy(saved.scale);
+  ground(saved);
  }
 
  function move(p) {
-  const eased = smooth(p), gait = Math.sin(p * Math.PI * 8) * Math.sin(p * Math.PI);
+  const eased = travel(p), envelope = Math.sin(p * Math.PI), steps = Math.min(6, Math.max(2, Math.round(distance * 2)));
+  const gait = Math.sin(eased * Math.PI * steps * 2) * envelope;
+  const turn = smooth(segment(p, 0, .18)), settle = smooth(segment(p, .82, 1));
   attacker.position.lerpVectors(from, destination, eased);
-  const leap = role === 'knight' ? Math.sin(p * Math.PI) * .65 : Math.abs(gait) * .055;
-  pose(savedBody, attacker, 0, gait * .018, leap, 0, 0, gait * .045);
-  if (rook && rookDestination) rook.position.lerpVectors(savedRook.position, rookDestination, eased);
+  attacker.quaternion.copy(savedAttacker.quaternion).slerp(facing, turn).slerp(savedAttacker.quaternion, settle);
+  const leap = role === 'knight' ? Math.pow(Math.sin(eased * Math.PI), 1.35) * .65 : gait * gait * .065;
+  const drive = .14 * pulse(p, .04, .5) - .10 * pulse(p, .65, .96);
+  pose(savedBody, attacker, 0, role === 'knight' ? 0 : gait * .025, leap, drive, 0, gait * .055);
+  if (role === 'knight' && body) {
+   const landing = pulse(p, .82, .99);
+   body.scale.set(savedBody.scale.x * (1 + landing * .045), savedBody.scale.y * (1 - landing * .085), savedBody.scale.z * (1 + landing * .045));
+   ground(savedBody);
+  }
+  if (rook && rookDestination) {
+   rook.position.lerpVectors(savedRook.position, rookDestination, eased);
+   rook.quaternion.copy(savedRook.quaternion).slerp(rookFacing, turn).slerp(savedRook.quaternion, settle);
+   const rookSteps = Math.min(6, Math.max(2, Math.round(savedRook.position.distanceTo(rookDestination) * 2)));
+   const rookGait = Math.sin(eased * Math.PI * rookSteps * 2) * envelope;
+   pose(savedRookBody, rook, 0, rookGait * .018, rookGait * rookGait * .045, drive * .7, 0, rookGait * .035, rookDirection);
+  }
  }
 
  function battle(p) {
@@ -170,11 +202,13 @@ export function createMoveAnimation({
   const feint = pulse(p, .43, .55), strike = smooth(segment(p, .55, .65));
   const defeat = smooth(segment(p, .65, .88)), recover = smooth(segment(p, .88, 1));
   const faceProgress = smooth(segment(p, 0, .18));
-  attacker.position.lerpVectors(from, stand, approach).lerp(destination, recover);
+  const lunge = smooth(segment(p, .55, .635)), followThrough = smooth(segment(p, .635, .76));
+  const advance = (-windup * .09 + feint * .14 + lunge * .40 - followThrough * .10) * (1 - recover);
+  attacker.position.lerpVectors(from, stand, approach).addScaledVector(direction, advance).lerp(destination, recover);
   attacker.quaternion.copy(savedAttacker.quaternion).slerp(facing, faceProgress).slerp(savedAttacker.quaternion, recover);
   const gait = Math.sin(segment(p, 0, .30) * Math.PI * 8) * Math.sin(segment(p, 0, .30) * Math.PI);
   const attackHold = 1 - recover;
-  const recoil = -windup * .13 + feint * .19 + strike * profile.reach;
+  const recoil = -windup * .055 + feint * .06 + strike * profile.reach * .32;
   const twist = (-windup * profile.twist + strike * profile.twist * 1.8) * attackHold;
   const lean = (-windup * .14 + feint * .17 + strike * profile.lean) * attackHold;
   const jump = profile.jump * pulse(p, .50, .72);
@@ -183,14 +217,16 @@ export function createMoveAnimation({
    victim.quaternion.copy(savedVictim.quaternion).slerp(defenderFacing, smooth(segment(p, .18, .37)));
    // The defender steps in to meet the feint, then recoils before the fatal hit.
    const brace = pulse(p, .43, .55), stagger = pulse(p, .61, .73);
+   const dodge = pulse(p, .42, .60), knockback = smooth(segment(p, .61, .78));
+   victim.position.copy(savedVictim.position).addScaledVector(sideways, dodge * .20 + defeat * .11).addScaledVector(direction, -brace * .08 + knockback * .36);
    const fall = defeat * 1.42;
-   pose(savedDefenderBody, victim, -brace * .13 + stagger * .12 + defeat * .32,
-    defeat * .10, brace * .035 - defeat * .06, -.18 * brace - .24 * stagger - fall, -brace * .24, defeat * .23);
+   pose(savedDefenderBody, victim, -brace * .04 + stagger * .04,
+    0, brace * .035 + stagger * .07, -.18 * brace - .24 * stagger - fall, -brace * .24, defeat * .23);
    if (defenderBody) {
-    // Only the fallen figure shrinks into the stone fragments; its pedestal
-    // remains solid until the actor is hidden, keeping the impact readable.
-    const dissolve = smooth(segment(p, .78, .88));
+    // Hold the fallen silhouette before it dissolves into the fragments.
+    const dissolve = smooth(segment(p, .82, .88));
     defenderBody.scale.copy(savedDefenderBody.scale).multiplyScalar(1 - dissolve * .96);
+    if (dissolve > 0) ground(savedDefenderBody, 0);
    }
    victim.visible = savedVictim.visible && p < .88;
   }

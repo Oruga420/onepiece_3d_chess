@@ -604,9 +604,9 @@
           "back",
           "board"
         ],
-        "sheet": "tools/assets/models2.jpg",
-        "reviewer": "asset agent visual inspection",
-        "observations": "Textured recognizable volumetric character viewed front/side/back/isolated three-quarter. Actual board QA is downstream."
+        "sheet": "tools/assets/reviews/shanks/bishop/front.png",
+        "reviewer": "Codex visual review",
+        "observations": "Display support removed; shoes and character silhouette preserved. Front, side, back and board views reviewed after geometry edit."
       },
       "referenceTaskId": "4exckmc4j9rmt0d16df82s0sbm",
       "referencePrompt": "A single full-body recognizable Lucky Roux from One Piece, canonical anime character costume and distinctive face, high-quality stylized 3D game miniature. Full head, all limbs and shoes entirely visible, relaxed standing action-ready pose, three-quarter front view, solid white studio background, even neutral lighting, no text, no logo, no flag, no platform, no other character, volumetric sculpted form. Use reference only for colors where correct; the named character identity takes priority. Keep accessories close to the body and separated readable silhouette. ",
@@ -615,16 +615,24 @@
       "credits": 15,
       "referenceImage": "/assets/references/shanks/bishop.png",
       "rawSha256": "b53882706adf79d02a658095e77610a2fccf7abc824529144451352d5e9fbcdd",
-      "sha256": "e38fe292fa3226015f52be154679dcda49eb94809f5bfe5f6503596455343161",
-      "bytes": 401304,
-      "triangles": 10234,
+      "sha256": "ac1c5ff809594fae552722127998de64c24422195a4ac9164e983ffdc7b7ff3e",
+      "bytes": 390304,
+      "triangles": 9872,
       "textures": [
         {
-          "name": "Image_0",
           "width": 512,
           "height": 512
         }
-      ]
+      ],
+      "postprocessing": {
+        "operation": "remove-display-base",
+        "sourceOptimizedSha256": "e38fe292fa3226015f52be154679dcda49eb94809f5bfe5f6503596455343161",
+        "method": "component deletion",
+        "cutPlaneOriginalHeightRatio": null,
+        "tool": "tools/assets/remove_bases.py",
+        "texturePixels": "original embedded textures preserved",
+        "normalization": "height1/floorY0/centerXZ0"
+      }
     },
     {
       "id": "shanks/knight",
@@ -799,9 +807,9 @@
           "back",
           "board"
         ],
-        "sheet": "tools/assets/models6.jpg",
-        "reviewer": "asset agent visual inspection",
-        "observations": "Textured recognizable volumetric character viewed front/side/back/isolated three-quarter. Actual board QA is downstream."
+        "sheet": "tools/assets/reviews/bigmom/rook/front.png",
+        "reviewer": "Codex visual review",
+        "observations": "Display support removed; shoes and character silhouette preserved. Front, side, back and board views reviewed after geometry edit."
       },
       "referenceTaskId": "5r9q3qdtp5rmy0d16dm8c56k64",
       "referencePrompt": "Charlotte Cracker from One Piece, his instantly recognizable BISCuit SOLDIER ARMOR form shown in the supplied reference: huge broad muscular armored biscuit knight, ornate bronze biscuit armor, orange/red beard and mustache, tall crested helmet, massive round biscuit shield and sword. Single full-body stylized anime 3D game miniature, all legs shoes head visible, neutral standing pose, white studio background, NO long overcoat, NO burgundy jacket, NO generic pirate, no effects or other figures. Preserve the armor design of the reference and remove its surrounding effects.",
@@ -810,12 +818,11 @@
       "credits": 15,
       "referenceImage": "/assets/references/bigmom/rook.png",
       "rawSha256": "4dba14df5bf811a224f802496d4dffa2d018c190e36e6cbf1e0737421d94843f",
-      "sha256": "6ee8333e8de0ba73eb924f7a948132508a747527e22536efa38c9ba5189b13da",
-      "bytes": 414348,
-      "triangles": 10603,
+      "sha256": "5f1c3da186f67a72b8b8ed33144067037dfea5a4b24dd1d6015062e345d709a1",
+      "bytes": 408548,
+      "triangles": 10461,
       "textures": [
         {
-          "name": "Image_0",
           "width": 512,
           "height": 512
         }
@@ -828,7 +835,16 @@
           "status": "identity-rejected",
           "reason": "Generic overcoat obscures canonical Cracker"
         }
-      ]
+      ],
+      "postprocessing": {
+        "operation": "remove-display-base",
+        "sourceOptimizedSha256": "6ee8333e8de0ba73eb924f7a948132508a747527e22536efa38c9ba5189b13da",
+        "method": "component deletion",
+        "cutPlaneOriginalHeightRatio": null,
+        "tool": "tools/assets/remove_bases.py",
+        "texturePixels": "original embedded textures preserved",
+        "normalization": "height1/floorY0/centerXZ0"
+      }
     },
     {
       "id": "bigmom/bishop",
@@ -886,9 +902,9 @@
           "back",
           "board"
         ],
-        "sheet": "tools/assets/models3.jpg",
-        "reviewer": "asset agent visual inspection",
-        "observations": "Textured recognizable volumetric character viewed front/side/back/isolated three-quarter. Actual board QA is downstream."
+        "sheet": "tools/assets/reviews/bigmom/knight/front.png",
+        "reviewer": "Codex visual review",
+        "observations": "Display support removed; shoes and character silhouette preserved. Front, side, back and board views reviewed after geometry edit."
       },
       "referenceTaskId": "bex3frr835rmw0d16dgtcz2mvm",
       "referencePrompt": "A single full-body recognizable Perospero from One Piece, canonical anime character costume and distinctive face, high-quality stylized 3D game miniature. Full head, all limbs and shoes entirely visible, relaxed standing action-ready pose, three-quarter front view, solid white studio background, even neutral lighting, no text, no logo, no flag, no platform, no other character, volumetric sculpted form. Use reference only for colors where correct; the named character identity takes priority. Keep accessories close to the body and separated readable silhouette. ",
@@ -897,16 +913,24 @@
       "credits": 15,
       "referenceImage": "/assets/references/bigmom/knight.png",
       "rawSha256": "dd0572a5107216008d6d6547b50c572f758b96d257339a55e08e5e860a8406d0",
-      "sha256": "6b00543ef2de7c86d12415438b1174e4342501218957c906921b5dd64725d35b",
-      "bytes": 459020,
-      "triangles": 10695,
+      "sha256": "50bf60b2473915ae262bbaffb4c6968549aa3c6695f1c70e44e372f48f2df744",
+      "bytes": 446044,
+      "triangles": 10407,
       "textures": [
         {
-          "name": "Image_0",
           "width": 512,
           "height": 512
         }
-      ]
+      ],
+      "postprocessing": {
+        "operation": "remove-display-base",
+        "sourceOptimizedSha256": "6b00543ef2de7c86d12415438b1174e4342501218957c906921b5dd64725d35b",
+        "method": "component deletion; candy component-only lower bisect",
+        "cutPlaneOriginalHeightRatio": 0.045,
+        "tool": "tools/assets/remove_bases.py",
+        "texturePixels": "original embedded textures preserved",
+        "normalization": "height1/floorY0/centerXZ0"
+      }
     },
     {
       "id": "bigmom/pawn",
@@ -1627,9 +1651,9 @@
           "back",
           "board"
         ],
-        "sheet": "tools/assets/models5.jpg",
-        "reviewer": "asset agent visual inspection",
-        "observations": "Textured recognizable volumetric character viewed front/side/back/isolated three-quarter. Actual board QA is downstream."
+        "sheet": "tools/assets/reviews/heart/pawn/front.png",
+        "reviewer": "Codex visual review",
+        "observations": "Display support removed; shoes and character silhouette preserved. Front, side, back and board views reviewed after geometry edit."
       },
       "referenceTaskId": "4r020n8391rmt0d16djtckjce0",
       "referencePrompt": "A single full-body recognizable Crew from One Piece, canonical anime character costume and distinctive face, high-quality stylized 3D game miniature. Full head, all limbs and shoes entirely visible, relaxed standing action-ready pose, three-quarter front view, solid white studio background, even neutral lighting, no text, no logo, no flag, no platform, no other character, volumetric sculpted form. Use reference only for colors where correct; the named character identity takes priority. Keep accessories close to the body and separated readable silhouette. A generic adult male member of the heart pirate crew, not its captain. ",
@@ -1638,16 +1662,24 @@
       "credits": 15,
       "referenceImage": "/assets/references/heart/pawn.png",
       "rawSha256": "19522e2cb8cb1c9aaf0e10631912e402b19e945dbf61b1453102511a2991a6dd",
-      "sha256": "e816790a6ec17ca6711ab08ca53219f01c982e2f313ac9b9abe824adb0d46009",
-      "bytes": 360396,
-      "triangles": 10084,
+      "sha256": "6a0d24eea2bb4f5d7d72134c95d6d28db2bd46ee7e282d2b2ecb6d7eb0393f2f",
+      "bytes": 284436,
+      "triangles": 7790,
       "textures": [
         {
-          "name": "Image_0",
           "width": 512,
           "height": 512
         }
-      ]
+      ],
+      "postprocessing": {
+        "operation": "remove-display-base",
+        "sourceOptimizedSha256": "e816790a6ec17ca6711ab08ca53219f01c982e2f313ac9b9abe824adb0d46009",
+        "method": "component deletion",
+        "cutPlaneOriginalHeightRatio": null,
+        "tool": "tools/assets/remove_bases.py",
+        "texturePixels": "original embedded textures preserved",
+        "normalization": "height1/floorY0/centerXZ0"
+      }
     },
     {
       "id": "kid/king",
@@ -2431,9 +2463,9 @@
           "back",
           "board"
         ],
-        "sheet": "tools/assets/models8a.jpg",
-        "reviewer": "asset agent visual inspection",
-        "observations": "Textured recognizable volumetric character viewed front/side/back/isolated three-quarter. Actual board QA is downstream."
+        "sheet": "tools/assets/reviews/marines/queen/front.png",
+        "reviewer": "Codex visual review",
+        "observations": "Display support removed; shoes and character silhouette preserved. Front, side, back and board views reviewed after geometry edit."
       },
       "referenceTaskId": "3j70t229n9rmr0d16mn88c7y3r",
       "referencePrompt": "A single full-body recognizable Akainu from One Piece, canonical anime character costume and distinctive face, high-quality stylized 3D game miniature. Full head, all limbs and shoes entirely visible, relaxed standing action-ready pose, three-quarter front view, solid white studio background, even neutral lighting, no text, no logo, no flag, no platform, no other character, volumetric sculpted form. Use reference only for colors where correct; the named character identity takes priority. Keep accessories close to the body and separated readable silhouette. ",
@@ -2450,16 +2482,24 @@
       "credits": 15,
       "referenceImage": "/assets/references/marines/queen.png",
       "rawSha256": "3cf1c93c8ff335806d8a65763b4250ebb7d2c64de9cd522e0731a4044543e191",
-      "sha256": "3b6fb1d8f3f92697b903a1711f8081be9fa59b11acd784b1e4f24d77ac9fcf06",
-      "bytes": 406068,
-      "triangles": 10641,
+      "sha256": "f3685f159536bf9cd4c1384260c1fbd1cb53189e76bec8882980e31ddf2a2ee4",
+      "bytes": 399516,
+      "triangles": 10443,
       "textures": [
         {
-          "name": "Image_0",
           "width": 512,
           "height": 512
         }
-      ]
+      ],
+      "postprocessing": {
+        "operation": "remove-display-base",
+        "sourceOptimizedSha256": "3b6fb1d8f3f92697b903a1711f8081be9fa59b11acd784b1e4f24d77ac9fcf06",
+        "method": "component deletion",
+        "cutPlaneOriginalHeightRatio": null,
+        "tool": "tools/assets/remove_bases.py",
+        "texturePixels": "original embedded textures preserved",
+        "normalization": "height1/floorY0/centerXZ0"
+      }
     },
     {
       "id": "marines/rook",
@@ -2478,9 +2518,9 @@
           "back",
           "board"
         ],
-        "sheet": "tools/assets/models8a.jpg",
-        "reviewer": "asset agent visual inspection",
-        "observations": "Textured recognizable volumetric character viewed front/side/back/isolated three-quarter. Actual board QA is downstream."
+        "sheet": "tools/assets/reviews/marines/rook/front.png",
+        "reviewer": "Codex visual review",
+        "observations": "Display support removed; shoes and character silhouette preserved. Front, side, back and board views reviewed after geometry edit."
       },
       "referenceTaskId": "9jhfr3ac2drmt0d16mnaws7mv4",
       "referencePrompt": "A single full-body recognizable Garp from One Piece, canonical anime character costume and distinctive face, high-quality stylized 3D game miniature. Full head, all limbs and shoes entirely visible, relaxed standing action-ready pose, three-quarter front view, solid white studio background, even neutral lighting, no text, no logo, no flag, no platform, no other character, volumetric sculpted form. Use reference only for colors where correct; the named character identity takes priority. Keep accessories close to the body and separated readable silhouette. ",
@@ -2497,16 +2537,24 @@
       "credits": 15,
       "referenceImage": "/assets/references/marines/rook.png",
       "rawSha256": "0b2d5dc46176bc3040a9a4c42e534897756bd78e788979a5abbac2a0f6e92d7f",
-      "sha256": "30ce75c6ce06d3fe5f1bcea7e05fd0c5b147e9e5a17acf9eea4383c8f2616de7",
-      "bytes": 419744,
-      "triangles": 10619,
+      "sha256": "aad33a88940006c4bee3c323f363944b2dcc3a68b83da75649fb27e602208e24",
+      "bytes": 414484,
+      "triangles": 10429,
       "textures": [
         {
-          "name": "Image_0",
           "width": 512,
           "height": 512
         }
-      ]
+      ],
+      "postprocessing": {
+        "operation": "remove-display-base",
+        "sourceOptimizedSha256": "30ce75c6ce06d3fe5f1bcea7e05fd0c5b147e9e5a17acf9eea4383c8f2616de7",
+        "method": "component deletion",
+        "cutPlaneOriginalHeightRatio": null,
+        "tool": "tools/assets/remove_bases.py",
+        "texturePixels": "original embedded textures preserved",
+        "normalization": "height1/floorY0/centerXZ0"
+      }
     },
     {
       "id": "marines/bishop",

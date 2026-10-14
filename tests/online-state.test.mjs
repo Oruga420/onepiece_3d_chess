@@ -125,3 +125,11 @@ test('online state rejects malformed and prototype-polluting data before changin
  assert.equal({}.polluted, undefined);
  assert.throws(() => validateOnlineState(null), /Invalid online state:/);
 });
+
+test('fruit check and mate survive online serialization with the defender on turn',()=>{
+ for(const fen of ['7k/8/7P/8/8/8/8/K7 w - - 0 1','7k/5K2/7P/8/8/8/8/8 w - - 0 1']){
+  const g=new ChessGame(fen);g.useDevilFruit({square:'H6',fruit:'gomu-gomu'});
+  const restored=roundtrip(g);assert.equal(restored.turn,'marine');assert.equal(restored.status().check,true);
+  assert.equal(restored.status().checkmate,fen.includes('5K2'));
+ }
+});

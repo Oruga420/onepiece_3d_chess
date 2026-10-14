@@ -17,3 +17,10 @@ test('versions monotonic across move undo reset and invalid operations atomic',(
 test('intended move draw claim validates without executing move',()=>{const g=new ChessGame('4k3/8/8/8/8/8/8/R3K3 w - - 99 1');const fen=g.fen();assert.throws(()=>g.claimDraw('fifty-move'));g.claimDraw('fifty-move',{from:'A1',to:'A2'});assert.equal(g.fen(),fen);assert.equal(g.status().reason,'fifty-move');});
 test('checkmate takes precedence over seventy-five clock',()=>{const g=new ChessGame('7k/8/5KQ1/8/8/8/8/8 w - - 149 1');g.move({from:'G6',to:'G7'});assert.equal(g.status().reason,'checkmate');assert.equal(g.status().draw,false);});
 test('noncapturable en passant square excluded from repetition identity',()=>{const g=new ChessGame('4k3/8/8/8/4P3/8/8/R3K3 b - e3 0 1');const h=new ChessGame('4k3/8/8/8/4P3/8/8/R3K3 b - - 0 1');assert.equal(g._key(),h._key());const legal=new ChessGame('4k3/8/8/8/3pP3/8/8/R3K3 b - e3 0 1');assert.notEqual(legal._key().split(' ')[3],'-');});
+
+test('last-rank queen promotion announces mate without capturing the king',()=>{
+ const g=new ChessGame('7k/5P2/6K1/8/8/8/8/8 w - - 0 1');
+ g.move({from:'F7',to:'F8',promotion:'queen'});
+ assert.equal(g.board[7][5].type,'queen');assert.equal(g.status().checkmate,true);
+ assert.equal(g.status().winner,'pirate');assert.equal(g.board[7][7].type,'king');
+});

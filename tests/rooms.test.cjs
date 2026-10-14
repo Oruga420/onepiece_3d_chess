@@ -100,3 +100,23 @@ test('login preserves only an exact room invite, including a failed-password ret
   assert.equal((await fetch(base+'/?room=https://evil.test',{redirect:'manual'})).headers.get('location'),'/login');
  }finally{server.close();}
 });
+
+test('checking fruit transfers online authority to the defender',async()=>{
+ const {ChessGame}=await import('../src/rules.mjs'),{packGame}=await import('../src/online-state.mjs');
+ const db=database(),rooms=new Rooms(env,db.request),room=await rooms.create('p',{}),joined=await rooms.join(room.id,'m');
+ db.documents.get(room.id).doc.state=packGame(new ChessGame('7k/8/7P/8/8/8/8/K7 w - - 0 1'));
+ const checked=await rooms.action(room.id,'p',{revision:joined.revision,requestId:'fruit-check-1',action:{kind:'fruit',square:'H6',fruit:'gomu-gomu'}});
+ assert.equal(checked.state.position.turn,'marine');assert.equal(checked.result,null);
+ await assert.rejects(rooms.action(room.id,'p',command(checked.revision,'fruit-double',{from:'H6',to:'H7'})),/wrong_turn/);
+ const replied=await rooms.action(room.id,'m',command(checked.revision,'fruit-reply1',{from:'H8',to:'G8'}));
+ assert.equal(replied.state.position.turn,'pirate');
+});
+
+test('fruit checkmate stores an online winner and rejects later moves',async()=>{
+ const {ChessGame}=await import('../src/rules.mjs'),{packGame}=await import('../src/online-state.mjs');
+ const db=database(),rooms=new Rooms(env,db.request),room=await rooms.create('p',{}),joined=await rooms.join(room.id,'m');
+ db.documents.get(room.id).doc.state=packGame(new ChessGame('7k/5K2/7P/8/8/8/8/8 w - - 0 1'));
+ const ended=await rooms.action(room.id,'p',{revision:joined.revision,requestId:'fruit-mate-1',action:{kind:'fruit',square:'H6',fruit:'gomu-gomu'}});
+ assert.deepEqual(ended.result,{reason:'checkmate',winner:'pirate'});
+ await assert.rejects(rooms.action(room.id,'m',command(ended.revision,'fruit-after1',{from:'H8',to:'G8'})),/game_over/);
+});

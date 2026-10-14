@@ -28,7 +28,8 @@ export class ChessGame {
  _legal(){const player=this.turn,result=[];for(const m of this._pseudo()){const snap=this._snapshot();this._apply(m);if(!this.inCheck(player))result.push(m);this._restore(snap);}return result;}
  legalMoves(from){if(arguments.length&& !fromSquare(from))return [];return this._legal().filter(m=>from===undefined||m.from===from);}
  move(request){if(this.status().over)throw Error('Game is over');const m=this._legal().find(m=>m.from===request?.from&&m.to===request?.to&&(m.promotion||null)===(request?.promotion||null));if(!m)throw Error('Illegal move or promotion required');const before=this._snapshot();const record=this._apply(m);this.history.push({before,...record});this.version++;this._count();return record;}
- // Fruit use is an in-place power-up, not a chess ply: preserve turn and clocks.
+ // Non-checking fruits are free power-ups. Giving check ends the turn so the
+ // defender must respond and ordinary checkmate evaluation uses the right side.
  useDevilFruit({square,fruit}={}){
   if(this.status().over)throw Error('Game is over');
   const pos=fromSquare(square),definition=DEVIL_FRUITS.find(f=>f.id===fruit),piece=pos&&this.board[pos.row][pos.col];
@@ -38,6 +39,12 @@ export class ChessGame {
   this.board[pos.row][pos.col]=transformed;
   if(this.inCheck()){this._restore(before);throw Error('Devil fruit cannot leave your king in check');}
   this.availableDevilFruits=this.availableDevilFruits.filter(f=>f!==fruit);
+  if(this.inCheck(OTHER(this.turn))){
+   this.enPassant=null;this.halfmove=0;
+   if(this.turn==='marine')this.fullmove++;
+   this.turn=OTHER(this.turn);this.fruitPly++;
+   if((this.fruitPly+1)%7===0)this.availableDevilFruits=freshFruits();
+  }
   const record={kind:'devil_fruit',from:square,to:square,fruit,fruitName:definition.name,promotion:definition.piece,piece:{...piece},transformed:{...transformed},captured:null};
   this.history.push({before,...record});this.version++;this._count();return record;
  }

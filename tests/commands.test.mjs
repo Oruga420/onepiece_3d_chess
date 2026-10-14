@@ -123,3 +123,9 @@ test('online locks explain turn or pending state before dispatching writes',()=>
  assert.equal(c.runTool('propose_game_action',{action:'new_game'},{source:'mouse'}).speak,reason);
  assert.equal(executions,0);assert.equal(game.history.length,0);
 });
+
+test('attempting to capture a king explains checkmate without changing the board',()=>{
+ const g=new ChessGame('7k/8/7Q/8/8/8/8/K7 w - - 0 1'),c=createCommandController(g),fen=g.fen();
+ const r=c.move({from:'H6',to:'H8'},{source:'mouse'});
+ assert.equal(r.ok,false);assert.match(r.speak,/rey no se captura/);assert.match(r.speak,/jaque mate/);assert.equal(g.fen(),fen);
+});

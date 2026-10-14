@@ -69,3 +69,33 @@ test('inventory participates in repetition identity and fruit does not consume e
  assert.equal(g.enPassant,'D6');assert.equal(g.halfmove,14);assert.equal(g.fullmove,8);assert.ok(g.legalMoves('E5').some(m=>m.enPassant));
  const sameBoard=new ChessGame(g.fen());assert.notEqual(g._key(),sameBoard._key());
 });
+
+test('a checking fruit passes the turn so the defender can escape, and undo restores everything',()=>{
+ const g=new ChessGame('7k/8/7P/3pP3/8/8/8/K7 w - d6 14 8');
+ const before=g._snapshot(),key=g._key();
+ g.useDevilFruit({square:'H6',fruit:'gomu-gomu'});
+ assert.equal(g.turn,'marine');assert.equal(g.status().check,true);assert.equal(g.status().over,false);
+ assert.equal(g.enPassant,null);assert.equal(g.halfmove,0);assert.equal(g.fullmove,8);assert.equal(g.fruitPly,1);
+ const reply=chooseMove(g,{depth:1,maxNodes:100});assert.ok(reply);g.move(reply);
+ assert.equal(g.inCheck('marine'),false);g.undo();g.undo();
+ assert.deepEqual(g._snapshot(),before);assert.equal(g.repetitions.get(key),1);
+});
+
+test('queen fruit checkmate ends immediately for either side without capturing a king',()=>{
+ for(const [fen,square,winner] of [
+  ['7k/5K2/7P/8/8/8/8/8 w - - 0 1','H6','pirate'],
+  ['8/8/8/8/8/7p/5k2/7K b - - 0 8','H3','marine']]){
+  const g=new ChessGame(fen);g.useDevilFruit({square,fruit:'gomu-gomu'});
+  assert.equal(g.status().checkmate,true);assert.equal(g.status().winner,winner);
+  assert.equal(g.board.flat().filter(p=>p?.type==='king').length,2);
+  assert.equal(g.fullmove,winner==='marine'?9:1);assert.equal(g.fruitPly,1);
+  assert.throws(()=>g.move({from:square,to:winner==='pirate'?'H8':'H1'}),/Game is over/);
+ }
+});
+
+test('checking fruit counts toward the existing refill schedule and undo restores stock',()=>{
+ const g=new ChessGame('7k/8/7P/8/8/8/8/K7 w - - 0 1');g.fruitPly=5;
+ g.useDevilFruit({square:'H6',fruit:'gomu-gomu'});
+ assert.equal(g.fruitPly,6);assert.deepEqual(g.availableDevilFruits,fruits);
+ g.undo();assert.equal(g.fruitPly,5);assert.deepEqual(g.availableDevilFruits,fruits);
+});

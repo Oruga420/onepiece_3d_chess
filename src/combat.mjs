@@ -38,58 +38,119 @@ function randomSequence(seed) {
 
 // All effect resources belong to this battle. Cached character geometry and
 // materials are never cloned, edited or disposed by the animation.
-function createEffects(scene, origin, direction, side, seed) {
+function createEffects(scene, origin, direction, side, seed, profile) {
  const group = new THREE.Group(); group.name = 'chess-combat-effects'; group.position.copy(origin);
- const color = side === 'marine' ? '#ffc975' : '#79ffdf';
- const material = (tint = color) => new THREE.MeshBasicMaterial({color: tint, transparent: true, opacity: 0, depthWrite: false, side: THREE.DoubleSide, blending: THREE.AdditiveBlending});
- const ringMaterial = material(), arcMaterial = material(), sparkMaterial = material('#fff4d5'), debrisMaterial = material('#d8b887');
- const ring = new THREE.Mesh(new THREE.RingGeometry(.42, .47, 48), ringMaterial);
- ring.rotation.x = -Math.PI / 2; ring.position.y = .035; group.add(ring);
- const arcGeometry = new THREE.TorusGeometry(.51, .024, 5, 36, Math.PI * 1.3);
- const arc = new THREE.Mesh(arcGeometry, arcMaterial), counterArc = new THREE.Mesh(arcGeometry, sparkMaterial);
- arc.position.y = .62; counterArc.position.y = .68;
+ const random = randomSequence(seed), dummy = new THREE.Object3D(), geometries = new Set(), materials = new Set();
+ const tint = side === 'marine' ? '#ffbc70' : '#7affdc';
+ const material = (color, additive = false) => {
+  const mat = new THREE.MeshBasicMaterial({color, transparent: true, opacity: 0, depthWrite: false, side: THREE.DoubleSide,
+   blending: additive ? THREE.AdditiveBlending : THREE.NormalBlending});
+  materials.add(mat); return mat;
+ };
+ const goreMaterial = (color, roughness) => {
+  const mat = new THREE.MeshStandardMaterial({color, roughness, metalness: .04, transparent: true, opacity: 0, depthWrite: false});
+  materials.add(mat); return mat;
+ };
+ const mesh = (name, geometry, mat) => {
+  geometries.add(geometry); const object = new THREE.Mesh(geometry, mat); object.name = name; group.add(object); return object;
+ };
+ const pool = (name, geometry, mat, count) => {
+  geometries.add(geometry); const object = new THREE.InstancedMesh(geometry, mat, count); object.name = name;
+  object.instanceMatrix.setUsage(THREE.DynamicDrawUsage); object.frustumCulled = false; group.add(object); return object;
+ };
+ const ring = mesh('impact-shockwave', new THREE.RingGeometry(.36, .39, 48), material(tint, true));
+ ring.rotation.x = -Math.PI / 2; ring.position.y = .008;
+ const trailGeometry = new THREE.TorusGeometry(.57, .014, 4, 40, Math.PI * 1.35);
+ const arc = mesh('finisher-trail', trailGeometry, material(tint, true));
+ const counterArc = mesh('parry-trail', trailGeometry, material('#ffcf85', true));
  const yaw = Math.atan2(direction.x, direction.z);
- arc.rotation.set(.4, yaw, -.8); counterArc.rotation.set(-.35, yaw + Math.PI / 2, .3);
- group.add(arc, counterArc);
- const flash = new THREE.Mesh(new THREE.IcosahedronGeometry(.17, 1), sparkMaterial); flash.position.y = .58; group.add(flash);
- const shardGeometry = new THREE.IcosahedronGeometry(.065, 0), random = randomSequence(seed), shards = [];
- for (let i = 0; i < 24; i++) {
-  const mesh = new THREE.Mesh(shardGeometry, debrisMaterial), angle = random() * Math.PI * 2;
-  const speed = .45 + random() * 1.1;
-  const velocity = new THREE.Vector3(Math.cos(angle) * speed + direction.x * .4, .7 + random() * 1.4, Math.sin(angle) * speed + direction.z * .4);
-  const spin = new THREE.Vector3(random() * 9 - 4.5, random() * 9 - 4.5, random() * 9 - 4.5);
-  mesh.visible = false; group.add(mesh); shards.push({mesh, velocity, spin});
- }
+ arc.position.y = .58; counterArc.position.y = .64;
+ arc.rotation.set(.3, yaw, -.8); counterArc.rotation.set(-.35, yaw + Math.PI / 2, .3);
+ const flash = mesh('contact-flash', new THREE.IcosahedronGeometry(.105, 0), material('#ffdfb2', true)); flash.position.y = .56;
+ const blood = pool('blood-droplets', new THREE.SphereGeometry(1, 8, 6), goreMaterial('#90071b', .25), 72);
+ const splats = pool('blood-floor-spatter', new THREE.CircleGeometry(1, 7), material('#620616'), 28);
+ const shards = pool('impact-shards', new THREE.IcosahedronGeometry(1, 0), goreMaterial('#65222b', .42), 32);
+ const sparks = pool('clash-sparks', new THREE.TetrahedronGeometry(1), material('#ffc372', true), 28);
+ const dust = pool('landing-dust', new THREE.IcosahedronGeometry(1, 0), material('#a88a78'), 18);
+ const lateral = new THREE.Vector3(direction.z, 0, -direction.x);
+ const droplets = Array.from({length: blood.count}, (_, i) => {
+  const sideways = (random() - .5) * (profile.name === 'slash' ? 4.2 : 2.3), forward = .6 + random() * 2.3;
+  const vx = direction.x * forward + lateral.x * sideways, vz = direction.z * forward + lateral.z * sideways;
+  const vy = .55 + random() * 2.3, height = .35 + random() * .36;
+  const land = (vy + Math.sqrt(vy * vy + 11 * height)) / 5.5;
+  return {vx, vz, vy, height, land, size: .022 + random() * .029, delay: i < 48 ? 0 : .075 + random() * .13, spin: random() * Math.PI};
+ });
+ const debris = Array.from({length: shards.count}, () => {
+  const angle = random() * Math.PI * 2, speed = .4 + random() * 1.3;
+  return {x: Math.cos(angle) * speed + direction.x * .8, z: Math.sin(angle) * speed + direction.z * .8,
+   y: 1 + random() * 2, spin: random() * 10 - 5, size: .035 + random() * .065};
+ });
+ const motes = Array.from({length: sparks.count}, () => ({angle: random() * Math.PI * 2, speed: .4 + random() * 1.2, y: random() * 1.5}));
+ const clouds = Array.from({length: dust.count}, () => ({angle: random() * Math.PI * 2, speed: .3 + random() * .8, size: .08 + random() * .12}));
+ const put = (object, index, x, y, z, sx, sy = sx, sz = sx, rx = 0, ry = 0, rz = 0) => {
+  dummy.position.set(x, y, z); dummy.scale.set(sx, sy, sz); dummy.rotation.set(rx, ry, rz); dummy.updateMatrix(); object.setMatrixAt(index, dummy.matrix);
+ };
  scene?.add(group);
  let disposed = false;
- return {
-  count: group.children.length,
+ const effects = {
+  count: group.children.length, bloodParticles: blood.count, bloodSplats: splats.count, shards: shards.count,
   update(p) {
-   const hit = segment(p, .61, .96), parry = pulse(p, .465, .54), slash = pulse(p, .555, .68);
-   ringMaterial.opacity = p >= .61 ? (1 - hit) * .42 : 0;
-   ring.scale.setScalar(1 + hit * 2.8);
-   arcMaterial.opacity = slash * .58;
-   arc.rotation.z = -.9 + segment(p, .555, .68) * 2.3;
+   const age = Math.max(0, (p - .62) * 3.48), fade = 1 - smooth(segment(p, .88, 1));
+   const hit = segment(p, .62, .91), parry = pulse(p, .452, .487), counter = pulse(p, .50, .538);
+   const slash = pulse(p, .563, .68), active = p >= .62;
+   ring.material.opacity = active ? (1 - hit) * .32 : 0; ring.scale.setScalar(1 + hit * 3.4);
+   arc.material.opacity = Math.max(slash * .85, pulse(p, .431, .47) * .40);
+   arc.rotation.z = -.95 + segment(p, .563, .68) * (profile.name === 'slash' ? 3.6 : 2.1);
    arc.scale.setScalar(.7 + slash * .45);
-   sparkMaterial.opacity = Math.max(parry * .40, p >= .61 ? Math.max(0, 1 - hit * 8) * .52 : 0);
-   counterArc.scale.setScalar(.6 + parry * .45);
-   flash.scale.setScalar(.25 + Math.max(parry, pulse(p, .61, .69)) * .85);
-   debrisMaterial.opacity = p >= .65 ? (1 - hit) * .9 : 0;
-   for (const {mesh, velocity, spin} of shards) {
-    mesh.visible = p >= .65 && p < .96;
-    mesh.position.set(velocity.x * hit, Math.max(.02, .5 + velocity.y * hit - 2.7 * hit * hit), velocity.z * hit);
-    mesh.rotation.set(spin.x * hit, spin.y * hit, spin.z * hit);
-    mesh.scale.setScalar(1 - hit * .7);
+   counterArc.material.opacity = Math.max(parry, counter) * .65;
+   counterArc.rotation.z = .3 - segment(p, .49, .54) * 2.2;
+   flash.material.opacity = Math.max(parry * .45, active ? Math.max(0, 1 - age * 11) * .5 : 0);
+   flash.scale.setScalar(.5 + Math.max(parry, active ? Math.max(0, 1 - age * 8) : 0) * .6);
+   blood.material.opacity = active ? .96 * fade : 0;
+   droplets.forEach((drop, i) => {
+    const t = age - drop.delay, airborne = active && t >= 0 && t < drop.land;
+    put(blood, i, drop.vx * Math.max(0, t), Math.max(.008, drop.height + drop.vy * t - 2.75 * t * t), drop.vz * Math.max(0, t),
+     airborne ? drop.size : 0, airborne ? drop.size * (1.7 + Math.abs(drop.vy - 5.5 * t) * .3) : 0, airborne ? drop.size : 0, drop.spin, 0, -drop.vx * .3);
+   });
+   splats.material.opacity = active ? .9 * fade : 0;
+   for (let i = 0; i < splats.count; i++) {
+    const drop = droplets[i], landed = age >= drop.land + drop.delay, bloom = smooth((age - drop.land - drop.delay) / .12);
+    const radius = landed ? drop.size * (2.7 + bloom * 1.8) : 0;
+    // Floor paint, not a floating particle: each droplet lands at its ballistic endpoint.
+    put(splats, i, drop.vx * drop.land, .004 + i * .000035, drop.vz * drop.land, radius, radius * .64, radius, -Math.PI / 2, 0, drop.spin);
    }
+   shards.material.opacity = active ? .95 * fade : 0;
+   debris.forEach((shard, i) => {
+    const t = age, y = .45 + shard.y * t - 3.6 * t * t;
+    const size = active ? shard.size : 0;
+    put(shards, i, shard.x * t, Math.max(size * .65, y), shard.z * t, size * .5, size * 1.7, size, shard.spin * t, shard.spin * t * .7, shard.spin * t * 1.2);
+   });
+   const sparkStart = p >= .62 ? .62 : p >= .50 ? .50 : .455;
+   const sparkAge = Math.max(0, (p - sparkStart) * 3.48), sparkActive = p >= .455 && sparkAge < .22;
+   sparks.material.opacity = sparkActive ? (1 - sparkAge / .22) * .85 : 0;
+   motes.forEach((mote, i) => put(sparks, i, Math.cos(mote.angle) * sparkAge * mote.speed * 3,
+    .58 + mote.y * sparkAge - sparkAge * sparkAge * 3, Math.sin(mote.angle) * sparkAge * mote.speed * 3,
+    .009, .055, .009, mote.angle, sparkAge * 5, mote.angle));
+   const dustAge = Math.max(0, (p - .77) * 3.48), dustActive = p >= .77;
+   dust.material.opacity = dustActive ? Math.max(0, 1 - dustAge * 1.9) * .19 : 0;
+   clouds.forEach((cloud, i) => {
+    const size = dustActive ? cloud.size * (.4 + dustAge * 2) : 0;
+    put(dust, i, direction.x * .52 + Math.cos(cloud.angle) * dustAge * cloud.speed, .04 + dustAge * .13,
+     direction.z * .52 + Math.sin(cloud.angle) * dustAge * cloud.speed, size, size * .45, size);
+   });
+   for (const object of [blood, splats, shards, sparks, dust]) object.instanceMatrix.needsUpdate = true;
   },
   dispose() {
    if (disposed) return;
    disposed = true; group.removeFromParent();
-   for (const geometry of [ring.geometry, arcGeometry, flash.geometry, shardGeometry]) geometry.dispose();
-   for (const mat of [ringMaterial, arcMaterial, sparkMaterial, debrisMaterial]) mat.dispose();
+   for (const object of [blood, splats, shards, sparks, dust]) object.dispose();
+   for (const geometry of geometries) geometry.dispose();
+   for (const mat of materials) mat.dispose();
    group.clear();
   },
  };
+ effects.update(0);
+ return effects;
 }
 
 /**
@@ -125,8 +186,8 @@ export function createMoveAnimation({
  const rookDirection = rookDestination && savedRook ? rookDestination.clone().sub(savedRook.position).setY(0).normalize() : null;
  const rookFacing = rookDirection ? new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(0, 1, 0), Math.atan2(rookDirection.x, rookDirection.z)) : null;
  const scratch = new THREE.Vector3(), corner = new THREE.Vector3(), inverse = new THREE.Quaternion(), poseRotation = new THREE.Quaternion(), poseEuler = new THREE.Euler();
- const duration = reducedMotion ? 0 : capture ? 2400 : 600;
- const metrics = {phase: 'approach', progress: 0, impactCount: 0, effects: 0, profile: profile.name, duration};
+ const duration = reducedMotion ? 0 : capture ? 3600 : 600;
+ const metrics = {phase: 'approach', progress: 0, impactCount: 0, effects: 0, profile: profile.name, duration, hitStop: false, cameraPunch: 0, bloodParticles: 0, bloodSplats: 0, shards: 0};
  let frameId = null, settled = false, effects = null, resolveFinished;
  const finished = new Promise(resolve => { resolveFinished = resolve; });
  const restoreAll = () => originals.forEach(restore);
@@ -137,7 +198,7 @@ export function createMoveAnimation({
   if (settled) return;
   settled = true;
   if (frameId !== null) cancelFrame(frameId);
-  effects?.dispose(); metrics.effects = 0;
+  effects?.dispose(); metrics.effects = 0; metrics.hitStop = false; metrics.cameraPunch = 0;
   restoreAll();
   if (!cancelled) {
    attacker.position.copy(destination);
@@ -198,35 +259,37 @@ export function createMoveAnimation({
  }
 
  function battle(p) {
-  const approach = smooth(segment(p, 0, .30)), windup = smooth(segment(p, .30, .43));
-  const feint = pulse(p, .43, .55), strike = smooth(segment(p, .55, .65));
+  const approach = travel(segment(p, 0, .30)), windup = smooth(segment(p, .30, .43));
+  const feint = pulse(p, .43, .485), counter = pulse(p, .485, .55), strike = smooth(segment(p, .55, .65));
   const defeat = smooth(segment(p, .65, .88)), recover = smooth(segment(p, .88, 1));
   const faceProgress = smooth(segment(p, 0, .18));
-  const lunge = smooth(segment(p, .55, .635)), followThrough = smooth(segment(p, .635, .76));
-  const advance = (-windup * .09 + feint * .14 + lunge * .40 - followThrough * .10) * (1 - recover);
-  attacker.position.lerpVectors(from, stand, approach).addScaledVector(direction, advance).lerp(destination, recover);
+  const lunge = smooth(segment(p, .555, .625)), followThrough = smooth(segment(p, .65, .78));
+  const advance = (-windup * .11 + feint * .24 - counter * .17 + lunge * .47 - followThrough * .12) * (1 - recover);
+  attacker.position.lerpVectors(from, stand, approach).addScaledVector(direction, advance)
+   .addScaledVector(sideways, (counter * -.13 + pulse(p, .55, .65) * .08) * (1 - recover)).lerp(destination, recover);
   attacker.quaternion.copy(savedAttacker.quaternion).slerp(facing, faceProgress).slerp(savedAttacker.quaternion, recover);
-  const gait = Math.sin(segment(p, 0, .30) * Math.PI * 8) * Math.sin(segment(p, 0, .30) * Math.PI);
+  const gait = Math.sin(segment(p, 0, .30) * Math.PI * 10) * Math.sin(segment(p, 0, .30) * Math.PI);
   const attackHold = 1 - recover;
-  const recoil = -windup * .055 + feint * .06 + strike * profile.reach * .32;
-  const twist = (-windup * profile.twist + strike * profile.twist * 1.8) * attackHold;
-  const lean = (-windup * .14 + feint * .17 + strike * profile.lean) * attackHold;
-  const jump = profile.jump * pulse(p, .50, .72);
-  pose(savedBody, attacker, recoil * attackHold, gait * .018, Math.abs(gait) * .05 + jump, lean, twist, gait * .04);
+  const recoil = -windup * .07 + feint * .09 - counter * .08 + strike * profile.reach * .38;
+  const twist = (-windup * profile.twist + feint * profile.twist * .6 - counter * .35 + strike * profile.twist * 2.1) * attackHold;
+  const lean = (-windup * .18 + feint * .24 - counter * .18 + strike * profile.lean) * attackHold;
+  const jump = profile.jump * pulse(p, .54, .73);
+  pose(savedBody, attacker, recoil * attackHold, gait * .023, Math.abs(gait) * .06 + jump, lean, twist, gait * .05 - counter * .17);
   if (victim) {
    victim.quaternion.copy(savedVictim.quaternion).slerp(defenderFacing, smooth(segment(p, .18, .37)));
-   // The defender steps in to meet the feint, then recoils before the fatal hit.
-   const brace = pulse(p, .43, .55), stagger = pulse(p, .61, .73);
-   const dodge = pulse(p, .42, .60), knockback = smooth(segment(p, .61, .78));
-   victim.position.copy(savedVictim.position).addScaledVector(sideways, dodge * .20 + defeat * .11).addScaledVector(direction, -brace * .08 + knockback * .36);
-   const fall = defeat * 1.42;
-   pose(savedDefenderBody, victim, -brace * .04 + stagger * .04,
-    0, brace * .035 + stagger * .07, -.18 * brace - .24 * stagger - fall, -brace * .24, defeat * .23);
+   const brace = pulse(p, .43, .49), stagger = pulse(p, .62, .72);
+   const dodge = pulse(p, .42, .50), knockback = smooth(segment(p, .62, .78));
+   const collapse = smooth(segment(p, .67, .81)), bounce = pulse(p, .79, .855);
+   victim.position.copy(savedVictim.position).addScaledVector(sideways, dodge * .25 - counter * .08 + defeat * .20)
+    .addScaledVector(direction, -counter * .18 + knockback * (profile.name === 'charge' ? .68 : .53));
+   const fall = collapse * 1.53;
+   pose(savedDefenderBody, victim, -brace * .04 + stagger * .06, 0,
+    brace * .04 + stagger * .16 + bounce * .07, -.22 * brace + counter * .22 - .32 * stagger - fall,
+    -brace * .3 + counter * .32 + defeat * (profile.name === 'slash' ? .85 : .38), defeat * .36 - bounce * .12);
    if (defenderBody) {
-    // Hold the fallen silhouette before it dissolves into the fragments.
-    const dissolve = smooth(segment(p, .82, .88));
+    const dissolve = smooth(segment(p, .84, .88));
     defenderBody.scale.copy(savedDefenderBody.scale).multiplyScalar(1 - dissolve * .96);
-    if (dissolve > 0) ground(savedDefenderBody, 0);
+    if (p >= .82) ground(savedDefenderBody, 0);
    }
    victim.visible = savedVictim.visible && p < .88;
   }
@@ -237,17 +300,24 @@ export function createMoveAnimation({
   impact(); finish(false);
   return controller;
  }
- if (capture) { effects = createEffects(scene, target, direction, side, seed); metrics.effects = effects.count; }
+ if (capture) { effects = createEffects(scene, target, direction, side, seed, profile); metrics.effects = effects.count; metrics.bloodParticles = effects.bloodParticles; metrics.bloodSplats = effects.bloodSplats; metrics.shards = effects.shards; }
  const started = now();
  const frame = time => {
   if (settled) return;
-  const p = clamp((time - started) / duration);
+  const elapsed = Math.max(0, time - started);
+  // A real 120 ms hold: pose, particles and progress all stop at contact.
+  const motionDuration = capture ? duration - 120 : duration;
+  const contactTime = motionDuration * .62;
+  metrics.hitStop = capture && elapsed >= contactTime && elapsed < contactTime + 120;
+  const paused = capture ? Math.min(120, Math.max(0, elapsed - contactTime)) : 0;
+  const p = clamp((elapsed - paused) / motionDuration);
+  metrics.cameraPunch = capture && elapsed >= contactTime ? Math.max(0, 1 - (elapsed - contactTime) / 390) : 0;
   metrics.progress = p;
   if (capture) battle(p); else move(p);
   const phase = capture ? COMBAT_PHASES.findLast(([, boundary]) => p >= boundary)[0] : p < 1 ? 'move' : 'complete';
   if (metrics.phase !== phase) { metrics.phase = phase; onPhase({phase, progress: p}); }
   if (settled) return;
-  if (p >= .61) impact();
+  if (p >= .62) impact();
   if (settled) return;
   if (p >= 1) finish(false); else frameId = requestFrame(frame);
  };

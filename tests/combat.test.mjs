@@ -3,6 +3,8 @@ import assert from 'node:assert/strict';
 import * as THREE from '../vendor/three/three.module.js';
 import {createMoveAnimation} from '../src/combat.mjs';
 
+const captureTime = p => p * 3480 + (p > .62 ? 120 : 0);
+
 function actor(position = [0, .17, 0], yaw = Math.PI) {
  const root = new THREE.Group(), body = new THREE.Group();
  body.add(new THREE.Mesh(new THREE.BoxGeometry(.3, .8, .3).translate(0, .4, 0), new THREE.MeshStandardMaterial()));
@@ -42,27 +44,27 @@ function fixture(options = {}) {
 
 test('a capture stages approach, anticipation, counterattack, strike, defeat and advance', async () => {
  const f = fixture(), {timer, animation, attacker, victim} = f;
- assert.equal(animation.metrics.duration, 2400);
- timer.advance(720);
+ assert.equal(animation.metrics.duration, 3600);
+ timer.advance(captureTime(.30));
  assert.equal(animation.metrics.phase, 'windup');
  assert.ok(attacker.position.distanceTo(victim.position) >= .75, 'figures stop apart before fighting');
  assert.equal(f.impacts.length, 0);
- timer.advance(1150);
+ timer.advance(captureTime(.48));
  assert.equal(animation.metrics.phase, 'parry');
  assert.ok(victim.children[0].position.length() > .02, 'defender visibly counters the feint');
  assert.equal(f.impacts.length, 0);
- timer.advance(1465);
+ timer.advance(captureTime(.62));
  assert.equal(animation.metrics.phase, 'strike');
  assert.equal(f.impacts.length, 1);
  assert.equal(f.impacts[0].profile, 'slash');
- timer.advance(1900);
+ timer.advance(captureTime(.79));
  assert.equal(animation.metrics.phase, 'defeat');
  assert.ok(victim.children[0].rotation.x < -.7, 'figure topples before it disappears');
  assert.equal(victim.visible, true);
- timer.advance(2150);
+ timer.advance(captureTime(.90));
  assert.equal(animation.metrics.phase, 'recover');
  assert.equal(victim.visible, false);
- timer.advance(2400);
+ timer.advance(3600);
  assert.deepEqual(await animation.finished, {cancelled: false});
  assert.equal(f.impacts.length, 1);
  assert.deepEqual(attacker.position.toArray(), f.end.toArray());
@@ -76,7 +78,7 @@ test('a capture stages approach, anticipation, counterattack, strike, defeat and
 test('cancellation in every phase restores both actor roots, bodies and rook exactly', async () => {
  for (const progress of [0, .15, .35, .48, .58, .64, .76, .85, .93]) {
   const f = fixture();
-  f.timer.advance(progress * 2400);
+  f.timer.advance(captureTime(progress));
   const impactCount = f.impacts.length;
   f.animation.cancel(); f.animation.cancel(); f.timer.stale(5000);
   assert.deepEqual(await f.animation.finished, {cancelled: true});
@@ -90,8 +92,8 @@ test('cancellation in every phase restores both actor roots, bodies and rook exa
 
 test('poses and seeded fragments depend on elapsed time, not frame cadence', () => {
  const dense = fixture(), sparse = fixture();
- for (let time = 8; time < 1836; time += 8) dense.timer.advance(time);
- dense.timer.advance(1836); sparse.timer.advance(1836);
+ for (let time = 8; time < 2700; time += 8) dense.timer.advance(time);
+ dense.timer.advance(2700); sparse.timer.advance(2700);
  assert.deepEqual(transform(dense.attacker), transform(sparse.attacker));
  assert.deepEqual(transform(dense.victim), transform(sparse.victim));
  const effect = f => transform(f.scene.getObjectByName('chess-combat-effects'));
@@ -154,9 +156,9 @@ test('en passant fights the actual victim but finishes on the destination square
  const timer = clock(), attacker = actor([0, .17, 0]), victim = actor([1, .17, 0]);
  const end = new THREE.Vector3(1, .17, -1), impacts = [];
  const animation = createMoveAnimation({attacker, victim, end, ...timer, onImpact: event => impacts.push(event)});
- timer.advance(1500);
+ timer.advance(captureTime(.64));
  assert.deepEqual(impacts[0].position.toArray(), [1, .17, 0]);
- timer.advance(2400);
+ timer.advance(3600);
  await animation.finished;
  assert.deepEqual(attacker.position.toArray(), end.toArray());
  assert.equal(victim.visible, false);
@@ -174,21 +176,21 @@ test('30 battles release each owned GPU resource once and never dispose shared m
   const animation = createMoveAnimation({attacker, victim, scene, end: victim.position.clone(), ...timer});
   const geometries = new Set(), materials = new Set();
   scene.getObjectByName('chess-combat-effects').traverse(object => {if (object.geometry) geometries.add(object.geometry); if (object.material) materials.add(object.material);});
-  assert.equal(geometries.size, 4); assert.equal(materials.size, 4);
+  assert.equal(geometries.size, 8); assert.equal(materials.size, 9);
   for (const resource of [...geometries, ...materials]) resource.addEventListener('dispose', () => fxDisposals++);
-  timer.advance(1700);
-  if (i % 2) animation.cancel(); else timer.advance(2400);
+  timer.advance(captureTime(.75));
+  if (i % 2) animation.cancel(); else timer.advance(3600);
   await animation.finished; animation.cancel();
   assert.equal(scene.children.length, 2);
  }
  assert.equal(modelDisposals, 0);
- assert.equal(fxDisposals, 30 * 8);
+ assert.equal(fxDisposals, 30 * 17);
 });
 
 test('all six role profiles produce distinct body poses and restore custom scales on cancellation', () => {
  const poses = new Set();
  for (const role of ['pawn', 'rook', 'knight', 'bishop', 'queen', 'king']) {
-  const f = fixture({role}); f.timer.advance(1450);
+  const f = fixture({role}); f.timer.advance(captureTime(.605));
   poses.add(JSON.stringify(transform(f.attacker.children[0])));
   f.animation.cancel();
  }
@@ -198,7 +200,7 @@ test('all six role profiles produce distinct body poses and restore custom scale
  attacker.children[0].scale.set(.5, .8, 1.2); victim.children[0].rotation.set(.1, .2, .3);
  const original = [attacker, victim].map(transform);
  const animation = createMoveAnimation({attacker, victim, end: victim.position.clone(), ...timer});
- timer.advance(2050); animation.cancel();
+ timer.advance(captureTime(.85)); animation.cancel();
  assert.deepEqual([attacker, victim].map(transform), original);
 });
 
@@ -207,7 +209,7 @@ test('a phase callback can cancel before the strike without emitting a late impa
  const timer = clock(), attacker = actor(), victim = actor([0, .17, -1]);
  animation = createMoveAnimation({attacker, victim, end: victim.position.clone(), ...timer,
   onPhase: () => animation.cancel(), onImpact: () => impacts++});
- timer.advance(1600);
+ timer.advance(captureTime(.68));
  assert.deepEqual(await animation.finished, {cancelled: true});
  assert.equal(impacts, 0); assert.equal(timer.pending, 0);
 });
@@ -239,11 +241,11 @@ test('acceleration and braking keep launch and arrival slower than mid-travel', 
 
 test('defender sidesteps before contact and is physically knocked away after impact', () => {
  const f = fixture();
- f.timer.advance(1200);
+ f.timer.advance(captureTime(.47));
  assert.ok(Math.abs(f.victim.position.x) > .1, 'defender root leaves the attack line');
  assert.equal(f.impacts.length, 0);
  const preHitAttackerZ = f.attacker.position.z;
- f.timer.advance(1580);
+ f.timer.advance(captureTime(.67));
  assert.ok(f.attacker.position.z < preHitAttackerZ - .15, 'attacker root lunges into the strike');
  assert.ok(f.victim.position.z < -2.05, 'impact displaces defender root away from attacker');
  assert.equal(f.impacts.length, 1);
@@ -252,13 +254,13 @@ test('defender sidesteps before contact and is physically knocked away after imp
 
 test('cached bounds keep leaning, falling and dissolving characters above the board', () => {
  const f = fixture();
- for (let time = 0; time < 2112; time += 16) {
+ for (let time = 0; time < captureTime(.88); time += 16) {
   f.timer.advance(time);
   for (const root of [f.attacker, f.victim]) {
    root.updateMatrixWorld(true);
    const bounds = new THREE.Box3().setFromObject(root);
    assert.ok(bounds.min.y >= root.position.y - 1e-8, `floor penetration at ${time}: ${bounds.min.y}`);
-   if (time > 1990 && root === f.victim) assert.ok(Math.abs(bounds.min.y - root.position.y) < 1e-8, 'dissolving corpse rests on the floor instead of floating');
+   if (time > captureTime(.83) && root === f.victim) assert.ok(Math.abs(bounds.min.y - root.position.y) < 1e-8, 'dissolving corpse rests on the floor instead of floating');
   }
  }
  f.animation.cancel();
@@ -285,10 +287,77 @@ test('ordinary move and castle poses are frame independent and cancel at every p
 });
 
 test('impact flash remains compact and translucent so combat silhouettes stay visible', () => {
- const f = fixture(); f.timer.advance(1465);
+ const f = fixture(); f.timer.advance(captureTime(.62));
  const effects = f.scene.getObjectByName('chess-combat-effects');
- const flash = effects.children[3];
+ const flash = effects.getObjectByName('contact-flash');
  assert.ok(flash.material.opacity <= .52);
  assert.ok(flash.geometry.parameters.radius * flash.scale.x < .20);
  f.animation.cancel();
+});
+
+
+test('fatal impact holds poses and particles for 120 ms while camera punch decays', () => {
+ const f = fixture(), contact = captureTime(.62);
+ f.timer.advance(contact + 1);
+ const actorPose = transform(f.attacker), victimPose = transform(f.victim);
+ const matrices = () => Array.from(f.scene.getObjectByName('blood-droplets').instanceMatrix.array);
+ const before = matrices(), punch = f.animation.metrics.cameraPunch;
+ assert.equal(f.animation.metrics.hitStop, true);
+ assert.equal(f.impacts.length, 1);
+ f.timer.advance(contact + 119);
+ assert.equal(f.animation.metrics.hitStop, true);
+ assert.deepEqual(transform(f.attacker), actorPose); assert.deepEqual(transform(f.victim), victimPose);
+ assert.deepEqual(matrices(), before);
+ assert.ok(f.animation.metrics.cameraPunch < punch);
+ f.timer.advance(contact + 150);
+ assert.equal(f.animation.metrics.hitStop, false);
+ assert.ok(f.animation.metrics.progress > .62);
+ assert.notDeepEqual(transform(f.attacker), actorPose);
+ assert.equal(f.impacts.length, 1);
+ f.animation.cancel();
+});
+
+test('blood is opaque dark red, directional, lands as spatter and disappears on cleanup', () => {
+ const f = fixture(); f.timer.advance(captureTime(.74));
+ const group = f.scene.getObjectByName('chess-combat-effects');
+ const blood = group.getObjectByName('blood-droplets'), spatter = group.getObjectByName('blood-floor-spatter');
+ assert.equal(blood.isInstancedMesh, true); assert.equal(blood.count, 72);
+ assert.equal(blood.material.blending, THREE.NormalBlending);
+ assert.ok(blood.material.opacity >= .9); assert.ok(blood.material.color.r > blood.material.color.g * 4);
+ assert.equal(f.animation.metrics.bloodSplats, 28); assert.equal(f.animation.metrics.shards, 32);
+ assert.ok(group.children.length <= 12, 'pooled gore adds bounded draw calls');
+ const matrix = new THREE.Matrix4(), position = new THREE.Vector3(), rotation = new THREE.Quaternion(), scale = new THREE.Vector3();
+ let airborne = 0, forward = 0;
+ for (let i = 0; i < blood.count; i++) {
+  blood.getMatrixAt(i, matrix); matrix.decompose(position, rotation, scale);
+  if (scale.x > 0) {airborne++; if (position.z < 0) forward++;}
+ }
+ assert.ok(airborne > 20); assert.ok(forward >= airborne * .8, 'spray follows the fatal strike direction');
+ f.timer.advance(captureTime(.94));
+ let landed = 0;
+ for (let i = 0; i < spatter.count; i++) {
+  spatter.getMatrixAt(i, matrix); matrix.decompose(position, rotation, scale);
+  if (scale.x > 0) {landed++; assert.ok(position.y < .006, 'spatter lies on board surface');}
+ }
+ assert.ok(landed >= 20); assert.ok(spatter.material.opacity > 0 && spatter.material.opacity < .9);
+ f.animation.cancel(); assert.equal(f.scene.getObjectByName('chess-combat-effects'), undefined);
+});
+
+test('seeded instanced effects are identical across sparse and dense frame schedules', () => {
+ const dense = fixture(), sparse = fixture(), time = captureTime(.81);
+ for (let t = 16; t < time; t += 16) dense.timer.advance(t);
+ dense.timer.advance(time); sparse.timer.advance(time);
+ for (const name of ['blood-droplets', 'blood-floor-spatter', 'impact-shards', 'clash-sparks', 'landing-dust']) {
+  assert.deepEqual(Array.from(dense.scene.getObjectByName(name).instanceMatrix.array), Array.from(sparse.scene.getObjectByName(name).instanceMatrix.array), name);
+ }
+ dense.animation.cancel(); sparse.animation.cancel();
+});
+
+test('instanced GPU buffers are disposed exactly once on repeated cancellation', () => {
+ const f = fixture(); let disposed = 0;
+ f.scene.getObjectByName('chess-combat-effects').traverse(object => {
+  if (object.isInstancedMesh) object.addEventListener('dispose', () => disposed++);
+ });
+ f.timer.advance(captureTime(.72)); f.animation.cancel(); f.animation.cancel(); f.timer.stale(5000);
+ assert.equal(disposed, 5); assert.equal(f.animation.metrics.cameraPunch, 0); assert.equal(f.animation.metrics.hitStop, false);
 });

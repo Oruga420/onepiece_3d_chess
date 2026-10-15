@@ -20,3 +20,24 @@ test('all32pieces contain only a character model with feet resting on the tile',
  for(const piece of view.pieces.values()){assert.equal(piece.children.length,1);assert.equal(piece.children[0].name,'character-model');const bounds=new THREE.Box3().setFromObject(piece);assert.ok(bounds.min.y>=.14&&bounds.min.y<=.15,'feet stay at tile surface');piece.traverse(node=>assert.notEqual(node.geometry?.type,'CylinderGeometry'));}
  for(const model of cache.values())model.traverse(node=>{node.geometry?.dispose();node.material?.dispose();});
 });
+
+test('cinematic capture camera restores exactly and manual controls override it',async()=>{
+ const THREE=await import('../vendor/three/three.module.js');
+ const view=Object.create(GameRenderer.prototype);
+ Object.assign(view,{camera:new THREE.PerspectiveCamera(38,1.4,.1,100),cameraMode:'front',zoomLevel:.7,cameraYaw:.2,cameraElevation:.7,reducedMotion:false});
+ view.updateCamera();const before={position:view.camera.position.toArray(),rotation:view.camera.quaternion.toArray()};
+ view.combatFocus=new THREE.Vector3(1,.46,-2);view.activeAnimation={metrics:{progress:.62,cameraPunch:1},cancel(){}};
+ view.updateCamera();assert(view.camera.position.distanceTo(new THREE.Vector3(...before.position))>1);
+ assert.equal(view.zoomLevel,.7);assert.equal(view.cameraYaw,.2);assert.equal(view.cameraElevation,.7);
+ view.cancelAnimations();assert.deepEqual(view.camera.position.toArray(),before.position);assert.deepEqual(view.camera.quaternion.toArray(),before.rotation);
+ view.combatFocus=new THREE.Vector3(1,.46,-2);view.activeAnimation={metrics:{progress:.62,cameraPunch:1},cancel(){}};
+ view.orbit(.3,0);const manual=view.camera.position.toArray();view.updateCamera();assert.deepEqual(view.camera.position.toArray(),manual);
+ view.cancelAnimations();assert.deepEqual(view.camera.position.toArray(),manual);
+});
+
+test('reduced motion skips combat camera even while impact metrics exist',async()=>{
+ const THREE=await import('../vendor/three/three.module.js'),view=Object.create(GameRenderer.prototype);
+ Object.assign(view,{camera:new THREE.PerspectiveCamera(38,.5,.1,100),cameraMode:'top',zoomLevel:.9,cameraYaw:0,cameraElevation:1.4,reducedMotion:true});
+ view.updateCamera();const before=view.camera.position.toArray();view.combatFocus=new THREE.Vector3(3,.46,3);view.activeAnimation={metrics:{progress:.62,cameraPunch:1}};
+ view.updateCamera();assert.deepEqual(view.camera.position.toArray(),before);
+});

@@ -1,3 +1,4 @@
+import {getCharacterAttack} from '../src/attacks.mjs';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import path from 'node:path';
@@ -93,7 +94,7 @@ try{
    assert(observed.frames.some(frame=>frame.cameraPunch>0),fixture.id+' camera punch requested');
    assert(observed.frames.some(frame=>frame.camera.some((value,index)=>Math.abs(value-beforeCamera.position[index])>.02)),fixture.id+' actual camera reacts');
    assert(observed.frames.filter(frame=>frame.phase==='parry').every(frame=>frame.attackerVisible&&frame.victimVisible),fixture.id+' both fighters visible during counter');
-   assert.equal(observed.frames.find(frame=>frame.profile)?.profile,fixture.profile);
+   assert.equal(observed.frames.find(frame=>frame.profile)?.profile,getCharacterAttack('mugiwara',fixture.id==='en-passant'?'pawn':fixture.id==='castle'?'king':fixture.id).style);
    for(const phase of ['impact','defeat','aftermath']){
     assert(observed.pngs[phase],fixture.id+' rendered '+phase+' frame');
     for(const actor of observed.pngs[phase].actors)assert(actor.floor>=.139,fixture.id+' grounded '+phase+' '+actor.floor);

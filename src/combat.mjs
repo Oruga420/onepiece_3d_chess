@@ -1,4 +1,5 @@
 import * as THREE from '../vendor/three/three.module.js';
+import {createAttackEffects} from './attack-effects.mjs';
 
 const clamp = value => Math.max(0, Math.min(1, value));
 const smooth = value => { const p = clamp(value); return p * p * (3 - 2 * p); };
@@ -38,7 +39,7 @@ function randomSequence(seed) {
 
 // All effect resources belong to this battle. Cached character geometry and
 // materials are never cloned, edited or disposed by the animation.
-function createEffects(scene, origin, direction, side, seed, profile) {
+function createEffects(scene, origin, direction, side, seed, profile, characterSignature = false) {
  const group = new THREE.Group(); group.name = 'chess-combat-effects'; group.position.copy(origin);
  const random = randomSequence(seed), dummy = new THREE.Object3D(), geometries = new Set(), materials = new Set();
  const tint = side === 'marine' ? '#ffbc70' : '#7affdc';
@@ -62,6 +63,7 @@ function createEffects(scene, origin, direction, side, seed, profile) {
  ring.rotation.x = -Math.PI / 2; ring.position.y = .008;
  const trailGeometry = new THREE.TorusGeometry(.57, .014, 4, 40, Math.PI * 1.35);
  const arc = mesh('finisher-trail', trailGeometry, material(tint, true));
+ arc.visible = !characterSignature;
  const counterArc = mesh('parry-trail', trailGeometry, material('#ffcf85', true));
  const yaw = Math.atan2(direction.x, direction.z);
  arc.position.y = .58; counterArc.position.y = .64;
@@ -161,7 +163,7 @@ function createEffects(scene, origin, direction, side, seed, profile) {
  */
 export function createMoveAnimation({
  attacker, victim = null, rook = null, start = attacker.position, end,
- rookEnd = null, capture = Boolean(victim), role = 'pawn', side = 'pirate',
+ rookEnd = null, capture = Boolean(victim), role = 'pawn', side = 'pirate', attack = null,
  reducedMotion = false, scene = null, seed = `${role}:${start.x},${start.z}:${end.x},${end.z}`,
  onImpact = () => {}, onPhase = () => {},
  requestFrame = callback => requestAnimationFrame(callback),
@@ -179,26 +181,29 @@ export function createMoveAnimation({
  direction.normalize();
  const sideways = new THREE.Vector3(direction.z, 0, -direction.x);
  const distance = Math.hypot(target.x - from.x, target.z - from.z);
- const stand = target.clone().addScaledVector(direction, -Math.min(.76, distance)); stand.y = from.y;
- const profile = PROFILES[role] || PROFILES.pawn;
+ const ranged = attack && ['projectile', 'lightning', 'room', 'string', 'darkness'].includes(attack.family);
+ const stand = target.clone().addScaledVector(direction, -Math.min(ranged ? 1.4 : .76, distance)); stand.y = from.y;
+ const styleRole = {brawl:'pawn', vault:'knight', slash:'queen', charge:'rook'};
+ const profile = attack && styleRole[attack.style] ? PROFILES[styleRole[attack.style]] : PROFILES[role] || PROFILES.pawn;
  const facing = new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(0, 1, 0), Math.atan2(direction.x, direction.z));
  const defenderFacing = new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(0, 1, 0), Math.atan2(-direction.x, -direction.z));
  const rookDirection = rookDestination && savedRook ? rookDestination.clone().sub(savedRook.position).setY(0).normalize() : null;
  const rookFacing = rookDirection ? new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(0, 1, 0), Math.atan2(rookDirection.x, rookDirection.z)) : null;
  const scratch = new THREE.Vector3(), corner = new THREE.Vector3(), inverse = new THREE.Quaternion(), poseRotation = new THREE.Quaternion(), poseEuler = new THREE.Euler();
  const duration = reducedMotion ? 0 : capture ? 3600 : 600;
- const metrics = {phase: 'approach', progress: 0, impactCount: 0, effects: 0, profile: profile.name, duration, hitStop: false, cameraPunch: 0, bloodParticles: 0, bloodSplats: 0, shards: 0};
- let frameId = null, settled = false, effects = null, resolveFinished;
+ const metrics = {phase: 'approach', progress: 0, impactCount: 0, effects: 0, profile: profile.name, duration, hitStop: false, cameraPunch: 0, bloodParticles: 0, bloodSplats: 0, shards: 0,
+  characterAttack: attack?.id || null, character: attack?.character || null, family: attack?.family || null, signatureEffects: 0};
+ let frameId = null, settled = false, effects = null, signature = null, resolveFinished;
  const finished = new Promise(resolve => { resolveFinished = resolve; });
  const restoreAll = () => originals.forEach(restore);
  const impact = () => {
-  if (!settled && capture && metrics.impactCount === 0) { metrics.impactCount = 1; onImpact({position: target.clone(), profile: profile.name, side}); }
+  if (!settled && capture && metrics.impactCount === 0) { metrics.impactCount = 1; onImpact({position: target.clone(), profile: profile.name, side, attack}); }
  };
  const finish = cancelled => {
   if (settled) return;
   settled = true;
   if (frameId !== null) cancelFrame(frameId);
-  effects?.dispose(); metrics.effects = 0; metrics.hitStop = false; metrics.cameraPunch = 0;
+  effects?.dispose(); signature?.dispose(); metrics.effects = 0; metrics.signatureEffects = 0; metrics.hitStop = false; metrics.cameraPunch = 0;
   restoreAll();
   if (!cancelled) {
    attacker.position.copy(destination);
@@ -264,17 +269,26 @@ export function createMoveAnimation({
   const defeat = smooth(segment(p, .65, .88)), recover = smooth(segment(p, .88, 1));
   const faceProgress = smooth(segment(p, 0, .18));
   const lunge = smooth(segment(p, .555, .625)), followThrough = smooth(segment(p, .65, .78));
-  const advance = (-windup * .11 + feint * .24 - counter * .17 + lunge * .47 - followThrough * .12) * (1 - recover);
+  const advance = (-windup * .11 + feint * .24 - counter * .17 + lunge * .47 - followThrough * .12) * (1 - recover) * (ranged ? .25 : 1);
   attacker.position.lerpVectors(from, stand, approach).addScaledVector(direction, advance)
    .addScaledVector(sideways, (counter * -.13 + pulse(p, .55, .65) * .08) * (1 - recover)).lerp(destination, recover);
   attacker.quaternion.copy(savedAttacker.quaternion).slerp(facing, faceProgress).slerp(savedAttacker.quaternion, recover);
   const gait = Math.sin(segment(p, 0, .30) * Math.PI * 10) * Math.sin(segment(p, 0, .30) * Math.PI);
   const attackHold = 1 - recover;
-  const recoil = -windup * .07 + feint * .09 - counter * .08 + strike * profile.reach * .38;
-  const twist = (-windup * profile.twist + feint * profile.twist * .6 - counter * .35 + strike * profile.twist * 2.1) * attackHold;
-  const lean = (-windup * .18 + feint * .24 - counter * .18 + strike * profile.lean) * attackHold;
-  const jump = profile.jump * pulse(p, .54, .73);
-  pose(savedBody, attacker, recoil * attackHold, gait * .023, Math.abs(gait) * .06 + jump, lean, twist, gait * .05 - counter * .17);
+  let recoil = -windup * .07 + feint * .09 - counter * .08 + strike * profile.reach * .38;
+  let twist = (-windup * profile.twist + feint * profile.twist * .6 - counter * .35 + strike * profile.twist * 2.1) * attackHold;
+  let lean = (-windup * .18 + feint * .24 - counter * .18 + strike * profile.lean) * attackHold;
+  let jump = profile.jump * pulse(p, .54, .73), roll = gait * .05 - counter * .17;
+  const attackPulse = pulse(p, .55, .72), variant = attack?.variant;
+  if (attack?.family === 'rubber') { lean -= windup * .18 * attackHold; recoil += attackPulse * .13; }
+  if (attack?.family === 'projectile' || variant === 'laser') { recoil -= attackPulse * .12; twist *= .28; jump *= .15; }
+  if (attack?.family === 'room' || attack?.family === 'string') { lean *= .45; twist *= .55; recoil *= .35; }
+  if (attack?.family === 'sword' && variant === 'triple') { twist += attackPulse * 1.1; roll -= attackPulse * .18; }
+  if (variant === 'kick') { twist += attackPulse * 1.5; roll += attackPulse * .42; jump += attackPulse * .15; }
+  if (variant === 'phoenix' || variant === 'pteranodon') { jump += pulse(p, .44, .80) * .35; lean += attackPulse * .20; }
+  if (attack?.family === 'beast') { lean += attackPulse * .20; recoil += attackPulse * .08; }
+  if (attack?.family === 'quake' || variant === 'magma') { recoil += attackPulse * .09; lean += windup * .12 * attackHold; }
+  pose(savedBody, attacker, recoil * attackHold, gait * .023, Math.abs(gait) * .06 + jump, lean, twist, roll);
   if (victim) {
    victim.quaternion.copy(savedVictim.quaternion).slerp(defenderFacing, smooth(segment(p, .18, .37)));
    const brace = pulse(p, .43, .49), stagger = pulse(p, .62, .72);
@@ -294,13 +308,15 @@ export function createMoveAnimation({
    victim.visible = savedVictim.visible && p < .88;
   }
   effects?.update(p);
+  signature?.update(p);
  }
 
  if (reducedMotion) {
   impact(); finish(false);
   return controller;
  }
- if (capture) { effects = createEffects(scene, target, direction, side, seed, profile); metrics.effects = effects.count; metrics.bloodParticles = effects.bloodParticles; metrics.bloodSplats = effects.bloodSplats; metrics.shards = effects.shards; }
+ if (capture) { effects = createEffects(scene, target, direction, side, seed, profile, Boolean(attack)); metrics.effects = effects.count; metrics.bloodParticles = effects.bloodParticles; metrics.bloodSplats = effects.bloodSplats; metrics.shards = effects.shards; }
+ if (capture && attack) { signature = createAttackEffects({scene, origin: target, direction, attacker, attack}); metrics.signatureEffects = signature.count; metrics.effects += signature.count; }
  const started = now();
  const frame = time => {
   if (settled) return;
@@ -315,7 +331,7 @@ export function createMoveAnimation({
   metrics.progress = p;
   if (capture) battle(p); else move(p);
   const phase = capture ? COMBAT_PHASES.findLast(([, boundary]) => p >= boundary)[0] : p < 1 ? 'move' : 'complete';
-  if (metrics.phase !== phase) { metrics.phase = phase; onPhase({phase, progress: p}); }
+  if (metrics.phase !== phase) { metrics.phase = phase; onPhase({phase, progress: p, attack}); }
   if (settled) return;
   if (p >= .62) impact();
   if (settled) return;

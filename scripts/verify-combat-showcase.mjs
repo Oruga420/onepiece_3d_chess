@@ -1,3 +1,4 @@
+import {getCharacterAttack} from '../src/attacks.mjs';
 import assert from 'node:assert/strict';
 import path from 'node:path';
 import fs from 'node:fs';
@@ -47,7 +48,7 @@ try{
    }),fixture);
    const faceoff=frames.faceoff;
    assert(faceoff.attacker&&faceoff.victim,fixture.id+' both visible before strike');
-   assert.equal(faceoff.combat.profile,fixture.profile);
+   assert.equal(faceoff.combat.profile,getCharacterAttack('mugiwara',fixture.id==='en-passant'?'pawn':fixture.id==='castle'?'king':fixture.id).style);
    for(const [phase,frame] of Object.entries(frames))fs.writeFileSync(path.join(out,`combat-${fixture.id}-${phase}.png`),Buffer.from(frame.png.split(',')[1],'base64'));
   }
   await settle(page);

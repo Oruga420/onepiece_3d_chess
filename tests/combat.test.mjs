@@ -2,6 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import * as THREE from '../vendor/three/three.module.js';
 import {createMoveAnimation} from '../src/combat.mjs';
+import {CHARACTER_ATTACKS, ATTACK_FAMILIES, getCharacterAttack} from '../src/attacks.mjs';
 
 const captureTime = p => p * 3480 + (p > .62 ? 120 : 0);
 
@@ -41,6 +42,97 @@ function fixture(options = {}) {
   ...timer, onImpact: event => impacts.push(event), onPhase: event => phases.push(event), ...options});
  return {timer, scene, attacker, victim, rook, end, original, impacts, phases, animation};
 }
+
+test('capture motion and audio events use the character attack instead of chess rank', () => {
+ const attack = getCharacterAttack('mugiwara', 'bishop'), f = fixture({role: 'bishop', attack});
+ assert.equal(f.animation.metrics.profile, 'vault', 'Sanji kicks instead of using the bishop slash');
+ assert.equal(f.animation.metrics.characterAttack, attack.id);
+ assert.equal(f.animation.metrics.family, 'fire');
+ assert(f.animation.metrics.signatureEffects > 0);
+ f.timer.advance(captureTime(.35));
+ assert.equal(f.phases[0].attack, attack);
+ f.timer.advance(captureTime(.62));
+ assert.equal(f.impacts[0].attack, attack);
+ f.animation.cancel();
+ assert.equal(f.animation.metrics.signatureEffects, 0);
+});
+
+test('character signatures replace the shared finisher and preserve their colors on light tiles', () => {
+ for (const attack of [getCharacterAttack('mugiwara','rook'), getCharacterAttack('whitebeard','rook'), getCharacterAttack('whitebeard','queen'), getCharacterAttack('marines','queen')]) {
+  const f = fixture({attack}); f.timer.advance(captureTime(.62));
+  assert.equal(f.scene.getObjectByName('finisher-trail').visible, false);
+  assert.equal(f.scene.getObjectByName('parry-trail').visible, true);
+  const cores = f.scene.getObjectByName('character-attack-effects').children.filter(o => o.material.color.equals(new THREE.Color(attack.color)));
+  assert(cores.length > 0, attack.id);
+  for (const core of cores) { assert.equal(core.material.blending, THREE.NormalBlending); assert.equal(core.material.toneMapped, false); }
+  f.animation.cancel();
+ }
+ const legacy = fixture(); assert.equal(legacy.scene.getObjectByName('finisher-trail').visible, true); legacy.animation.cancel();
+});
+
+test('ranged characters attack from a stand-off distance and still occupy the captured square', async () => {
+ for (const family of ['projectile','lightning','room','string','darkness']) {
+  const attack = Object.values(CHARACTER_ATTACKS).find(a => a.family === family), f = fixture({attack});
+  f.timer.advance(captureTime(.30)); assert(f.attacker.position.distanceTo(f.victim.position) >= 1.399, family);
+  f.timer.advance(captureTime(.62)); assert(f.attacker.position.distanceTo(f.victim.position) > 1.2, family);
+  f.timer.advance(3600); assert.deepEqual(await f.animation.finished, {cancelled:false});
+  assert.deepEqual(f.attacker.position.toArray(), f.end.toArray());
+ }
+});
+
+test('all 16 attack families have distinct real geometry and finite deterministic poses', () => {
+ const signatures = new Set();
+ for (const family of ATTACK_FAMILIES) {
+  const attack = Object.values(CHARACTER_ATTACKS).find(a => a.family === family), dense = fixture({attack}), sparse = fixture({attack});
+  const group = dense.scene.getObjectByName('character-attack-effects');
+  assert(group?.children.length > 0, family);
+  signatures.add(JSON.stringify(group.children.map(o => [o.geometry.type, o.geometry.parameters])));
+  for (let time = 0; time < captureTime(.62); time += 31) dense.timer.advance(time);
+  dense.timer.advance(captureTime(.62)); sparse.timer.advance(captureTime(.62));
+  assert.deepEqual(transform(group), transform(sparse.scene.getObjectByName('character-attack-effects')), family);
+  assert(group.children.some(o => o.visible && o.material.opacity > .25), `${family} has a visible signature at contact`);
+  group.traverse(o => assert([...o.position.toArray(), ...o.quaternion.toArray(), ...o.scale.toArray()].every(Number.isFinite), family));
+  dense.animation.cancel(); sparse.animation.cancel();
+ }
+ assert.equal(signatures.size, ATTACK_FAMILIES.length, 'family shapes differ, not just their colors or names');
+});
+
+test('all 66 character signatures release their GPU resources once on cancellation', () => {
+ for (const attack of Object.values(CHARACTER_ATTACKS)) {
+  const f = fixture({attack}), group = f.scene.getObjectByName('character-attack-effects'), resources = new Map();
+  for (const mesh of group.children) for (const resource of [mesh.geometry, mesh.material]) {
+   if (resources.has(resource)) continue;
+   resources.set(resource, 0); resource.addEventListener('dispose', () => resources.set(resource, resources.get(resource) + 1));
+  }
+  for (const p of [.35, .48, .58, .62, .70, .82]) {
+   f.timer.advance(captureTime(p));
+   f.scene.updateMatrixWorld(true);
+   const body = f.attacker.children[0], bounds = new THREE.Box3().setFromObject(body);
+   assert(bounds.min.y >= .169, `${attack.id}: body remains above floor`);
+  }
+  f.animation.cancel(); f.animation.cancel(); f.timer.stale(5000);
+  assert([...resources.values()].every(n => n === 1), attack.id);
+  assert.equal(f.scene.getObjectByName('character-attack-effects'), undefined);
+  assert.deepEqual(transform(f.attacker), f.original[0]);
+ }
+});
+
+test('signature variants distinguish related powers and skip effects with reduced motion', async () => {
+ const names = (crew, role) => {
+  const f = fixture({attack:getCharacterAttack(crew, role)}), result = f.scene.getObjectByName('character-attack-effects').children.map(o => o.name);
+  f.animation.cancel(); return result;
+ };
+ assert.equal(names('mugiwara','queen').filter(n => n.startsWith('sword-cut-')).length, 3);
+ assert(names('bigmom','queen').some(n => n.startsWith('mochi-')));
+ assert(names('kid','king').some(n => n.startsWith('metal-magnetic-')));
+ assert(names('kaido','rook').some(n => n.startsWith('cyborg-laser-')));
+ assert(names('whitebeard','bishop').some(n => n.startsWith('diamond-crystal-')));
+ assert(names('doflamingo','rook').some(n => n.startsWith('slime-tether-')));
+ const f = fixture({attack:getCharacterAttack('mugiwara','king'), reducedMotion:true});
+ assert.deepEqual(await f.animation.finished, {cancelled:false});
+ assert.equal(f.animation.metrics.signatureEffects, 0); assert.equal(f.scene.children.length, 3);
+ assert.equal(f.impacts[0].attack.character, 'Luffy'); assert.equal(f.timer.pending, 0);
+});
 
 test('a capture stages approach, anticipation, counterattack, strike, defeat and advance', async () => {
  const f = fixture(), {timer, animation, attacker, victim} = f;

@@ -1,6 +1,18 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {GameRenderer} from '../src/renderer.mjs';
+
+test('renderer resolves fruit-transformed and marine attackers from their actual model slot', async () => {
+ const THREE = await import('../vendor/three/three.module.js');
+ for (const [crew, type, player, expected] of [['mugiwara','queen','pirate','Zoro'], ['heart','king','pirate','Law'], ['mugiwara','queen','marine','Akainu']]) {
+  const attacker = new THREE.Group(), victim = new THREE.Group(), view = Object.create(GameRenderer.prototype), impacts = [];
+  attacker.userData.piece = {type,player}; attacker.position.set(0,.146,0); victim.position.set(0,.146,-1);
+  Object.assign(view, {crew, pieces:new Map([['E2',attacker],['E3',victim]]), scene:new THREE.Scene(), reducedMotion:true, updateCamera(){}});
+  await view.animateMove({from:'E2',to:'E3',captured:{}}, {onImpact:e=>impacts.push(e)});
+  assert.equal(impacts[0].attack.character, expected); assert.equal(view.combatMetrics.character, expected);
+  assert.equal(view.combatMetrics.signatureEffects, 0);
+ }
+});
 test('asset manifest is shared by overlapping loads and later board updates',async()=>{
  const original=globalThis.fetch;let calls=0,resolve;
  globalThis.fetch=()=>{calls++;return new Promise(r=>{resolve=r;});};

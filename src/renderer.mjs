@@ -1,6 +1,7 @@
 import * as THREE from '../vendor/three/three.module.js';
 import { GLTFLoader } from '../vendor/three/GLTFLoader.js';
 import { createMoveAnimation } from './combat.mjs';
+import { getCharacterAttack } from './attacks.mjs';
 
 const squarePosition = square => new THREE.Vector3(square.charCodeAt(0)-65-3.5, .146, 3.5-(Number(square[1])-1));
 const disposeTree = tree => { const seen=new Set(); tree.traverse(o=>{if(o.geometry&&!seen.has(o.geometry)){seen.add(o.geometry);o.geometry.dispose();}for(const m of [o.material].flat().filter(Boolean)){if(seen.has(m))continue;seen.add(m);for(const v of Object.values(m))if(v?.isTexture&&!seen.has(v)){seen.add(v);v.dispose();}m.dispose();}}); };
@@ -75,7 +76,7 @@ export class GameRenderer {
  }
  highlight({selected=null,candidates=[],moves=[]}={}){disposeTree(this.highlights);this.highlights.clear();const add=(square,color,ring=false)=>{if(!/^[A-H][1-8]$/.test(square))return;const mesh=new THREE.Mesh(ring?new THREE.RingGeometry(.35,.46,40):new THREE.CircleGeometry(.14,24),new THREE.MeshBasicMaterial({color,transparent:true,opacity:.9,side:THREE.DoubleSide,depthWrite:false}));mesh.rotation.x=-Math.PI/2;mesh.position.copy(squarePosition(square));mesh.position.y=.155;this.highlights.add(mesh);};for(const s of candidates)add(typeof s==='string'?s:s.square,'#edc173',true);if(selected)add(selected,'#55ffe2',true);for(const m of moves)add(typeof m==='string'?m:m.to,'#55ffe2');}
  cancelAnimations(){this.activeAnimation?.cancel();this.activeAnimation=null;if(this.combatFocus){this.combatFocus=null;this.updateCamera();}}
- async animateMove(record,{onImpact}={}){
+ async animateMove(record,{onImpact,onPhase}={}){
   const from=record.from||record.move?.from,to=record.to||record.move?.to;
   const attacker=this.pieces.get(from);
   if(!attacker||!to)return;
@@ -87,7 +88,8 @@ export class GameRenderer {
    rookEnd:record.castle?squarePosition((record.castle==='king'?'F':'D')+from[1]):null,
    capture:Boolean(victim||record.captured),role:attacker.userData.piece.type,
    side:attacker.userData.piece.player,scene:this.scene,reducedMotion:this.reducedMotion,
-   seed:`${this.crew}:${from}:${to}:${attacker.userData.piece.type}`,onImpact
+   attack:getCharacterAttack(this.crew,attacker.userData.piece.type,attacker.userData.piece.player),
+   seed:`${this.crew}:${from}:${to}:${attacker.userData.piece.type}`,onImpact,onPhase
   });
   this.activeAnimation=animation;this.combatMetrics=animation.metrics;
   if(victim&&!this.reducedMotion){this.combatFocus=victim.position.clone().addScaledVector(attacker.position.clone().sub(victim.position),.18);this.combatFocus.y=.46;this.combatCameraSuppressed=false;}

@@ -100,7 +100,7 @@ export function createVoiceSession(controller,callbacks={}){
   return call.closePromise;
  }
  async function stop(){return close(current);}
- function budgetStop(call){void close(call,{reason:'rate_limit',error:Error('Demasiadas solicitudes de voz seguidas. La llamada se detuvo para evitar un bucle.')});}
+ function rateStop(call){void close(call,{reason:'rate_limit',error:Error('Demasiadas solicitudes de voz seguidas. La llamada se detuvo para evitar un bucle.')});}
  function count(call,{tool=false,message=null}={}){
   if(!active(call))return false;
   const userBytes=message?.source==='user'?bytes(message.message||''):0;
@@ -111,7 +111,7 @@ export function createVoiceSession(controller,callbacks={}){
   const at=now();
   call.recent=call.recent.filter(entry=>at-entry.at<10000);
   call.recent.push({at,tool,userBytes});
-  if(call.recent.length>80||call.recent.filter(entry=>entry.tool).length>24||call.recent.reduce((sum,entry)=>sum+entry.userBytes,0)>8192){budgetStop(call);return false;}
+  if(call.recent.length>80||call.recent.filter(entry=>entry.tool).length>24||call.recent.reduce((sum,entry)=>sum+entry.userBytes,0)>8192){rateStop(call);return false;}
   return true;
  }
  function boardContext(){
@@ -160,7 +160,7 @@ export function createVoiceSession(controller,callbacks={}){
  function onMessage(call,message){
   if(!active(call))return;
   const command=message.source==='user'?decodeVoiceCommand(message.message):null;
-  // Cancellation bypasses quotas, so a full budget can never delay a spoken stop.
+  // Cancellation bypasses burst limits, so a spoken stop is never delayed.
   if(command?.name==='stop_action'){
    const result=controller.runTool('stop_action',{}, {source:'voice_asr'});
    notify('onMessage',message);
@@ -216,7 +216,7 @@ export function createVoiceSession(controller,callbacks={}){
     });
     const {response,data}=await bounded(tokenTask,requestTimeoutMs,{signal:call.aborter.signal});
     if(!response.ok){
-     const messages={active:'Hay otra llamada activa o cerrándose. Espera unos segundos y vuelve a conectar.',rate:'Has iniciado varias llamadas seguidas. Espera un momento y vuelve a conectar.',budget:'Se alcanzó el presupuesto disponible para la voz.'};
+     const messages={active:'Hay otra llamada activa o cerrándose. Espera unos segundos y vuelve a conectar.',rate:'Has iniciado varias llamadas seguidas. Espera un momento y vuelve a conectar.'};
      throw Error(messages[data.error]||(response.status===503?'Voz pendiente de configuración personal.':'No se pudo iniciar la llamada.'));
     }
     if(!active(call)){await finish(call);return;}
@@ -240,7 +240,7 @@ export function createVoiceSession(controller,callbacks={}){
     call.updates=[];
     const board=controller.runTool?.('get_board',{}, {source:'voice_context'});
     if(board?.ok)updateContext(call,'get_board',board);
-    call.hardTimer=setTimeout(()=>void close(call,{reason:'duration_limit',error:Error('La sesión alcanzó sus 5 minutos. Puedes conectar otra llamada si queda presupuesto.')}),300000);
+    call.hardTimer=setTimeout(()=>void close(call,{reason:'duration_limit',error:Error('La sesión alcanzó sus 5 minutos. Puedes volver a conectar.')}),300000);
     call.meter=setInterval(()=>notify('onVolume',call.session?.getOutputVolume?.()||0),100);
     notify('onStatus','connected');return connected;
    }catch(error){if(!active(call))return;const visible=/NotAllowedError|PermissionDenied|NotFoundError|NotReadableError|NotSupportedError|OverconstrainedError|SecurityError|network|fetch|SessionConnectionError/i.test(`${error?.name} ${error?.message}`)?classifyVoiceError(error):error;await close(call,{reason:'connection_error',error:visible});throw visible;}

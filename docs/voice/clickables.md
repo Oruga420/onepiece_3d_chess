@@ -33,3 +33,7 @@ Examples: “Dale Gomu Gomu al peón de E2”, “Que Chopper de E2 coma Mera Me
 ## Separate controls
 
 Microphone permission, login/password and invitation sharing require the browser/user. Online room create/join/leave/resign and free camera gestures remain UI controls, not newly claimed voice capabilities in this change. Current voice quotas, private provider agent, 300-second call limit, daily 20 calls, concurrency one and server-side secrets remain enforced.
+
+## Voice spending policy — October 20, 2026
+
+The owner explicitly removed the game's USD3 voice cap and USD1.50 pre-call reservation. Voice now uses the personal ElevenLabs account's available credits without a game-side monetary ceiling. The database keeps historical accounting but grants new sessions with reserved=0; accumulated spend never participates in admission. Atomic concurrency, request burst limits, authentication and provider call duration remain. This supersedes the original delivery budget for ongoing voice use only; it does not authorize unrelated asset generation or account changes.

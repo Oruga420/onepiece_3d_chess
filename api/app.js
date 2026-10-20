@@ -26,7 +26,7 @@ function createApp(env=process.env,request=fetch){
  app.use('/api',(req,res,next)=>{if(!['GET','HEAD'].includes(req.method)&&(!origin(req)||!equal(req.get('x-csrf-token')||'',req.session.csrf)))return res.status(403).json({error:'csrf'});next();});
  app.use('/api/rooms',roomRouter(env,request));
  app.post('/api/logout',async(req,res)=>{try{if(env.CHESS_QUOTA_DATABASE_URL)await neon(env,'INSERT INTO epic_chess.revocations(session,expires_at) VALUES($1,to_timestamp($2::double precision/1000)) ON CONFLICT DO NOTHING',[req.session.id,req.session.exp],request);else{for(const [id,exp]of revoked)if(exp<Date.now())revoked.delete(id);revoked.set(req.session.id,req.session.exp);}cookie(res,'',0);res.json({ok:true});}catch{res.status(503).json({error:'unavailable'});}});
- app.get('/api/voice/status',(req,res)=>res.json({configured:Boolean(env.ELEVENLABS_API_KEY&&env.ELEVENLABS_AGENT_ID),durable:quota.configured}));
+ app.get('/api/voice/status',(req,res)=>res.json({configured:Boolean(env.ELEVENLABS_API_KEY&&env.ELEVENLABS_AGENT_ID),durable:quota.configured,monetaryLimitUSD:null}));
  app.post('/api/voice/token',async(req,res)=>{
   if(!env.CHESS_QUOTA_DATABASE_URL||!env.ELEVENLABS_API_KEY||!env.ELEVENLABS_AGENT_ID||Number(env.VOICE_PROVIDER_MAX_SECONDS)!==300)return res.status(503).json({error:'voice_unavailable'});
   const leaseId=crypto.randomUUID();
@@ -34,7 +34,7 @@ function createApp(env=process.env,request=fetch){
    const active=await quota.current();
    if(active?.[2])await quota.reconcile(active[0],active[1]);
    await quota.reserve(req.session.id,leaseId);
-  }catch(e){return res.status(['active','rate','budget'].includes(e.message)?429:503).json({error:['active','rate','budget'].includes(e.message)?e.message:'voice_unavailable'});}
+  }catch(e){return res.status(['active','rate'].includes(e.message)?429:503).json({error:['active','rate'].includes(e.message)?e.message:'voice_unavailable'});}
   try{
    const r=await request(`https://api.elevenlabs.io/v1/convai/conversation/token?agent_id=${encodeURIComponent(env.ELEVENLABS_AGENT_ID)}`,{headers:{'xi-api-key':env.ELEVENLABS_API_KEY},signal:AbortSignal.timeout(15000)});
    if(!r.ok)throw Error();

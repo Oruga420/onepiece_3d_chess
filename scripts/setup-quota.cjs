@@ -9,11 +9,33 @@ const statements=[
  'CREATE TABLE IF NOT EXISTS epic_chess.revocations (session text PRIMARY KEY, expires_at timestamptz NOT NULL)',
  `CREATE TABLE IF NOT EXISTS epic_chess.voice_ledger (
   scope text NOT NULL REFERENCES epic_chess.quota(scope), lease text NOT NULL, session text NOT NULL,
-  reserved bigint NOT NULL CHECK(reserved>0), conversation text, agent_id text,
+  reserved bigint NOT NULL CHECK(reserved>=0), conversation text, agent_id text,
   actual bigint CHECK(actual>=10000), provider_status text, provider_cost_fiat numeric, provider_llm_price numeric,
   created_at timestamptz NOT NULL DEFAULT clock_timestamp(), settled_at timestamptz,
   PRIMARY KEY(scope,lease), UNIQUE(scope,conversation)
  )`,
+ // This single DDL transaction preserves old positive reservations and permits
+ // new zero-cost leases. The old reserve function stays compatible during deploy.
+ `ALTER TABLE epic_chess.voice_ledger
+  DROP CONSTRAINT IF EXISTS voice_ledger_reserved_check,
+  ADD CONSTRAINT voice_ledger_reserved_check CHECK(reserved>=0)`,
+ `CREATE OR REPLACE FUNCTION epic_chess.reserve_voice_session(p_scope text,p_session text,p_lease text) RETURNS text LANGUAGE plpgsql AS $$
+ DECLARE q epic_chess.quota%ROWTYPE; r epic_chess.session_rates%ROWTYPE;
+ BEGIN
+  IF p_scope IS NULL OR length(p_scope)=0 OR p_session IS NULL OR length(p_session)=0 OR p_lease IS NULL OR length(p_lease)=0 THEN RETURN 'lease_unavailable'; END IF;
+  INSERT INTO epic_chess.quota(scope) VALUES(p_scope) ON CONFLICT DO NOTHING;
+  SELECT * INTO q FROM epic_chess.quota WHERE scope=p_scope FOR UPDATE;
+  IF q.active_until>clock_timestamp() THEN RETURN 'active'; END IF;
+  INSERT INTO epic_chess.session_rates(scope,session,window_until) VALUES(p_scope,p_session,clock_timestamp()+interval '10 minutes') ON CONFLICT DO NOTHING;
+  SELECT * INTO r FROM epic_chess.session_rates WHERE scope=p_scope AND session=p_session;
+  IF r.window_until<=clock_timestamp() THEN UPDATE epic_chess.session_rates SET count=0,window_until=clock_timestamp()+interval '10 minutes' WHERE scope=p_scope AND session=p_session; r.count:=0; END IF;
+  IF r.count>=20 THEN RETURN 'rate'; END IF;
+  IF EXISTS(SELECT FROM epic_chess.voice_ledger WHERE scope=p_scope AND lease=p_lease) THEN RETURN 'lease_unavailable'; END IF;
+  INSERT INTO epic_chess.voice_ledger(scope,lease,session,reserved) VALUES(p_scope,p_lease,p_session,0);
+  UPDATE epic_chess.quota SET active_until=clock_timestamp()+interval '6 minutes',lease=p_lease,active_session=p_session,conversation=NULL WHERE scope=p_scope;
+  UPDATE epic_chess.session_rates SET count=count+1 WHERE scope=p_scope AND session=p_session;
+  RETURN 'ok';
+ END $$`,
  `CREATE OR REPLACE FUNCTION epic_chess.reserve(p_scope text,p_session text,p_lease text,p_cost bigint,p_budget bigint) RETURNS text LANGUAGE plpgsql AS $$
  DECLARE q epic_chess.quota%ROWTYPE; r epic_chess.session_rates%ROWTYPE;
  BEGIN

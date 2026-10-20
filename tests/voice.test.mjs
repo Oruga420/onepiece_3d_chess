@@ -287,8 +287,8 @@ test('failure is visible immediately even when hangup and lease cleanup never an
  await voice.stop();
 });
 
-test('voice token rejections explain active call, rate limit and budget separately',async()=>{
- for(const [code,pattern] of [['active',/otra llamada activa/],['rate',/varias llamadas/],['budget',/presupuesto/]]){
+test('voice token rejections explain active call and burst limit separately',async()=>{
+ for(const [code,pattern] of [['active',/otra llamada activa/],['rate',/varias llamadas/]]){
   const voice=createVoiceSession({stop(){}},{fetch:async url=>({ok:url==='/api/session',status:429,json:async()=>url==='/api/session'?{csrfToken:'x'}:{error:code}}),loadSDK:async()=>({})});
   await assert.rejects(voice.start(),pattern);
  }

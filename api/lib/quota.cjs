@@ -1,11 +1,6 @@
 const {neon}=require('./neon.cjs');
 const VOICE_SCOPE='personal-onepiece-v1';
-const VOICE_CAP_MICROUSD=3000000;
-const MIN_RESERVATION_USD_PER_MINUTE=0.30;
 const SETTLEMENT_MARGIN_USD=0.01;
-// The legacy Redis reservation remains conservative; production tokens require Neon.
-const RESERVE = `local now=tonumber(ARGV[1]); local active=redis.call('GET',KEYS[2]); if active then return {0,'active'} end; local count=tonumber(redis.call('GET',KEYS[3]) or '0'); if count>=20 then return {0,'rate'} end; local spent=tonumber(redis.call('GET',KEYS[1]) or '0'); local cost=tonumber(ARGV[2]); if spent+cost>tonumber(ARGV[3]) then return {0,'budget'} end; redis.call('INCRBY',KEYS[1],cost); redis.call('SET',KEYS[2],ARGV[4],'PX',ARGV[5]); redis.call('INCR',KEYS[3]); if count==0 then redis.call('PEXPIRE',KEYS[3],600000) end; return {1,spent+cost}`;
-const FINISH = `if redis.call('GET',KEYS[1])==ARGV[1] then redis.call('DEL',KEYS[1]); return 1 end; return 0`;
 
 function rejectedBeforeAcceptance(value,agent){
  const metadata=value.metadata,charging=metadata?.charging,error=metadata?.error;
@@ -42,24 +37,12 @@ function providerBill(value,conversation,agent){
 
 class Quota {
  constructor(env=process.env,request=fetch,{scope=VOICE_SCOPE}={}){this.env=env;this.request=request;this.scope=scope;}
- get configured(){return Boolean(this.env.CHESS_QUOTA_DATABASE_URL || (this.env.UPSTASH_REDIS_REST_URL && this.env.UPSTASH_REDIS_REST_TOKEN));}
- async command(args){if(!this.configured)throw Error('durable_unavailable');const r=await this.request(this.env.UPSTASH_REDIS_REST_URL,{method:'POST',headers:{Authorization:`Bearer ${this.env.UPSTASH_REDIS_REST_TOKEN}`,'Content-Type':'application/json'},body:JSON.stringify(args),signal:AbortSignal.timeout(8000)});if(!r.ok)throw Error('durable_unavailable');const v=await r.json();if(v.error)throw Error('durable_unavailable');return v.result;}
+ get configured(){return Boolean(this.env.CHESS_QUOTA_DATABASE_URL);}
  async reserve(session,id){
-  const rate=Number(this.env.VOICE_RESERVATION_USD_PER_MINUTE || this.env.VOICE_MAX_USD_PER_MINUTE);
-  if(!Number.isFinite(rate)||rate<=0)throw Error('rate_unverified');
-  const cost=Math.ceil(Math.max(MIN_RESERVATION_USD_PER_MINUTE,rate)*5*1000000);
-  const ceiling=Math.min(VOICE_CAP_MICROUSD,Math.floor(Number(this.env.VOICE_BUDGET_USD||3)*1000000));
-  if(!Number.isFinite(ceiling)||ceiling<=0)throw Error('budget');
-  if(this.env.CHESS_QUOTA_DATABASE_URL){
-   const value=await neon(this.env,'SELECT epic_chess.reserve($1,$2,$3,$4::bigint,$5::bigint)',[this.scope,session,id,cost,ceiling],this.request);
-   const outcome=value.rows?.[0]?.[0];
-   if(outcome!=='ok')throw Error(['active','rate','budget'].includes(outcome)?outcome:'durable_unavailable');
-   return {reservedMicrousd:cost};
-  }
-  const prefix='personal:onepiece:voice:v1';
-  const result=await this.command(['EVAL',RESERVE,3,`${prefix}:spent`,`${prefix}:active`,`${prefix}:rate:${session}`,Date.now(),cost,ceiling,`${session}:${id}`,300000]);
-  if(Number(result[0])!==1)throw Error(result[1]);
-  return {reservedMicrousd:cost};
+  const value=await neon(this.env,'SELECT epic_chess.reserve_voice_session($1,$2,$3)',[this.scope,session,id],this.request);
+  const outcome=value.rows?.[0]?.[0];
+  if(outcome!=='ok')throw Error(['active','rate','lease_unavailable'].includes(outcome)?outcome:'durable_unavailable');
+  return {reservedMicrousd:0};
  }
  async current(){const value=await neon(this.env,'SELECT active_session,lease,conversation FROM epic_chess.quota WHERE scope=$1 AND active_until>now()',[this.scope],this.request);return value.rows?.[0];}
  async register(session,id,conversation){
@@ -85,8 +68,5 @@ class Quota {
   if(!['settled','already_settled'].includes(settled.rows?.[0]?.[0]))throw Error('billing_unverified');
   return {reconciled:true,chargedMicrousd:bill.chargedMicrousd};
  }
- // A legacy reservation is adopted only by an explicit operator migration;
- // neither a browser finish nor a failed token grant can refund an unknown cost.
- async finish(session,id){return this.command(['EVAL',FINISH,1,'personal:onepiece:voice:v1:active',`${session}:${id}`]);}
 }
-module.exports={Quota,RESERVE,FINISH,providerBill,VOICE_SCOPE,VOICE_CAP_MICROUSD};
+module.exports={Quota,providerBill,VOICE_SCOPE};

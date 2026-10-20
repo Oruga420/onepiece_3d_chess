@@ -29,16 +29,32 @@ test('finish ignores browser billing, validates the provider and remains idempot
   assert.deepEqual(settlements[0].slice(3),['conv-unit','unit-test-agent','done',0.044868060842751495,0.0023024]);
  }finally{server.close();}
 });
-test('token grants fail before provider access when durable budget rejects the reservation',async()=>{
+test('token grants fail before provider access when the durable session rate limit rejects the request',async()=>{
  const voiceEnv={...env,CHESS_QUOTA_DATABASE_URL:'postgresql://user:password@example.neon.tech/db',ELEVENLABS_API_KEY:'unit-test-key',ELEVENLABS_AGENT_ID:'unit-test-agent',VOICE_PROVIDER_MAX_SECONDS:'300',VOICE_RESERVATION_USD_PER_MINUTE:'0.3',VOICE_BUDGET_USD:'3'};
  const token=issue(env.SESSION_SECRET),session=verify(token,env.SESSION_SECRET);let providerReads=0;
  const server=createApp(voiceEnv,async(url,options)=>{
   if(url.startsWith('https://api.elevenlabs.io/')){providerReads++;throw Error('provider access forbidden');}
-  const statement=JSON.parse(options.body);return {ok:true,json:async()=>({rows:statement.query.includes('epic_chess.reserve')?[['budget']]:[]})};
+  const statement=JSON.parse(options.body);return {ok:true,json:async()=>({rows:statement.query.includes('epic_chess.reserve')?[['rate']]:[]})};
  }).listen(0);
  await new Promise(resolve=>server.once('listening',resolve));
  try{
   const result=await fetch(`http://127.0.0.1:${server.address().port}/api/voice/token`,{method:'POST',headers:{Origin:env.APP_ORIGIN,Cookie:`chess_session=${token}`,'Content-Type':'application/json','X-CSRF-Token':session.csrf},body:'{}'});
-  assert.equal(result.status,429);assert.deepEqual(await result.json(),{error:'budget'});assert.equal(providerReads,0);
+  assert.equal(result.status,429);assert.deepEqual(await result.json(),{error:'rate'});assert.equal(providerReads,0);
+ }finally{server.close();}
+});
+
+test('voice token uses provider credits despite legacy USD limits and requires no funding reservation',async()=>{
+ const voiceEnv={...env,CHESS_QUOTA_DATABASE_URL:'postgresql://user:password@example.neon.tech/db',ELEVENLABS_API_KEY:'unit-test-key',ELEVENLABS_AGENT_ID:'unit-test-agent',VOICE_PROVIDER_MAX_SECONDS:'300',VOICE_BUDGET_USD:'0',VOICE_MAX_USD_PER_MINUTE:'999'};
+ const token=issue(env.SESSION_SECRET),session=verify(token,env.SESSION_SECRET),queries=[];let providerReads=0;
+ const server=createApp(voiceEnv,async(url,options)=>{
+  if(url.startsWith('https://api.elevenlabs.io/')){providerReads++;return {ok:true,json:async()=>({token:'unit-provider-token',conversation_id:'conv-unit-unmetered'})};}
+  const statement=JSON.parse(options.body);queries.push(statement);
+  return {ok:true,json:async()=>({rows:/reserve_voice_session|register_voice/.test(statement.query)?[['ok']]:[]})};
+ }).listen(0);await new Promise(resolve=>server.once('listening',resolve));
+ const base=`http://127.0.0.1:${server.address().port}`,headers={Origin:env.APP_ORIGIN,Cookie:`chess_session=${token}`,'Content-Type':'application/json','X-CSRF-Token':session.csrf};
+ try{
+  const status=await(await fetch(base+'/api/voice/status',{headers})).json();assert.equal(status.monetaryLimitUSD,null);
+  const response=await fetch(base+'/api/voice/token',{method:'POST',headers,body:'{}'});assert.equal(response.status,200);const body=await response.json();assert.equal(body.token,'unit-provider-token');assert.equal(providerReads,1);
+  const reservation=queries.find(q=>q.query.includes('reserve_voice_session'));assert.equal(reservation.params.length,3);assert(queries.every(q=>!q.query.includes('epic_chess.reserve(')));
  }finally{server.close();}
 });

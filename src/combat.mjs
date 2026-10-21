@@ -165,7 +165,7 @@ export function createMoveAnimation({
  attacker, victim = null, rook = null, start = attacker.position, end,
  rookEnd = null, capture = Boolean(victim), role = 'pawn', side = 'pirate', attack = null,
  reducedMotion = false, scene = null, seed = `${role}:${start.x},${start.z}:${end.x},${end.z}`,
- onImpact = () => {}, onPhase = () => {},
+ onImpact = () => {}, onPhase = () => {}, onCue = () => {}, prepare = () => {},
  requestFrame = callback => requestAnimationFrame(callback),
  cancelFrame = id => cancelAnimationFrame(id), now = () => performance.now(),
 }) {
@@ -193,6 +193,7 @@ export function createMoveAnimation({
  const duration = reducedMotion ? 0 : capture ? 3600 : 600;
  const metrics = {phase: 'approach', progress: 0, impactCount: 0, effects: 0, profile: profile.name, duration, hitStop: false, cameraPunch: 0, bloodParticles: 0, bloodSplats: 0, shards: 0,
   characterAttack: attack?.id || null, character: attack?.character || null, family: attack?.family || null, signatureEffects: 0};
+ let landed = false;
  let frameId = null, settled = false, effects = null, signature = null, resolveFinished;
  const finished = new Promise(resolve => { resolveFinished = resolve; });
  const restoreAll = () => originals.forEach(restore);
@@ -276,15 +277,16 @@ export function createMoveAnimation({
   const gait = Math.sin(segment(p, 0, .30) * Math.PI * 10) * Math.sin(segment(p, 0, .30) * Math.PI);
   const attackHold = 1 - recover;
   let recoil = -windup * .07 + feint * .09 - counter * .08 + strike * profile.reach * .38;
-  let twist = (-windup * profile.twist + feint * profile.twist * .6 - counter * .35 + strike * profile.twist * 2.1) * attackHold;
+  const release = smooth(segment(p,.55,.62)), follow = smooth(segment(p,.65,.82));
+  let twist = (-windup * profile.twist * .55 + feint * profile.twist * .30 - counter * .18 + release * profile.twist * .92 - follow * profile.twist * .36) * attackHold;
   let lean = (-windup * .18 + feint * .24 - counter * .18 + strike * profile.lean) * attackHold;
-  let jump = profile.jump * pulse(p, .54, .73), roll = gait * .05 - counter * .17;
+  let jump = profile.jump * .65 * pulse(p, .54, .73), roll = gait * .05 - counter * .17;
   const attackPulse = pulse(p, .55, .72), variant = attack?.variant;
   if (attack?.family === 'rubber') { lean -= windup * .18 * attackHold; recoil += attackPulse * .13; }
   if (attack?.family === 'projectile' || variant === 'laser') { recoil -= attackPulse * .12; twist *= .28; jump *= .15; }
   if (attack?.family === 'room' || attack?.family === 'string') { lean *= .45; twist *= .55; recoil *= .35; }
-  if (attack?.family === 'sword' && variant === 'triple') { twist += attackPulse * 1.1; roll -= attackPulse * .18; }
-  if (variant === 'kick') { twist += attackPulse * 1.5; roll += attackPulse * .42; jump += attackPulse * .15; }
+  if (attack?.family === 'sword' && variant === 'triple') { twist += attackPulse * .20; roll -= attackPulse * .11; }
+  if (variant === 'kick') { twist += attackPulse * .48; roll += attackPulse * .25; jump = attackPulse * .18; }
   if (variant === 'phoenix' || variant === 'pteranodon') { jump += pulse(p, .44, .80) * .35; lean += attackPulse * .20; }
   if (attack?.family === 'beast') { lean += attackPulse * .20; recoil += attackPulse * .08; }
   if (attack?.family === 'quake' || variant === 'magma') { recoil += attackPulse * .09; lean += windup * .12 * attackHold; }
@@ -317,7 +319,7 @@ export function createMoveAnimation({
  }
  if (capture) { effects = createEffects(scene, target, direction, side, seed, profile, Boolean(attack)); metrics.effects = effects.count; metrics.bloodParticles = effects.bloodParticles; metrics.bloodSplats = effects.bloodSplats; metrics.shards = effects.shards; }
  if (capture && attack) { signature = createAttackEffects({scene, origin: target, direction, attacker, attack}); metrics.signatureEffects = signature.count; metrics.effects += signature.count; }
- const started = now();
+ let started = 0;
  const frame = time => {
   if (settled) return;
   const elapsed = Math.max(0, time - started);
@@ -335,8 +337,15 @@ export function createMoveAnimation({
   if (settled) return;
   if (p >= .62) impact();
   if (settled) return;
+  if (capture && !landed && p >= .80) { landed = true; onCue({cue:'land', attack, position:target.clone()}); }
+  if (settled) return;
   if (p >= 1) finish(false); else frameId = requestFrame(frame);
  };
- frameId = requestFrame(frame);
+ const beginFrames = () => { if(settled) return; started=now(); frameId=requestFrame(frame); };
+ try {
+  const preparation = capture ? prepare() : null;
+  if(preparation?.then) { metrics.phase='preparing'; preparation.then(beginFrames,()=>finish(true)); }
+  else beginFrames();
+ } catch { finish(true); }
  return controller;
 }

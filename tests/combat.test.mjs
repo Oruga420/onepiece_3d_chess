@@ -453,3 +453,96 @@ test('instanced GPU buffers are disposed exactly once on repeated cancellation',
  f.timer.advance(captureTime(.72)); f.animation.cancel(); f.animation.cancel(); f.timer.stale(5000);
  assert.equal(disposed, 5); assert.equal(f.animation.metrics.cameraPunch, 0); assert.equal(f.animation.metrics.hitStop, false);
 });
+
+test('landing cue follows impact once, survives frame skips and cannot fire after cancellation', () => {
+ for (const times of [[.62,.79,.80,.84,.96,1],[1]]) {
+  const cues=[], f=fixture({onCue:event=>cues.push(event)});
+  for(const p of times) f.timer.advance(captureTime(p));
+  assert.equal(f.impacts.length,1);assert.equal(cues.length,1);assert.equal(cues[0].cue,'land');
+  f.timer.stale(6000);assert.equal(cues.length,1);
+ }
+ const cues=[], f=fixture({onCue:event=>cues.push(event)});
+ f.timer.advance(captureTime(.79));f.animation.cancel();f.timer.stale(5000);assert.equal(cues.length,0);
+ const reduced=fixture({reducedMotion:true,onCue:event=>cues.push(event)});
+ assert.equal(cues.length,0);assert.equal(reduced.impacts.length,1);
+});
+
+test('sword wakes taper to closed tips and contain finite indexed curved surfaces', () => {
+ const f=fixture({attack:getCharacterAttack('mugiwara','queen')});
+ const group=f.scene.getObjectByName('character-attack-effects'),blades=group.children.filter(o=>o.name.startsWith('sword-cut-'));
+ assert.equal(blades.length,3);
+ for(const blade of blades){
+  const positions=blade.geometry.attributes.position,uv=blade.geometry.attributes.uv;
+  assert.equal(blade.geometry.type,'BufferGeometry');assert.equal(blade.geometry.index.count,48*6);
+  assert(Array.from(positions.array).every(Number.isFinite));assert.equal(uv.count,positions.count);
+  const first=new THREE.Vector3().fromBufferAttribute(positions,0),last=new THREE.Vector3().fromBufferAttribute(positions,positions.count-2);
+  assert(first.distanceTo(new THREE.Vector3().fromBufferAttribute(positions,1))<1e-6);
+  assert(last.distanceTo(new THREE.Vector3().fromBufferAttribute(positions,positions.count-1))<1e-6);
+  const center=new THREE.Vector3().fromBufferAttribute(positions,48);
+  assert(center.distanceTo(new THREE.Vector3().fromBufferAttribute(positions,49))>.18,'wake is widest midway through sweep');
+ }
+ f.timer.advance(captureTime(.61));assert(blades.every(o=>o.material.opacity>.4));
+ f.timer.advance(captureTime(.77));assert(blades.every(o=>o.material.opacity===0));f.animation.cancel();
+});
+
+test('flames and smoke animate finite shader uniforms and release shared surfaces once', () => {
+ for(const slot of [['mugiwara','bishop'],['marines','queen'],['whitebeard','queen'],['marines','bishop']]) {
+  const attack=getCharacterAttack(...slot),f=fixture({attack});
+  const group=f.scene.getObjectByName('character-attack-effects'),surfaces=group.children.filter(o=>o.material.isShaderMaterial);
+  assert(surfaces.length>=8,attack.id);
+  const geometry=surfaces[0].geometry;let disposals=0;geometry.addEventListener('dispose',()=>disposals++);
+  assert(surfaces.every(o=>o.geometry===geometry));
+  f.timer.advance(captureTime(.58));const early=surfaces[0].material.uniforms.time.value;
+  f.timer.advance(captureTime(.69));
+  for(const surface of surfaces){
+   assert(surface.material.uniforms.time.value>early);assert(surface.material.uniforms.opacity.value>0);
+   assert(Number.isFinite(surface.material.uniforms.seed.value));assert.equal(surface.material.depthWrite,false);
+  }
+  const time=surfaces[0].material.uniforms.time.value;
+  f.animation.cancel();f.animation.cancel();f.timer.stale(5000);
+  assert.equal(disposals,1);assert.equal(surfaces[0].material.uniforms.time.value,time);
+ }
+});
+
+test('rubber punches curve during anticipation and straighten toward target at contact', () => {
+ const f=fixture({attack:getCharacterAttack('mugiwara','king')});
+ f.timer.advance(captureTime(.552));
+ const arm=f.scene.getObjectByName('rubber-stretched-arm-0'),first=Array.from(arm.geometry.attributes.position.array);
+ f.timer.advance(captureTime(.62));const contact=Array.from(arm.geometry.attributes.position.array);
+ assert.notDeepEqual(first,contact);assert(contact.every(Number.isFinite));
+ const fist=f.scene.getObjectByName('rubber-haki-fist-0');assert(fist.position.z>.07);
+ assert.equal(f.scene.getObjectByName('character-attack-effects').children.filter(o=>o.name.startsWith('rubber-knuckle')).length,8);
+ assert.equal(arm.material.isMeshStandardMaterial,true);
+ assert(Array.from(arm.geometry.attributes.normal.array).every(Number.isFinite));f.animation.cancel();
+});
+
+test('sword and flaming kick keep rigid character torsion within a readable half turn', () => {
+ for(const slot of [['mugiwara','queen'],['mugiwara','bishop']]) {
+  const f=fixture({attack:getCharacterAttack(...slot)}),original=f.attacker.children[0].quaternion.clone();
+  for(const p of [.30,.43,.55,.60,.62,.68,.75,.84]) {
+   f.timer.advance(captureTime(p));assert(f.attacker.children[0].quaternion.angleTo(original)<1.7,`${slot}: no full body spin`);
+  }
+  f.animation.cancel();
+ }
+});
+
+test('shader preparation completes before the combat clock and cancellation cannot restart it', async () => {
+ let ready;const preparation=new Promise(resolve=>{ready=resolve;});
+ const cues=[],f=fixture({prepare:()=>preparation,onCue:event=>cues.push(event)});
+ assert.equal(f.timer.pending,0);assert.equal(f.animation.metrics.phase,'preparing');
+ f.timer.advance(9000);assert.equal(f.impacts.length,0);assert.equal(f.animation.metrics.progress,0);
+ ready();await Promise.resolve();assert.equal(f.timer.pending,1);
+ f.timer.advance(9000+captureTime(.35));assert.equal(f.animation.metrics.phase,'windup');assert.equal(f.impacts.length,0);
+ f.timer.advance(9000+captureTime(.62));assert.equal(f.impacts.length,1);assert.equal(cues.length,0);
+ f.timer.advance(9000+captureTime(.81));assert.equal(cues.length,1);f.animation.cancel();
+ let lateReady;const pending=new Promise(resolve=>{lateReady=resolve;});
+ const cancelled=fixture({prepare:()=>pending});cancelled.animation.cancel();lateReady();await Promise.resolve();
+ assert.equal(cancelled.timer.pending,0);assert.equal(cancelled.impacts.length,0);assert.deepEqual(await cancelled.animation.finished,{cancelled:true});
+ assert.deepEqual(transform(cancelled.attacker),cancelled.original[0]);
+});
+
+test('failed shader preparation restores models and completes cancellation cleanly', async () => {
+ const f=fixture({prepare:()=>Promise.reject(new Error('compile failed'))});
+ assert.deepEqual(await f.animation.finished,{cancelled:true});assert.equal(f.timer.pending,0);assert.equal(f.impacts.length,0);
+ assert.equal(f.scene.getObjectByName('character-attack-effects'),undefined);assert.deepEqual(transform(f.attacker),f.original[0]);
+});

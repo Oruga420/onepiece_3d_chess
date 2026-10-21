@@ -1,0 +1,66 @@
+{
+  "rubber": {
+    "windup": "Close dry foley of thick rubber tendons stretching under huge tension, fast rising elastic creak with a tight air swish. Tense and tactile, not a cartoon boing.",
+    "impact": "One enormous rubber fist lands immediately: tight leathery slap over a deep short body punch, followed by a taut rubber snap and tiny elastic recoil. Punchy low mids, crisp attack, no comic boing."
+  },
+  "sword": {
+    "windup": "Three very fast narrow katana air cuts, sharp airy blade swishes with a fine steel edge hiss, accelerating toward contact. Precise close sword foley, no musical ringing.",
+    "impact": "Three tightly spaced cutting contacts starting immediately: biting steel scrape, sharp visceral slice and a compact low impact. Fast staccato triple-sword combo, fine metallic grit, extremely short tail."
+  },
+  "lightning": {
+    "windup": "Electrical charge winding up: unstable dry static, several tiny sparks and a rapidly rising high-voltage buzz. Short dangerous crackle, not a synth melody.",
+    "impact": "A vicious lightning snap right at the start, splintering electrical crack over a compact deep thunder punch; sizzling arcs scatter and die quickly. Clear electrical texture, no long thunder ambience."
+  },
+  "fire": {
+    "windup": "A flame ignites with a sharp flint-like tick then a fast rushing flare of hot air, increasing pressure. Close detailed fire whoosh and small crackles, not an explosion yet.",
+    "impact": "A concentrated fire strike hits immediately with a hard low thump, violent hot-air burst and bright crackling flame; a brief shower of embers decays. Dry punchy fireball, no long explosion rumble."
+  },
+  "projectile": {
+    "windup": "A slingshot or weapon spring is drawn tight and released with a crisp twang, followed by a needle-fast projectile whistle through air. Compact physical ranged-weapon foley.",
+    "impact": "An extremely fast projectile hits a dense target immediately: pinpoint crack, gritty crunch and short tight low-frequency knock. Crisp realistic bullet-or-heavy-pellet contact, no gunshot report or ricochet melody."
+  },
+  "beast": {
+    "windup": "A powerful creature shifts weight and lunges: heavy quick foot scuff, low forceful breath and rushing fur-and-air movement. Physical animal charge, no vocal roar.",
+    "impact": "A huge beast shoulder and horns collide immediately: thick muscular thud, dry hard crack and a short rough claw scrape. Heavy intimate contact with a quick gruff exhale, no sustained growl."
+  },
+  "blunt": {
+    "windup": "A massive iron club swings through air, a heavy low whoosh accelerating with a light leather grip creak. Weighty physical weapon movement, no impact yet.",
+    "impact": "A massive fist or iron club strikes immediately: hard chesty thwack, brief crushing crack and a short low body resonance. Dense punch with a crisp edge, no metallic ringing and no huge explosion."
+  },
+  "candy": {
+    "windup": "Hard sugar crystal rapidly grows and stretches into a weapon, brittle tiny ticks mixed with viscous sticky pulling sounds and a quick whip of air. Strange tactile candy magic.",
+    "impact": "A hard candy spear hits immediately, sharp brittle crystalline crunch over a solid thump, then sticky strands snap apart. Clearly sugar-like crackle and tacky elastic detail, no glass tinkling melody."
+  },
+  "dragon": {
+    "windup": "A gigantic creature draws compressed breath, deep textured air intake rising into a hot pressurized hiss. Short controlled dragon-breath preparation, no vocal speech or musical drone.",
+    "impact": "A concentrated dragon breath hits immediately: forceful roaring air blast over a heavy low concussion and crackling heat. Powerful but tightly cut short, no cinematic trailer braam."
+  },
+  "string": {
+    "windup": "Several razor-thin taut wires whip rapidly across the stereo field, dry zips and high tension creaks winding together. Precise wire weapon foley, no singing tones.",
+    "impact": "Razor wires snap tight and cut immediately: dry sharp whip cracks, fine metallic scraping and a compact body hit. Dense thread-like texture with a very short twanging decay, no melody."
+  },
+  "stone": {
+    "windup": "Stone plates grind and lock around a heavy fist, small grit trickles and pressure builds with dry granular creaks. Short close earth-armour preparation.",
+    "impact": "A stone-and-crystal fist hits immediately: dense low slam with a bright brittle fracture and detailed small rock chips scattering briefly. Sharp initial crack, heavy body, clean fast decay."
+  },
+  "room": {
+    "windup": "A clean spatial field opens: soft air displacement, fine glassy shimmer and a tight rising pressure sweep. Surgical precision, restrained science-fantasy texture, no notes or music.",
+    "impact": "An instant spatial cut: surgical sharp air slice and a deep compact vacuum pop exactly at the beginning, followed by a short glass-like shimmering fracture. Precise teleport impact, no sustained sci-fi tone."
+  },
+  "metal": {
+    "windup": "Heavy loose steel pieces rapidly magnetize and lock together, short irregular ratchets and tight scrap clacks sucked inward with an air sweep. Detailed physical magnetic weapon assembly.",
+    "impact": "A dense scrap-metal fist collides immediately: brutal steel crunch, low industrial thump and several quick small metal clatters. Sharp transient and weight, no prolonged resonant clang."
+  },
+  "darkness": {
+    "windup": "A dark vortex draws air inward, short low turbulent suction with gritty high-frequency detail, pressure tightening rapidly. Ominous physical vacuum, no musical pitch.",
+    "impact": "A violent vacuum implosion at the very start: sharp inward air crack with a tight deep bass punch, brief granular tearing texture that disappears suddenly. Menacing compact gravity hit, not a trailer boom."
+  },
+  "quake": {
+    "windup": "Pressure gathers around a fist with dry rock stress creaks and tiny glass-like cracks in the air, quickly rising tension. Short close tectonic charge, no low musical drone.",
+    "impact": "Air fractures instantly with a sharp glassy crack over a massive compact concussive punch, followed by a very short textured earth rumble. Strong transient, controlled sub-bass, no long explosion."
+  },
+  "smoke": {
+    "windup": "Pressurized vapor coils rapidly, a textured rushing hiss and tight airy spiral building toward a strike. Dry close smoke jet, not steam ambience.",
+    "impact": "A smoke-wrapped baton strikes immediately: hard precise wooden-metallic knock surrounded by a forceful short puff of air and turbulent hiss. Solid contact through vapor, fast clean tail."
+  }
+}

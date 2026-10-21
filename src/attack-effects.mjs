@@ -11,6 +11,7 @@ export function createAttackEffects({scene, origin, direction, attacker, attack}
  group.userData.attack = attack.id; group.userData.family = attack.family;
  const geometries = new Set(), materials = new Set(), animations = [];
  const color = attack.color, accent = attack.accent, variant = attack.variant || '';
+ const localBody = new THREE.Vector3();
  const localAttacker = new THREE.Vector3(), rotation = new THREE.Quaternion().copy(group.quaternion).invert();
  const material = (tint = color, opacity = 1) => {
   const m = new THREE.MeshBasicMaterial({color: tint, transparent: true, opacity: 0, depthWrite: false,
@@ -32,36 +33,105 @@ export function createAttackEffects({scene, origin, direction, attacker, attack}
   object.position.set((x1 + x2) / 2, (y1 + y2) / 2, (z1 + z2) / 2);
   object.quaternion.setFromUnitVectors(up, delta.normalize()); object.scale.set(width, Math.max(.001, length), width);
  };
+ // Tapered swept blade: a thin cutting edge and a wide trailing wake, with
+ // zero-width tips instead of a bent pipe. UVs carry a fading wake in the shader.
+ const ribbon = (name, radius, width, tint, opacity = 1) => {
+  const positions = [], uvs = [], indices = [], segments = 48, arc = Math.PI * 1.15;
+  for (let i = 0; i <= segments; i++) {
+   const t = i / segments, angle = (t - .5) * arc;
+   const taper = Math.pow(Math.sin(t * Math.PI), .75);
+   for (const edge of [0, 1]) {
+    const r = radius - width * taper * edge;
+    positions.push(Math.cos(angle) * r, Math.sin(angle) * r, 0); uvs.push(t, edge);
+   }
+   if (i < segments) { const a = i * 2; indices.push(a,a+1,a+2,a+1,a+3,a+2); }
+  }
+  const g = new THREE.BufferGeometry(); g.setAttribute('position', new THREE.Float32BufferAttribute(positions,3));
+  g.setAttribute('uv', new THREE.Float32BufferAttribute(uvs,2)); g.setIndex(indices); g.computeVertexNormals();
+  const m = material(tint, opacity);
+  m.onBeforeCompile = shader => {
+   shader.vertexShader = 'varying vec2 wakeUv;\n' + shader.vertexShader.replace('#include <uv_vertex>', '#include <uv_vertex>\nwakeUv=uv;');
+   shader.fragmentShader = 'varying vec2 wakeUv;\n' + shader.fragmentShader.replace('#include <opaque_fragment>', 'diffuseColor.a *= pow(1.0-wakeUv.y,1.5)*sin(wakeUv.x*3.14159265);\n#include <opaque_fragment>');
+  };
+  m.customProgramCacheKey = () => 'tapered-sword-wake-v2';
+  return mesh(name, g, m);
+ };
+ // Procedural surfaces need no texture downloads and share a single geometry.
+ // Crossed planes retain volume from elevated board cameras; noise erodes the
+ // boundary so neither flames nor smoke show a hard polygon silhouette.
+ const plumeGeometry = new THREE.PlaneGeometry(1, 1, 1, 1);
+ const plume = (name, tint, strength, smoke = false, seed = 0) => {
+  const m = new THREE.ShaderMaterial({transparent:true, depthWrite:false, side:THREE.DoubleSide,
+   toneMapped:false, blending:THREE.NormalBlending,
+   uniforms:{time:{value:0},opacity:{value:0},tint:{value:new THREE.Color(tint)},accent:{value:new THREE.Color(accent)},seed:{value:seed},smoke:{value:smoke ? 1 : 0}},
+   vertexShader:`varying vec2 tex; void main(){tex=uv;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.0);}`,
+   fragmentShader:`varying vec2 tex; uniform float time,opacity,seed,smoke; uniform vec3 tint,accent;
+    float hash(vec2 p){return fract(sin(dot(p,vec2(127.1,311.7))+seed)*43758.5453);}
+    float noise(vec2 p){vec2 i=floor(p),f=fract(p);f=f*f*(3.0-2.0*f);return mix(mix(hash(i),hash(i+vec2(1.,0.)),f.x),mix(hash(i+vec2(0.,1.)),hash(i+vec2(1.,1.)),f.x),f.y);}
+    void main(){vec2 q=tex;float n=noise(q*5.0-vec2(time*.32,time*1.9));n+=.5*noise(q*11.-vec2(-time*.4,time*3.1));
+     float sway=sin(q.y*8.-time*5.+seed)*.055*q.y;
+     float flame=1.-abs(q.x-.5+sway)*2./max(.08,1.-q.y*.86);
+     float fog=1.-length((q-.5)*vec2(1.8,1.65));
+     float shape=mix(flame,fog,smoke);float alpha=smoothstep(.08,.55,shape+(n-.7)*.42);
+     alpha*=smoothstep(0.,.12,q.y)*(1.-smoothstep(.75,1.,q.y))*opacity;
+     vec3 rgb=mix(tint,accent,clamp((1.-q.y)*.7+n*.22,0.,1.)*(1.-smoke*.8));
+     gl_FragColor=vec4(rgb,alpha);}`});
+  // Common diagnostics and intensity contract matches the other effect materials.
+  m.color = m.uniforms.tint.value; m.userData.strength = strength; materials.add(m);
+  return mesh(name,plumeGeometry,m);
+ };
+ const curvedArm = (name, tint) => {
+  const g = new THREE.BufferGeometry(), positions = new Float32Array(25*9*3), indices=[];
+  for(let i=0;i<24;i++) for(let j=0;j<8;j++){const a=i*9+j;indices.push(a,a+1,a+9,a+1,a+10,a+9);}
+  g.setAttribute('position',new THREE.BufferAttribute(positions,3).setUsage(THREE.DynamicDrawUsage));g.setIndex(indices);
+  const m=new THREE.MeshStandardMaterial({color:tint,roughness:.48,metalness:.05,transparent:true,opacity:0,depthWrite:false,toneMapped:false});
+  m.userData.strength=.95;materials.add(m);
+  const arm=mesh(name,g,m);arm.frustumCulled=false;
+  arm.userData.bend=(x,y,start,end,bow,width)=>{
+   for(let i=0;i<=24;i++){const t=i/24,centerX=x*(1-t*.65)+Math.sin(t*Math.PI)*bow;
+    for(let j=0;j<=8;j++){const a=j/8*Math.PI*2,index=(i*9+j)*3;
+     positions[index]=centerX+Math.cos(a)*width;positions[index+1]=y+Math.sin(t*Math.PI)*.055+Math.sin(a)*width;positions[index+2]=THREE.MathUtils.lerp(start,end,t);
+    }
+   }
+   g.attributes.position.needsUpdate=true;g.computeVertexNormals();
+  };
+  return arm;
+ };
  const count = variant.includes('triple') || variant.includes('santoryu') ? 3 : variant.includes('dual') ? 2 : 1;
  switch (attack.family) {
   case 'rubber': {
    const mochi = variant === 'mochi', arms = mochi ? 4 : 2;
-   for (let i = 0; i < arms; i++) {
-    const arm = mesh(`${mochi ? 'mochi' : 'rubber'}-stretched-arm-${i}`, cylinder, material(mochi ? '#f5e6ce' : '#bd7655', .88, true));
-    const fist = mesh(`rubber-haki-fist-${i}`, new THREE.SphereGeometry(.12, 12, 8), material(accent, .94, true));
-    const shock = ring(`rubber-fist-pressure-${i}`, .15, .012);
-    animations.push(({p, strike}) => {
-     const stagger = i * .014, thrust = Math.sin(ramp(p, .552 + stagger, .65 + stagger) * Math.PI);
-     const x = (i % 2 ? 1 : -1) * (.15 + Math.floor(i / 2) * .045), y = .48 + i * .045;
-     const end = localAttacker.z + .12 + thrust * Math.max(.2, -localAttacker.z + .15);
-     stretch(arm, x, y, localAttacker.z, x * .35, y + .035, end, mochi ? .075 : .052);
-     fist.position.set(x * .35, y + .035, end); fist.scale.set(1.3, 1, 1.1 + thrust * .5);
-     shock.position.copy(fist.position); shock.scale.setScalar(.6 + thrust * 1.4);
-     arm.visible = fist.visible = shock.visible = strike > 0 && thrust > .02;
+   for (let i=0;i<arms;i++) {
+    const arm=curvedArm(`${mochi?'mochi':'rubber'}-stretched-arm-${i}`,mochi?'#f5e6ce':'#bd7655');
+    const fistMat=new THREE.MeshStandardMaterial({color:mochi?'#e9d8bf':'#29151a',roughness:.30,metalness:.22,transparent:true,opacity:0,toneMapped:false});
+    fistMat.userData.strength=.98;materials.add(fistMat);
+    const fist=mesh(`rubber-haki-fist-${i}`,new THREE.SphereGeometry(.105,16,10),fistMat);
+    const knuckles=Array.from({length:4},(_,j)=>mesh(`rubber-knuckle-${i}-${j}`,new THREE.SphereGeometry(.035,8,6),fistMat));
+    animations.push(({p})=>{
+     const offset=i*.018, thrust=ramp(p,.55+offset,.603+offset), retract=ramp(p,.65+offset,.76+offset);
+     const reach=thrust*(1-retract), sign=i%2?1:-1, x=sign*(.17+Math.floor(i/2)*.055), y=.47+i*.038;
+     const end=THREE.MathUtils.lerp(localAttacker.z+.10,.09,reach);
+     arm.userData.bend(x,y,localAttacker.z,end,sign*.21*(1-reach),mochi?.074:.047);
+     fist.position.set(x*.35,y+.02,end);fist.scale.set(1.22,1,1.25);
+     fist.rotation.y=sign*(1-reach)*.45;
+     for(let j=0;j<4;j++){knuckles[j].position.set(fist.position.x+(j-1.5)*.047,fist.position.y+.045,fist.position.z+.095);knuckles[j].visible=p>=.545+offset&&p<.77+offset;}
+     arm.visible=fist.visible=p>=.545+offset&&p<.77+offset;
     });
    }
    break;
   }
   case 'sword': {
-   const radius = variant === 'daggers' ? .37 : variant === 'longblade' ? .80 : .62;
-   for (let i = 0; i < count; i++) {
-    const blade = mesh(`sword-cut-${i}`, new THREE.TorusGeometry(radius, .025, 4, 48, Math.PI * 1.35));
-    const edge = mesh(`sword-edge-${i}`, new THREE.TorusGeometry(radius, .009, 3, 48, Math.PI * 1.35), material(accent));
-    animations.push(({p, strike}) => {
-     const swing = ramp(p, .55 + i * .014, .69 + i * .014);
-     blade.position.set((i - (count - 1) / 2) * .11, .52, -.03);
-     blade.rotation.set(.2 + i * .55, .2 * i, -.9 + swing * 3.8 + i * 1.05);
-     blade.scale.setScalar(.45 + strike * .8); edge.position.copy(blade.position); edge.rotation.copy(blade.rotation); edge.scale.copy(blade.scale);
+   const radius=variant==='daggers'?.40:variant==='longblade'?.88:.66;
+   for(let i=0;i<count;i++) {
+    const blade=ribbon(`sword-cut-${i}`,radius,.19,color,.82);
+    const edge=ribbon(`sword-edge-${i}`,radius+.006,.025,accent,.96);
+    animations.push(({p})=>{
+     const swing=ramp(p,.55+i*.013,.675+i*.013), opacity=envelope(p,.55+i*.013,.605+i*.013,.72+i*.013);
+     blade.position.set((i-(count-1)/2)*.09,.52,THREE.MathUtils.lerp(-.32,.16,swing));
+     blade.rotation.set(.28+i*.33,i*.16,-1.15+swing*2.25+i*.9);
+     blade.scale.setScalar(.85+Math.sin(swing*Math.PI)*.18);
+     blade.material.opacity=opacity*.82;edge.material.opacity=opacity*.96;
+     edge.position.copy(blade.position);edge.rotation.copy(blade.rotation);edge.scale.copy(blade.scale);
     });
    }
    break;
@@ -76,22 +146,32 @@ export function createAttackEffects({scene, origin, direction, attacker, attack}
    break;
   }
   case 'fire': {
-   const magma = variant === 'magma', winged = variant === 'phoenix' || variant === 'pteranodon';
-   if (winged) for (const sign of [-1, 1]) {
-    const wing = line(`fire-${variant}-wing-${sign}`, [[0, .63, -.25], [sign * .32, .88, -.18], [sign * .70, .90, -.06], [sign * .95, .72, .12]], .065, material(accent, .8));
-    animations.push(({p, strike}) => { wing.rotation.z = sign * Math.sin(p * 20) * .20; wing.scale.setScalar(.6 + strike * .5); });
-   }
-   for (let i = 0; i < 9; i++) {
-    const flame = mesh(`${magma ? 'magma' : 'fire'}-tongue-${i}`, new THREE.ConeGeometry(.09 + i % 3 * .02, .45, 7), material(i % 2 ? accent : color, .85));
-    animations.push(({p, strike}) => {
-     const angle = i * 2.399 + p * (magma ? 2 : 9), radius = .16 + strike * .22;
-     flame.position.set(Math.cos(angle) * radius, .12 + Math.sin(i + p * 14) * .08 + strike * .18, Math.sin(angle) * radius - .07);
-     flame.rotation.z = Math.cos(angle) * -.55; flame.rotation.x = Math.sin(angle) * .55;
-     flame.scale.setScalar(.4 + strike * (magma ? 1.4 : 1));
+   const magma=variant==='magma', winged=variant==='phoenix'||variant==='pteranodon';
+   const layers=winged?12:8;
+   for(let i=0;i<layers;i++) {
+    const flame=plume(`${magma?'magma':'fire'}-tongue-${i}`,i%3===0?accent:color,.83,false,i*2.13);
+    animations.push(({p,strike})=>{
+     const flight=ramp(p,.55,.62), age=ramp(p,.62,.81), sign=i%2?1:-1;
+     const z=THREE.MathUtils.lerp(localAttacker.z+.20,.03,flight);
+     const bodyHeight=(attacker.userData.combatBody||attacker.children[0])?.position.y||0;
+     if(variant==='kick' && i<4){
+      flame.position.set(localBody.x+(i%2?-.07:.07),localBody.y+.14,localBody.z+.12);
+      flame.rotation.set(.18,i*Math.PI/2,-.18);flame.scale.set(.20+strike*.10,.38+strike*.20,1);
+     } else if(winged){
+      const feather=Math.floor(i/2)/5;flame.position.set(sign*(.10+feather*.72),.62+bodyHeight+Math.sin(feather*Math.PI)*.29,localAttacker.z+.12-feather*.14);
+      flame.rotation.set(0,i%2*Math.PI/2,sign*(-.4-feather*.7));flame.scale.set(.27+strike*.13,.58+strike*.23,1);
+     } else {
+      const a=i*2.399, radial=(.07+age*.28)*(i%2?1:.6);
+      flame.position.set(Math.cos(a)*radial,(magma?.54:.29)+age*.23+(i%3)*.075,z+Math.sin(a)*radial);
+      flame.rotation.set(0,i*Math.PI*.37,Math.cos(a)*(.18+age*.32));
+      flame.scale.set((magma?.38:.28)+strike*.20,(magma?.54:.66)+strike*.35,1);
+     }
     });
    }
-   const wheel = ring(magma ? 'magma-crater-rim' : 'burning-kick-wheel', .43, magma ? .07 : .032, material(accent));
-   animations.push(({p, strike}) => { wheel.position.set(0, magma ? .04 : .42, -.12); wheel.rotation.set(magma ? Math.PI / 2 : .2, 0, p * 12); wheel.scale.setScalar(.4 + strike); });
+   if(magma) for(let i=0;i<6;i++) {
+    const ember=ball(`magma-cooling-fragment-${i}`,.07,material(i%2?color:'#3b1714',.9));
+    animations.push(({p})=>{const t=ramp(p,.62,.84),a=i*2.399;ember.visible=p>=.62;ember.position.set(Math.cos(a)*t*.6,.18+t*.8-t*t*.9,Math.sin(a)*t*.6);ember.rotation.set(t*5,i,t*3);});
+   }
    break;
   }
   case 'projectile': {
@@ -220,15 +300,20 @@ export function createAttackEffects({scene, origin, direction, attacker, attack}
    break;
   }
   case 'smoke': {
-   for (let i = 0; i < 12; i++) {
-    const puff = mesh(`smoke-coil-${i}`, new THREE.SphereGeometry(.11 + i % 3 * .025, 8, 6), material(i % 2 ? color : accent, .33, true));
-    animations.push(({p, strike}) => { const a = i * .8 + p * 8; puff.position.set(Math.cos(a) * .3, .10 + i * .065, Math.sin(a) * .3); puff.scale.setScalar(.5 + strike * 1.7); });
+   for(let i=0;i<14;i++) {
+    const puff=plume(`smoke-coil-${i}`,i%3?color:accent,.34,true,i*3.71);
+    animations.push(({p,strike})=>{
+     const phase=(i/14+ramp(p,.32,.86)*.9)%1, spiral=i*2.399+p*5;
+     const flight=ramp(p,.45,.62),radial=.10+phase*.30;
+     puff.position.set(Math.cos(spiral)*radial,.14+phase*.92,THREE.MathUtils.lerp(localAttacker.z,0,flight)+Math.sin(spiral)*radial);
+     puff.rotation.set(0,i*.73,Math.sin(spiral)*.35);puff.scale.set(.34+phase*.48,.48+strike*.35,1);
+    });
    }
    break;
   }
  }
  // The common unit cylinder is allocated eagerly but still has one owner.
- geometries.add(cylinder);
+ geometries.add(cylinder); geometries.add(plumeGeometry);
  scene?.add(group);
  let disposed = false;
  const api = {
@@ -236,10 +321,15 @@ export function createAttackEffects({scene, origin, direction, attacker, attack}
   update(p) {
    if (disposed) return;
    localAttacker.copy(attacker.position).sub(origin).applyQuaternion(rotation);
+   const body=attacker.userData.combatBody||attacker.children[0]||attacker;
+   body.getWorldPosition(localBody).sub(origin).applyQuaternion(rotation);
    const charge = ramp(p, .30, .55), strike = envelope(p, .55, .62, .79), fade = 1 - ramp(p, .73, .86);
    group.visible = p >= .30 && p < .86;
    const intensity = (.18 * charge + .82 * strike) * fade;
-   for (const mat of materials) mat.opacity = mat.userData.strength * intensity;
+   for (const mat of materials) {
+    mat.opacity = mat.userData.strength * intensity;
+    if(mat.uniforms){mat.uniforms.opacity.value=mat.opacity;mat.uniforms.time.value=p*3.48;}
+   }
    for (const update of animations) update({p, charge, strike});
   },
   dispose() {

@@ -119,3 +119,11 @@ Reviewed October 15, 2026. Each link is the official publisher's character guide
 | marines/knight | Tashigi | Corte de katana | sword/katana | slash |
 | marines/pawn | Marine | Disparo de fusil | projectile/rifle | brawl |
 
+
+## Cinematic audio and motion revision
+
+Combat uses 34 newly generated ElevenLabs stems: a preparation and impact for each of the 16 families, plus separate parry and landing sounds. Web Audio decodes and caches them, overlaps independent cues, applies master gain/compression, and lowers effects while the voice agent speaks. The original generated files remain for compatibility with older open pages; the current player requests only `assets/audio/combat/v2/`.
+
+The visual pass replaces tubular sword rings with tapered fading wakes, uses animated noise shaders for flames and smoke, and adds curved rubber arms with shaded fists. Character turns are more restrained; flame and phoenix emitters follow the moving figure. GPU programs and the initial transparent draw prepare before the capture clock starts, so a first-use shader compilation cannot collapse the fight into one frame. Cancellation during preparation releases resources and cannot restart the animation.
+
+The library is generated with the personal account during development. Gameplay never calls ElevenLabs for effects. MP3 hashes, channel peaks and decoding are checked; browser tests verify actual buffer-source starts for preparation, parry, impact and landing, mute/reset behavior, and repeated captures. The existing GLBs remain rigid meshes; this revision does not add skeletal animation.

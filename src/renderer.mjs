@@ -76,7 +76,18 @@ export class GameRenderer {
  }
  highlight({selected=null,candidates=[],moves=[]}={}){disposeTree(this.highlights);this.highlights.clear();const add=(square,color,ring=false)=>{if(!/^[A-H][1-8]$/.test(square))return;const mesh=new THREE.Mesh(ring?new THREE.RingGeometry(.35,.46,40):new THREE.CircleGeometry(.14,24),new THREE.MeshBasicMaterial({color,transparent:true,opacity:.9,side:THREE.DoubleSide,depthWrite:false}));mesh.rotation.x=-Math.PI/2;mesh.position.copy(squarePosition(square));mesh.position.y=.155;this.highlights.add(mesh);};for(const s of candidates)add(typeof s==='string'?s:s.square,'#edc173',true);if(selected)add(selected,'#55ffe2',true);for(const m of moves)add(typeof m==='string'?m:m.to,'#55ffe2');}
  cancelAnimations(){this.activeAnimation?.cancel();this.activeAnimation=null;if(this.combatFocus){this.combatFocus=null;this.updateCamera();}}
- async animateMove(record,{onImpact,onPhase}={}){
+ async prepareCombatEffects(){
+  // compileAsync traverses hidden materials; warm the first actual draw as well.
+  // All new effects have zero alpha here, so the player keeps seeing their board.
+  const groups=['chess-combat-effects','character-attack-effects'].map(name=>this.scene.getObjectByName(name)).filter(Boolean);
+  await this.renderer.compileAsync(this.scene,this.camera);
+  if(groups.some(group=>!group.parent))return;
+  const saved=[];
+  for(const group of groups)group.traverse(object=>{saved.push([object,object.visible,object.frustumCulled]);object.visible=true;object.frustumCulled=false;});
+  try {this.renderer.render(this.scene,this.camera);this.renderer.getContext().finish();}
+  finally {for(const [object,visible,culled] of saved){object.visible=visible;object.frustumCulled=culled;}}
+ }
+ async animateMove(record,{onImpact,onPhase,onCue}={}){
   const from=record.from||record.move?.from,to=record.to||record.move?.to;
   const attacker=this.pieces.get(from);
   if(!attacker||!to)return;
@@ -89,7 +100,7 @@ export class GameRenderer {
    capture:Boolean(victim||record.captured),role:attacker.userData.piece.type,
    side:attacker.userData.piece.player,scene:this.scene,reducedMotion:this.reducedMotion,
    attack:getCharacterAttack(this.crew,attacker.userData.piece.type,attacker.userData.piece.player),
-   seed:`${this.crew}:${from}:${to}:${attacker.userData.piece.type}`,onImpact,onPhase
+   seed:`${this.crew}:${from}:${to}:${attacker.userData.piece.type}`,onImpact,onPhase,onCue,prepare:()=>this.prepareCombatEffects()
   });
   this.activeAnimation=animation;this.combatMetrics=animation.metrics;
   if(victim&&!this.reducedMotion){this.combatFocus=victim.position.clone().addScaledVector(attacker.position.clone().sub(victim.position),.18);this.combatFocus.y=.46;this.combatCameraSuppressed=false;}

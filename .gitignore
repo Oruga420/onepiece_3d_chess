@@ -1,4 +1,4 @@
-﻿# Node
+# Node
 node_modules/
 npm-debug.log*
 yarn-debug.log*
@@ -31,3 +31,33 @@ coverage/
 # Misc
 *.swp
 *.swo
+.vercel
+
+# Local memory, evidence and provider state never enter Git
+.claude/
+.omx/
+.arise-palace/
+.arise-memory
+hallways.json
+sources/
+wiki/
+WIKI.md
+docs/reports/
+loops/
+projectstatus.html
+*.backup
+assets/raw/
+assets/provider-output/
+.vercel/
+.local/
+tools/assets/raw/
+assets/references/
+/~/.claude/
+
+# Local generation review images and rejected paid outputs
+/tools/assets/*.jpg
+/tools/assets/reviews/
+/tools/assets/rejected/
+
+/tools/assets/README.md
+__pycache__/

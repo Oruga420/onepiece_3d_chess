@@ -1,0 +1,25 @@
+{
+  "package": "three",
+  "version": "0.160.0",
+  "source": "https://github.com/mrdoob/three.js/tree/r160",
+  "distribution": "https://cdn.jsdelivr.net/npm/three@0.160.0/",
+  "changes": "ES module imports rewritten to sibling vendored files only.",
+  "files": [
+    {
+      "file": "three.module.js",
+      "sha256": "76dea8151bc9352aef3528b4262e249b2604f62543828328db978d060d61a495"
+    },
+    {
+      "file": "GLTFLoader.js",
+      "sha256": "ce0cf8e3359396c69174ee48be84fc121d4b1146c96ab7bd8e17b916a2359be9"
+    },
+    {
+      "file": "BufferGeometryUtils.js",
+      "sha256": "e885d871604df9795a826d4e8002c661a1b06709927146418bdd18c3cc2fb433"
+    },
+    {
+      "file": "LICENSE",
+      "sha256": "852e0e8699169bf9f6fdc6bda3e682d078dcbc738b5d33e74df594721bff271d"
+    }
+  ]
+}

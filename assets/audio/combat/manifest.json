@@ -1,0 +1,118 @@
+{
+  "provider": "ElevenLabs",
+  "model": "eleven_text_to_sound_v2",
+  "clips": [
+    {
+      "id": "rubber",
+      "path": "/assets/audio/combat/rubber.mp3",
+      "sha256": "4dddc00fb3801dc1dffc3467977f3a2edadb74c683885828df6a0220752cbbe4",
+      "bytes": 32644,
+      "seconds": 1.985079
+    },
+    {
+      "id": "sword",
+      "path": "/assets/audio/combat/sword.mp3",
+      "sha256": "cbf800c6ae6f7d9f5655e9496f5751695ca33a836b037acbf0afd9072e7467d5",
+      "bytes": 32226,
+      "seconds": 1.955828
+    },
+    {
+      "id": "lightning",
+      "path": "/assets/audio/combat/lightning.mp3",
+      "sha256": "e6f904468ed9272621c551e727165a1b4be017130750f1c320db62512df2d347",
+      "bytes": 33062,
+      "seconds": 1.995011
+    },
+    {
+      "id": "fire",
+      "path": "/assets/audio/combat/fire.mp3",
+      "sha256": "32fc474e6d87382fd4b8778d1121124901435bc08cb24cfa9d5b114b6b4d1469",
+      "bytes": 33062,
+      "seconds": 1.995011
+    },
+    {
+      "id": "projectile",
+      "path": "/assets/audio/combat/projectile.mp3",
+      "sha256": "e12ce23eb2206868a3107789f64e44890f906cb3c38f4be469c6f286fb5bd50b",
+      "bytes": 33062,
+      "seconds": 1.995011
+    },
+    {
+      "id": "beast",
+      "path": "/assets/audio/combat/beast.mp3",
+      "sha256": "c518ce4e2a8d2a012d9ec305fde85b7b1d4215bac41afff85ce7aab4446f40e7",
+      "bytes": 32226,
+      "seconds": 1.938639
+    },
+    {
+      "id": "blunt",
+      "path": "/assets/audio/combat/blunt.mp3",
+      "sha256": "6a244302dc81cf46ad025c8ca7de10dd4b9a43a7111be0cd194641021852552d",
+      "bytes": 33062,
+      "seconds": 1.995011
+    },
+    {
+      "id": "candy",
+      "path": "/assets/audio/combat/candy.mp3",
+      "sha256": "01f2228c8b38f5b5bc73bc519a7f65e336369969e3c93f2828b92f2dd4b7ea98",
+      "bytes": 32644,
+      "seconds": 1.96771
+    },
+    {
+      "id": "dragon",
+      "path": "/assets/audio/combat/dragon.mp3",
+      "sha256": "942fdee25af9763a692a3a71d01f67efab798bc118032d4aab35f9a75eadb46c",
+      "bytes": 33062,
+      "seconds": 1.995011
+    },
+    {
+      "id": "string",
+      "path": "/assets/audio/combat/string.mp3",
+      "sha256": "96382aeebc252d60683fab2bd49a6ba15889bdf5ab45259c209a1716dcbb9498",
+      "bytes": 33062,
+      "seconds": 1.995011
+    },
+    {
+      "id": "stone",
+      "path": "/assets/audio/combat/stone.mp3",
+      "sha256": "7ab52147b5dd09c37a0dac85a5c3ea1aff1df8938db313bc4db03342aba33b29",
+      "bytes": 33062,
+      "seconds": 1.995011
+    },
+    {
+      "id": "room",
+      "path": "/assets/audio/combat/room.mp3",
+      "sha256": "b4cd06912a30e599d1efd1a0429b9913bd40007ee5e6d627b70dbbd505a545b5",
+      "bytes": 33062,
+      "seconds": 1.995011
+    },
+    {
+      "id": "metal",
+      "path": "/assets/audio/combat/metal.mp3",
+      "sha256": "190ad28c0907de39ab5b2656e8cdcd93f5eeb54aeaa13d23621575ca5b997260",
+      "bytes": 30137,
+      "seconds": 1.81093
+    },
+    {
+      "id": "darkness",
+      "path": "/assets/audio/combat/darkness.mp3",
+      "sha256": "845685e359136d291a0e7e009147a7a650a9ae36dd02fef160be4b8ea17054de",
+      "bytes": 33062,
+      "seconds": 1.995011
+    },
+    {
+      "id": "quake",
+      "path": "/assets/audio/combat/quake.mp3",
+      "sha256": "eaa3c3c6020191cd18b74987a9b917f472ec0a67b3df9f2e0e24384e9048c2f8",
+      "bytes": 33062,
+      "seconds": 1.995011
+    },
+    {
+      "id": "smoke",
+      "path": "/assets/audio/combat/smoke.mp3",
+      "sha256": "4f8256c0f0237704fdba12c14539756df3cfee0d7682415d2ca10de25778c9c1",
+      "bytes": 33062,
+      "seconds": 1.995011
+    }
+  ]
+}

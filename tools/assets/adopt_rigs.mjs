@@ -5,6 +5,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import {createHash} from 'node:crypto';
 import {fileURLToPath} from 'node:url';
+import {rigRuntimeHash} from './rig_runtime_fingerprint.mjs';
 
 const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'../..');
 const staging=path.join(root,'.local/rigging');
@@ -14,6 +15,9 @@ const args=process.argv.slice(2),apply=args.includes('--apply');
 const ids=args.includes('--all')?manifest.assets.map(a=>a.id):args.filter(a=>!a.startsWith('--'));
 assert(ids.length,'Specify reviewed crew/role IDs or --all; add --apply to publish locally');
 const sha=bytes=>createHash('sha256').update(bytes).digest('hex');
+const runtimeHash=rigRuntimeHash(root);
+const acceptancePath=path.join(staging,'acceptance.json');
+const acceptance=fs.existsSync(acceptancePath)?JSON.parse(fs.readFileSync(acceptancePath,'utf8')):{};
 function readGLB(filename){
  const bytes=fs.readFileSync(filename);
  assert.equal(bytes.readUInt32LE(0),0x46546c67);
@@ -36,7 +40,15 @@ const prepared=ids.map(id=>{
  assert.equal(report.sha256,sha(candidate.bytes),id+' candidate matches rig report');
  const destination=path.join(root,asset.path.replace(/^\//,''));
  const current=sha(fs.readFileSync(destination));
- assert([sha(original.bytes),sha(candidate.bytes)].includes(current),id+' changed since rigging');
+ const publishedRig=asset.rig&&asset.sha256===current&&asset.rig.originalOptimizedSha256===sha(original.bytes);
+ assert([sha(original.bytes),sha(candidate.bytes)].includes(current)||publishedRig,id+' changed since rigging');
+ if(apply){
+  const review=acceptance[id];
+  assert(review?.verdict==='pass'&&review.score>=90,id+' visual acceptance required before publication');
+  assert.equal(review.sha256,sha(candidate.bytes),id+' review matches candidate bytes');
+  assert.equal(review.runtimeHash,runtimeHash,id+' review matches runtime');
+  assert(review.evidence?.length&&review.evidence.every(file=>fs.existsSync(path.join(root,file))),id+' visual evidence exists');
+ }
  assert.deepEqual(images(candidate),images(original),id+' original embedded texture bytes');
  assert.equal(triangles(candidate),triangles(original),id+' original triangles');
  assert(candidate.json.skins?.length,id+' skin required');

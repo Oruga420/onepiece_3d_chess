@@ -7,6 +7,9 @@ import bpy, bmesh
 from mathutils import Vector
 from mathutils.kdtree import KDTree
 ROOT=Path(__file__).resolve().parents[2]
+sys.path.insert(0,str(ROOT/'tools/assets'))
+from rig_components import rigid_bindings, apply_bindings
+from hand_contact import HandContact
 OUT=ROOT/'.local/rigging'
 # Coordinates are measured in normalized Blender space: X right, -Y front, Z up.
 FITS={
@@ -22,6 +25,8 @@ FITS={
 fit_file=ROOT/'tools/assets/rig_fits.json'
 if fit_file.exists():
  for key,value in json.loads(fit_file.read_text()).items():FITS.setdefault(key,value)
+prop_file=ROOT/'tools/assets/prop_bindings.json'
+PROP_BINDINGS=json.loads(prop_file.read_text()) if prop_file.exists() else {}
 
 def sha(p):return hashlib.sha256(p.read_bytes()).hexdigest()
 def rig(ident,render=True):
@@ -38,7 +43,13 @@ def rig(ident,render=True):
   # glTF splits UV seam vertices; weld positions while keeping per-corner UVs.
   bm=bmesh.new();bm.from_mesh(obj.data);bmesh.ops.remove_doubles(bm,verts=list(bm.verts),dist=.000001);bm.to_mesh(obj.data);bm.free();obj.data.update()
  # Retain original loops/material/UV; no remesh/decimation.
- f=FITS[ident];x=f['center'];segments={}
+ f=dict(FITS[ident]);props=PROP_BINDINGS.get(ident,{})
+ if props:
+  if props['sourceSha256']!=sha(source):raise RuntimeError('Prop recipe source hash mismatch '+ident)
+  f['rigidComponents']=f.get('rigidComponents',[])+props.get('rigidComponents',[])
+  f['rigidVertexSets']=f.get('rigidVertexSets',[])+props.get('rigidVertexSets',[])
+  f['weaponCapsules']=props.get('weaponCapsules',f.get('weaponCapsules',[]))
+ x=f['center'];segments={}
  def seg(name,a,b,parent=None):segments[name]=(Vector(a),Vector(b),parent)
  y=f.get('bodyY',0)
  seg('hips',(x,y,f['hip']),(x,y,f['waist']))
@@ -51,19 +62,45 @@ def rig(ident,render=True):
  for side,arm,leg in zip(['L','R'],f['arms'],f['legs']):
   seg('upper_arm.'+side,arm[0],arm[1],'chest');seg('forearm.'+side,arm[1],arm[2],'upper_arm.'+side);seg('hand.'+side,arm[2],arm[3],'forearm.'+side)
   seg('upper_leg.'+side,leg[0],leg[1],'hips');seg('lower_leg.'+side,leg[1],leg[2],'upper_leg.'+side);seg('foot.'+side,leg[2],leg[3],'lower_leg.'+side)
+ for extra in f.get('extraArms',[]):
+  side=extra['suffix'];points=extra['points']
+  seg('upper_arm.'+side,points[0],points[1],'chest');seg('forearm.'+side,points[1],points[2],'upper_arm.'+side);seg('hand.'+side,points[2],points[3],'forearm.'+side)
+ for extra in f.get('extraLegs',[]):
+  side=extra['suffix'];points=extra['points']
+  seg('upper_leg.'+side,points[0],points[1],'hips');seg('lower_leg.'+side,points[1],points[2],'upper_leg.'+side);seg('foot.'+side,points[2],points[3],'lower_leg.'+side)
  data=bpy.data.armatures.new('FittedHumanoid');arm=bpy.data.objects.new('character-rig',data);bpy.context.collection.objects.link(arm)
  arm['combatRig']={'motionProfile':f.get('motionProfile','humanoid'),'limbLimits':f.get('limbLimits',{'arms':1.,'legs':1.,'shoulders':1.,'elbows':1.}),'missingLimbs':f.get('missingLimbs',[]),'maxJointAngles':f.get('maxJointAngles',{'upper_arm.L':1.35,'upper_arm.R':1.35,'forearm.L':.9,'forearm.R':.9})}
+ if f.get('pocketContacts'):
+  settings=dict(arm['combatRig']);settings['pocketContacts']=f['pocketContacts'];arm['combatRig']=settings
  bpy.context.view_layer.objects.active=arm;arm.select_set(True);bpy.ops.object.mode_set(mode='EDIT')
  for name,(a,b,parent) in segments.items():
   bone=data.edit_bones.new(name);bone.head=a;bone.tail=b;bone.align_roll(Vector((0,-1,0)))
   if parent:bone.parent=data.edit_bones[parent]
+ prop_joints=f.get('propJoints',[])
+ for prop in prop_joints:
+  name,parent=prop['name'],prop['parent']
+  if not name.startswith('weapon.') or name in data.edit_bones or parent not in data.edit_bones or not parent.startswith('hand.'):
+   raise ValueError('Invalid fitted prop joint')
+  bone=data.edit_bones.new(name);bone.head=Vector(prop['head']);bone.tail=Vector(prop['tail'])
+  if (bone.tail-bone.head).length<1e-5:raise ValueError('Prop bone needs a distinct handle axis')
+  bone.align_roll(Vector((0,-1,0)));bone.parent=data.edit_bones[parent]
+  # Exclude the prop from automatic heat solving so nearby legs and garments
+  # cannot acquire weapon weights. Only exact curated selectors may bind it.
+  bone.use_deform=False
  bpy.ops.object.mode_set(mode='OBJECT')
+ if prop_joints:
+  settings=dict(arm['combatRig'])
+  settings['propGrips']=[{'bone':prop['name'],'parent':prop['parent'],'target':list(data.bones[prop['parent']].matrix_local.inverted() @ Vector(prop['palm']))} for prop in prop_joints]
+  arm['combatRig']=settings
  bpy.ops.object.select_all(action='DESELECT')
  for mesh in meshes:mesh.select_set(True)
  arm.select_set(True);bpy.context.view_layer.objects.active=arm
  bpy.ops.object.parent_set(type='ARMATURE_AUTO')
- uncovered=0
+ uncovered=0;component_audits=[]
  for mesh in meshes:
+  for prop in prop_joints:mesh.vertex_groups.new(name=prop['name'])
+  prop_weights=rigid_bindings(mesh.data,f.get('rigidComponents',[]),f.get('rigidVertexSets',[]))
+  contact=HandContact(mesh,segments,f) if f.get('armComponentGating',True) and f.get('motionProfile')!='quadruped' else None
   for v in mesh.data.vertices:
    # Heat diffusion on tiny disconnected accessories can assign remote limbs.
    # Remove only anatomically impossible influence, then renormalize the local skin.
@@ -76,6 +113,7 @@ def rig(ident,render=True):
      separation=distance(v.co,*segments[name][:2])
      # Smooth capsule confidence, with no remote sleeve/skirt influence.
      confidence=max(0,min(1,(radius*1.5-separation)/(radius*.65)))
+     if contact:confidence*=contact.allowed(v,name)
      if confidence<=0:mesh.vertex_groups[index].remove([v.index])
      else:mesh.vertex_groups[index].add([v.index],weight*confidence,'REPLACE')
    if ident=='mugiwara/king' and ((v.co.z < .445 and v.co.y < -.045 and v.co.x > .09) or (v.co.y>.065 and v.co.z>.58)):
@@ -91,14 +129,54 @@ def rig(ident,render=True):
    # Shoes/sandals are rigid accessories below the ankle. Keep each complete
    # shoe with its foot, including disconnected soles missed by bone heat.
    if v.co.z < min(a[2][2] for a in f['legs'])+.012:
-    paws=['foot.L','foot.R']+(['hand.L','hand.R'] if f.get('motionProfile')=='quadruped' else [])
+    paws=[name for name in segments if name.startswith('foot.')]+(['hand.L','hand.R'] if f.get('motionProfile')=='quadruped' else [])
     foot=min(paws,key=lambda n:distance(v.co,*segments[n][:2]))
     for index in [g.group for g in v.groups]:mesh.vertex_groups[index].remove([v.index])
     mesh.vertex_groups[foot].add([v.index],1,'REPLACE')
    for region in f.get('rigidRegions',[]):
     if all(region['min'][i]<=v.co[i]<=region['max'][i] for i in range(3)):
+     # A costume box may overlap a hand resting on a hip. Preserve the
+     # anatomical capsule with a smooth boundary instead of pinning skin to
+     # the pelvis and tearing it away when the arm lifts.
+     protected=[]
+     if not region['bone'].startswith(('upper_arm','forearm','hand')):
+      for name in segments:
+       if not name.startswith(('upper_arm','forearm','hand')):continue
+       length=(segments[name][1]-segments[name][0]).length
+       radius=f.get('armRadii',{}).get(name,max(.023,min(.065,length*(.5 if name.startswith('hand') else .23))))
+       confidence=max(0,min(1,(radius*1.5-distance(v.co,*segments[name][:2]))/(radius*.65)))
+       if contact:confidence*=contact.allowed(v,name)
+       if confidence>0:protected.append((name,confidence))
+     protection=max((weight for _,weight in protected),default=0)
+     old={g.group:g.weight for g in v.groups if g.weight>1e-6}
+     if protection and not old:
+      # Bone heat can fail on non-manifold generated meshes. Seed actual limb
+      # influence here before the costume blend, rather than normalizing a
+      # lone pelvis weight back to 100% and losing the protection.
+      old={mesh.vertex_groups[name].index:weight/(distance(v.co,*segments[name][:2])+.018)**2 for name,weight in protected}
+     total=sum(old.values())
+     mixed={index:weight/total*protection for index,weight in old.items()} if total else {}
+     target=mesh.vertex_groups[region['bone']].index
+     mixed[target]=mixed.get(target,0)+(1-protection)
      for index in [g.group for g in v.groups]:mesh.vertex_groups[index].remove([v.index])
-     mesh.vertex_groups[region['bone']].add([v.index],1,'REPLACE')
+     for index,weight in mixed.items():
+      if weight>0:mesh.vertex_groups[index].add([v.index],weight,'REPLACE')
+   # The distal capsule is an anatomical anchor, not just a filter on heat
+   # weights. Otherwise a fingertip mislabeled as thigh by bone heat retains
+   # that label even after its correctly fitted hand envelope is widened.
+   hand_names=[name for name in segments if name.startswith('hand.')]
+   hand=min(hand_names,key=lambda name:distance(v.co,*segments[name][:2]))
+   hand_radius=f.get('armRadii',{}).get(hand,max(.023,min(.065,(segments[hand][1]-segments[hand][0]).length*.5)))
+   hand_distance=distance(v.co,*segments[hand][:2])
+   hand_strength=max(0,min(1,(hand_radius*1.2-hand_distance)/(hand_radius*.4)))
+   if contact:hand_strength=contact.anchor_strength(v,hand)
+   if hand_strength>0 and f.get('motionProfile')!='quadruped':
+    old={g.group:g.weight for g in v.groups if g.weight>1e-6};total=sum(old.values())
+    mixed={index:weight/total*(1-hand_strength) for index,weight in old.items()} if total else {}
+    target=mesh.vertex_groups[hand].index;mixed[target]=mixed.get(target,0)+hand_strength
+    for index in [g.group for g in v.groups]:mesh.vertex_groups[index].remove([v.index])
+    for index,weight in mixed.items():
+     if weight>0:mesh.vertex_groups[index].add([v.index],weight,'REPLACE')
    weights=[(g.group,g.weight) for g in v.groups if g.weight>1e-6]
    if not weights:
     uncovered+=1
@@ -106,9 +184,9 @@ def rig(ident,render=True):
     closest_arm=min(arm_names,key=lambda n:distance(v.co,*segments[n][:2]))
     length=(segments[closest_arm][1]-segments[closest_arm][0]).length
     radius=f.get('armRadii',{}).get(closest_arm,max(.023,min(.065,length*(.5 if closest_arm.startswith('hand') else .23))))
-    near_arm=distance(v.co,*segments[closest_arm][:2])<radius*1.3
+    near_arm=distance(v.co,*segments[closest_arm][:2])<radius*1.3 and (not contact or contact.allowed(v,closest_arm))
     if near_arm:
-     side=closest_arm[-1];allowed=['upper_arm.'+side,'forearm.'+side,'hand.'+side]
+     side=closest_arm.split('.',1)[1];allowed=['upper_arm.'+side,'forearm.'+side,'hand.'+side]
      if v.co.z>f['chest']:allowed+=['chest']
     else:
      allowed=[n for n in segments if not n.startswith(('upper_arm','forearm','hand'))]
@@ -118,6 +196,7 @@ def rig(ident,render=True):
    weights=sorted(weights,key=lambda item:item[1],reverse=True)[:4];total=sum(w for _,w in weights)
    for index in [g.group for g in v.groups]:mesh.vertex_groups[index].remove([v.index])
    for g,w in weights:mesh.vertex_groups[g].add([v.index],w/total,'REPLACE')
+  apply_bindings(mesh,prop_weights)
   # Geodesic relaxation removes hard spatial region boundaries and propagates
   # weights across UV-welded topology, rather than leaving torn adjacent faces.
   adjacency=[[] for _ in mesh.data.vertices]
@@ -134,10 +213,15 @@ def rig(ident,render=True):
      for g,w in fields[j].items():weights[g]=weights.get(g,0)+.45*edge_weight*w/den
     relaxed.append(weights)
    fields=relaxed
+  if contact:
+   fields=contact.finish(fields);component_audits.append(contact.audit)
   for v,weights in zip(mesh.data.vertices,fields):
    pairs=sorted(weights.items(),key=lambda item:item[1],reverse=True)[:4];den=sum(w for _,w in pairs)
    for index in [g.group for g in v.groups]:mesh.vertex_groups[index].remove([v.index])
    for index,w in pairs:mesh.vertex_groups[index].add([v.index],w/den,'REPLACE')
+  # Only complete, verified source components may be rigidly bound. A spatial
+  # capsule can intersect unrelated legs or clothing and create long tears.
+  apply_bindings(mesh,prop_weights)
   # Transfer weights back onto the untouched source topology. The welded proxy
   # exists only to solve heat/diffusion; source UV seams, normals and even
   # degenerate source triangles remain byte-for-byte geometrically represented.
@@ -152,10 +236,13 @@ def rig(ident,render=True):
    _,index,dist=points.find(v.co)
    if dist>1e-5:raise RuntimeError('Source topology transfer drift')
    for group,weight in solved[index]:mesh.vertex_groups[group].add([v.index],weight,'REPLACE')
+ for prop in prop_joints:
+  data.bones[prop['name']].use_deform=True
+  segments[prop['name']]=(Vector(prop['head']),Vector(prop['tail']),prop['parent'])
  dest=OUT/'candidates'/(ident+'.glb');dest.parent.mkdir(parents=True,exist_ok=True)
  bpy.ops.export_scene.gltf(filepath=str(dest),export_format='GLB',use_selection=True,export_image_format='AUTO',export_animations=False,export_extras=True,export_skins=True,export_all_influences=False,export_cameras=False,export_lights=False)
  report=OUT/'reviews'/ident;report.mkdir(parents=True,exist_ok=True)
- metadata={'id':ident,'originalSha256':sha(source),'sha256':sha(dest),'bytes':dest.stat().st_size,'unweightedFallbackVertices':uncovered,'bones':{name:{'head':list(a),'tail':list(b),'parent':parent,'localAxesBlender': [list(row) for row in data.bones[name].matrix_local.to_3x3()]} for name,(a,b,parent) in segments.items()},'triangles':sum(sum(len(p.vertices)-2 for p in o.data.polygons) for o in meshes)}
+ metadata={'id':ident,'originalSha256':sha(source),'sha256':sha(dest),'bytes':dest.stat().st_size,'unweightedFallbackVertices':uncovered,'componentOwnership':component_audits,'bones':{name:{'head':list(a),'tail':list(b),'parent':parent,'localAxesBlender': [list(row) for row in data.bones[name].matrix_local.to_3x3()]} for name,(a,b,parent) in segments.items()},'triangles':sum(sum(len(p.vertices)-2 for p in o.data.polygons) for o in meshes)}
  (report/'metrics.json').write_text(json.dumps(metadata,indent=2))
  if render:render_poses(ident,arm,report)
  print('RIG_STAGED',ident,uncovered,flush=True)

@@ -37,12 +37,25 @@ export function disposeCharacterSkeletons(root) {
  root?.traverse(object => { if (object.isSkinnedMesh && !skeletons.has(object.skeleton)) { skeletons.add(object.skeleton); object.skeleton.dispose(); } });
 }
 
-const limbs = [
+const primaryLimbs = [
  ['upper_arm.L', 'forearm.L'], ['forearm.L', 'hand.L'],
  ['upper_arm.R', 'forearm.R'], ['forearm.R', 'hand.R'],
  ['upper_leg.L', 'lower_leg.L'], ['lower_leg.L', 'foot.L'],
  ['upper_leg.R', 'lower_leg.R'], ['lower_leg.R', 'foot.R'],
 ];
+
+function discoverLimbs(bones) {
+ const result = primaryLimbs.map(([name,child])=>[name,child,name]);
+ const extra = [...bones.keys()].map(name=>name.match(/^upper(arm|leg)([lr])([2-9]\d*)$/)).filter(Boolean)
+  .sort((a,b)=>Number(a[3])-Number(b[3])||a[1].localeCompare(b[1])||a[2].localeCompare(b[2]));
+ for(const [,kind,side,index] of extra) {
+  const suffix=`.${side.toUpperCase()}${index}`,baseSuffix=`.${side.toUpperCase()}`;
+  const upper=`upper_${kind}${suffix}`,lower=`${kind==='arm'?'forearm':'lower_leg'}${suffix}`,tip=`${kind==='arm'?'hand':'foot'}${suffix}`;
+  if(!bones.has(canonicalName(lower))||!bones.has(canonicalName(tip)))continue;
+  result.push([upper,lower,`upper_${kind}${baseSuffix}`],[lower,tip,`${kind==='arm'?'forearm':'lower_leg'}${baseSuffix}`]);
+ }
+ return result;
+}
 const guard = {
  'upper_arm.L':[.35,-.6,.6], 'forearm.L':[-.2,.88,.35],
  'upper_arm.R':[-.35,-.6,.6], 'forearm.R':[.2,.88,.35],
@@ -113,19 +126,24 @@ function soleSupports(body, meshes, inverse, bones) {
  const directions = [];
  for (let x=-1;x<=1;x++)for(let y=-1;y<=1;y++)for(let z=-1;z<=1;z++)if(x||y||z)directions.push(new THREE.Vector3(x,y,z));
  const point = new THREE.Vector3(), indices = new THREE.Vector4(), weights = new THREE.Vector4(), supports = [];
- const footHeight = Math.max(...['foot.L','foot.R'].map(name=>bones.get(canonicalName(name)).getWorldPosition(point).applyMatrix4(inverse).y));
+ const feet = [...bones].filter(([name])=>/^foot[lr]\d*$/.test(name));
+ const footSlots = new Map(feet.map(([name],i)=>[name.slice(4),i]));
+ const footHeights = feet.map(([,bone])=>bone.getWorldPosition(point).applyMatrix4(inverse).y);
+ const influences = new Float32Array(feet.length);
  for (const mesh of meshes) {
   if (!mesh.geometry.attributes.skinIndex || !mesh.geometry.attributes.skinWeight) continue;
-  const minima = Array.from({length:directions.length*2},()=>({value:Infinity,index:-1}));
-  const legSides = mesh.skeleton.bones.map(bone => /^(foot|lowerleg)[lr]$/.test(canonicalName(bone.name)) ? canonicalName(bone.name).at(-1) : null);
+  const minima = Array.from({length:directions.length*feet.length},()=>({value:Infinity,index:-1}));
+  const legSlots = mesh.skeleton.bones.map(bone => footSlots.get(canonicalName(bone.name).match(/^(?:foot|lowerleg)([lr]\d*)$/)?.[1]));
   for(let i=0;i<mesh.geometry.attributes.position.count;i++) {
    indices.fromBufferAttribute(mesh.geometry.attributes.skinIndex,i);weights.fromBufferAttribute(mesh.geometry.attributes.skinWeight,i);
-   let left=0,right=0;
-   for(let j=0;j<4;j++) { const side=legSides[indices.getComponent(j)];if(side==='l')left+=weights.getComponent(j);else if(side==='r')right+=weights.getComponent(j); }
-   if(Math.max(left,right)<.25)continue;
+   influences.fill(0);
+   for(let j=0;j<4;j++) { const slot=legSlots[indices.getComponent(j)];if(slot!==undefined)influences[slot]+=weights.getComponent(j); }
+   let strongest=0;
+   for(let j=1;j<influences.length;j++)if(influences[j]>influences[strongest])strongest=j;
+   if(influences[strongest]<.25)continue;
    mesh.getVertexPosition(i,point).applyMatrix4(mesh.matrixWorld).applyMatrix4(inverse);
-   if(point.y>footHeight+height*.07)continue;
-   const offset=left>=right?0:directions.length;
+   if(point.y>footHeights[strongest]+height*.07)continue;
+   const offset=strongest*directions.length;
    for(let d=0;d<directions.length;d++) { const value=point.dot(directions[d]),candidate=minima[offset+d];if(value<candidate.value){candidate.value=value;candidate.index=i;} }
   }
   for(const index of new Set(minima.map(candidate=>candidate.index).filter(index=>index>=0)))supports.push({mesh,index});
@@ -151,9 +169,10 @@ export function createSkeletalCombat(body, {attack = null, defender = false} = {
   }
  });
  const get = name => bones.get(canonicalName(name));
- const active = meshes.some(mesh => mesh.geometry.attributes.skinWeight && mesh.geometry.attributes.skinIndex) && limbs.every(([name, child]) => get(name) && get(child));
+ const limbs = discoverLimbs(bones);
+ const active = meshes.some(mesh => mesh.geometry.attributes.skinWeight && mesh.geometry.attributes.skinIndex) && primaryLimbs.every(([name, child]) => get(name) && get(child));
  const quadruped = rigSettings.motionProfile === 'quadruped', limits = rigSettings.limbLimits || {};
- const metrics = {active, skinnedMeshes:meshes.length, bones:saved.length, movedJoints:0, maxJointAngle:0, motionProfile:quadruped?'quadruped':'humanoid',soleSamples:0,groundLift:0,maxGroundLift:0};
+ const metrics = {active, skinnedMeshes:meshes.length, bones:saved.length, articulatedSegments:limbs.length, movedJoints:0, maxJointAngle:0, motionProfile:quadruped?'quadruped':'humanoid',soleSamples:0,groundLift:0,maxGroundLift:0};
  const originalPosition = body?.position.clone(), groundShift = new THREE.Vector3(), groundedPosition = new THREE.Vector3();
  let correctedGround = false;
  const updateWorld = () => {
@@ -180,16 +199,69 @@ export function createSkeletalCombat(body, {attack = null, defender = false} = {
   get(child).getWorldPosition(new THREE.Vector3()).applyMatrix4(modelInverse)
    .sub(get(name).getWorldPosition(new THREE.Vector3()).applyMatrix4(modelInverse)).normalize()]));
  const restRotations = new Map(saved.map(item => [item.object,item.quaternion]));
+ // A prop has its own genuine skin joint. Its origin is the handle's source
+ // rest anchor, and the fitted target is expressed in the owning palm frame.
+ // Moving this joint never changes the arm chain or the character root.
+ const propGrips = (rigSettings.propGrips || []).map(grip => {
+  const bone = get(grip.bone), parent = get(grip.parent), rest = saved.find(item=>item.object===bone);
+  if(!bone || !parent || bone.parent!==parent || !/^weapon/i.test(bone.name) || !Array.isArray(grip.target) || grip.target.length!==3 || !grip.target.every(Number.isFinite))throw Error('Invalid fitted prop grip');
+  return {bone,rest:rest.position,target:new THREE.Vector3().fromArray(grip.target)};
+ });
+ metrics.propGrips = propGrips.length;
+ // A hand resting inside a pocket is a contact, not a free attack target.
+ // Solve the two arm bones around its hips-relative anchor. The palm keeps
+ // its orientation while the elbow can swivel; the firing arm and legs retain
+ // their full choreography. Work in body/parent space so actor scaling cancels.
+ const pocketSettings = rigSettings.pocketContacts || [], pocketSides = new Set();
+ if(!Array.isArray(pocketSettings))throw Error('Invalid pocket contact list');
+ const pocketContacts = pocketSettings.map(contact => {
+  const side=contact?.side, anchorName=contact?.anchor??'hips', swivel=contact?.elbowSwivel??.18;
+  const hip=get(anchorName),upper=get(`upper_arm.${side}`),forearm=get(`forearm.${side}`),hand=get(`hand.${side}`);
+  if(!['L','R'].includes(side)||anchorName!=='hips'||pocketSides.has(side)||!hip||!upper||forearm?.parent!==upper||hand?.parent!==forearm||rigSettings.missingLimbs?.includes(side)||!Number.isFinite(swivel)||swivel<0||swivel>Math.PI/6)throw Error('Invalid pocket contact');
+  pocketSides.add(side);
+  const anchor=hip.worldToLocal(hand.getWorldPosition(new THREE.Vector3()));
+  const elbowAnchor=hip.worldToLocal(forearm.getWorldPosition(new THREE.Vector3()));
+  const palmTransform=hip.matrixWorld.clone().invert().multiply(hand.matrixWorld);
+  const aimContact=(bone,tip,target)=>{
+   updateWorld();
+   const inverse=bone.parent.matrixWorld.clone().invert();
+   const current=tip.getWorldPosition(new THREE.Vector3()).applyMatrix4(inverse).sub(bone.position).normalize();
+   const desired=target.clone().applyMatrix4(inverse).sub(bone.position).normalize();
+   bone.quaternion.premultiply(new THREE.Quaternion().setFromUnitVectors(current,desired)).normalize();
+   updateWorld();
+  };
+  return progress=>{
+   const inverse=body.matrixWorld.clone().invert();
+   const shoulder=upper.getWorldPosition(new THREE.Vector3()).applyMatrix4(inverse),elbow=forearm.getWorldPosition(new THREE.Vector3()).applyMatrix4(inverse),wrist=hand.getWorldPosition(new THREE.Vector3()).applyMatrix4(inverse);
+   const upperLength=shoulder.distanceTo(elbow),lowerLength=elbow.distanceTo(wrist),target=hip.localToWorld(anchor.clone()).applyMatrix4(inverse),distance=shoulder.distanceTo(target);
+   if(distance<1e-8||distance>upperLength+lowerLength+1e-6||distance<Math.abs(upperLength-lowerLength)-1e-6)throw Error('Unreachable pocket contact');
+   const axis=target.clone().sub(shoulder).normalize(),along=(upperLength**2-lowerLength**2+distance**2)/(2*distance),height=Math.sqrt(Math.max(0,upperLength**2-along**2));
+   const pole=hip.localToWorld(elbowAnchor.clone()).applyMatrix4(inverse).sub(shoulder);
+   pole.addScaledVector(axis,-pole.dot(axis));
+   if(pole.lengthSq()<1e-12)pole.crossVectors(axis,Math.abs(axis.x)<.8?new THREE.Vector3(1,0,0):new THREE.Vector3(0,0,1));
+   pole.normalize().applyAxisAngle(axis,swivel*Math.sin(progress*Math.PI*2)*Math.sin(progress*Math.PI));
+   const elbowTarget=shoulder.clone().addScaledVector(axis,along).addScaledVector(pole,height);
+   aimContact(upper,forearm,body.localToWorld(elbowTarget));aimContact(forearm,hand,body.localToWorld(target));
+   const palmLocal=hand.parent.matrixWorld.clone().invert().multiply(hip.matrixWorld).multiply(palmTransform);
+   palmLocal.decompose(new THREE.Vector3(),hand.quaternion,new THREE.Vector3());hand.quaternion.normalize();
+   updateWorld();
+   return hand.getWorldPosition(new THREE.Vector3()).distanceTo(target);
+  };
+ });
+ metrics.pocketContacts=pocketContacts.length;metrics.maxPocketError=0;
  const amplitudes = new Map(limbs.map(([name]) => {
   const arm = /arm/.test(name), shoulder = name.startsWith('upper_arm');
-  const enabled = !(arm && rigSettings.missingLimbs?.includes(name.at(-1)));
+  const suffix = name.split('.')[1];
+  const enabled = !(arm && (rigSettings.missingLimbs?.includes(suffix)||rigSettings.missingLimbs?.includes(suffix[0])));
   const finiteLimit = value => Number.isFinite(value) ? clamp(value) : 1;
   return [name, enabled ? finiteLimit(arm?limits.arms:limits.legs) * (arm?finiteLimit(shoulder?limits.shoulders:limits.elbows):1) : 0];
  }));
  const frames = choreography(attack, defender, quadruped);
- const a = new THREE.Vector3(), b = new THREE.Vector3(), current = new THREE.Vector3(), desired = new THREE.Vector3();
+ const a = new THREE.Vector3(), b = new THREE.Vector3(), current = new THREE.Vector3(), desired = new THREE.Vector3(), gait = new THREE.Vector3();
  const modelRotation = new THREE.Quaternion(), parentRotation = new THREE.Quaternion(), jointRotation = new THREE.Quaternion(), delta = new THREE.Quaternion();
- function aim(name, child, target) {
+ const modelRotationInverse = new THREE.Quaternion(), transferredRotation = new THREE.Quaternion();
+ const posedDirections = new Map(primaryLimbs.map(([name])=>[name,new THREE.Vector3()]));
+ function aim(name, child, target, primary = name) {
   const bone = get(name), tip = get(child);
   bone.updateWorldMatrix(true, true);
   current.subVectors(tip.getWorldPosition(a), bone.getWorldPosition(b)).normalize();
@@ -198,9 +270,12 @@ export function createSkeletalCombat(body, {attack = null, defender = false} = {
   bone.getWorldQuaternion(jointRotation); bone.parent.getWorldQuaternion(parentRotation).invert();
   bone.quaternion.copy(parentRotation).multiply(delta).multiply(jointRotation).normalize();
   const rest = restRotations.get(bone), angle = rest.angleTo(bone.quaternion);
-  const configured = rigSettings.maxJointAngles?.[name];
+  const configured = rigSettings.maxJointAngles?.[name] ?? rigSettings.maxJointAngles?.[primary];
   const maxAngle = Number.isFinite(configured) ? Math.max(0,configured) : name.startsWith('upper_arm') ? 2.25 : name.startsWith('forearm') ? 2.45 : name.startsWith('upper_leg') ? 1.85 : 2.25;
-  const amount = amplitudes.get(name) * Math.min(1, maxAngle/Math.max(angle,.000001));
+  // The transferred primary delta already contains the anatomical amplitude.
+  // Apply it once; retain each extra joint's angle ceiling and absent-arm gate.
+  const amplitude = name===primary ? amplitudes.get(name) : amplitudes.get(name)>0?1:0;
+  const amount = amplitude * Math.min(1, maxAngle/Math.max(angle,.000001));
   delta.copy(bone.quaternion);
   bone.quaternion.copy(rest).slerp(delta,amount);
   bone.updateWorldMatrix(false, true);
@@ -229,16 +304,24 @@ export function createSkeletalCombat(body, {attack = null, defender = false} = {
    }
    return metrics.groundLift;
   },
-  update(progress, {walking = false} = {}) {
+  update(progress, {walking = false, gaitProgress = progress, walkingBlend = 0} = {}) {
    clear();
    const p = clamp(progress);
    if (p === 0 || (p === 1 && !defender)) { metrics.movedJoints = 0; return; }
    body.getWorldQuaternion(modelRotation);
+   modelRotationInverse.copy(modelRotation).invert();
    const [first, second, blend] = sample(p);
-   const step = Math.sin(p * Math.PI * (walking ? 8 : 30)) * Math.sin(p * Math.PI);
-   for (const [name, child] of limbs) {
+   const strideProgress = Number.isFinite(gaitProgress) ? clamp(gaitProgress) : p;
+   const strideBlend = Number.isFinite(walkingBlend) ? clamp(walkingBlend) : 0;
+   const step = Math.sin(strideProgress * Math.PI * 8) * Math.sin(strideProgress * Math.PI);
+   for (const [name, child, primary] of limbs) {
     const rest = restDirections.get(name);
-    if (walking) {
+    if(name!==primary) {
+     // Rotate the extra segment's own rest direction by the primary movement.
+     // Its fan-out is preserved instead of stacking all six arms on one ray.
+     transferredRotation.setFromUnitVectors(restDirections.get(primary),posedDirections.get(primary));
+     desired.copy(rest).applyQuaternion(transferredRotation);
+    } else if (walking) {
      desired.copy(rest);
      const side = name.endsWith('.L') ? 1 : -1;
      if (name.startsWith('upper_leg')) desired.z += step * side * .44;
@@ -249,11 +332,27 @@ export function createSkeletalCombat(body, {attack = null, defender = false} = {
      a.copy(first?.[name] ? b.fromArray(first[name]).normalize() : rest);
      b.copy(second?.[name] ? desired.fromArray(second[name]).normalize() : rest);
      desired.lerpVectors(a, b, blend);
+     if(strideBlend>0) {
+      // The capture approach takes about a second. Drive actual leg chains
+      // through a brisk stride, then fade smoothly into guard. Costume limits
+      // still apply in aim(), including the small hip arc under long dresses.
+      gait.copy(rest);
+      const side = name.endsWith('.L') ? 1 : -1;
+      if(name.startsWith('upper_leg'))gait.z+=step*side*.82;
+      else if(name.startsWith('lower_leg'))gait.z-=Math.max(0,step*side)*.95;
+      else if(name.startsWith('upper_arm'))gait.z-=step*side*.38;
+      else gait.z+=Math.abs(step)*.18;
+      desired.lerp(gait,strideBlend);
+     }
     }
     // aim uses its own scratch vectors; preserve this direction for the call.
     const x = desired.x, y = desired.y, z = desired.z;
-    aim(name, child, {x,y,z});
+    aim(name, child, {x,y,z},primary);
+    if(name===primary)posedDirections.get(name).subVectors(get(child).getWorldPosition(a),get(name).getWorldPosition(b)).applyQuaternion(modelRotationInverse).normalize();
    }
+   for(const contact of pocketContacts)metrics.maxPocketError=Math.max(metrics.maxPocketError,contact(p));
+   const gripBlend = smooth(p/.28) * (defender ? 1 : smooth((1-p)/.14));
+   for(const grip of propGrips)grip.bone.position.lerpVectors(grip.rest,grip.target,gripBlend);
    updateWorld();
    metrics.movedJoints = saved.filter(item => item.object.quaternion.angleTo(item.quaternion) > .035).length;
    metrics.maxJointAngle = Math.max(metrics.maxJointAngle, ...saved.map(item => item.object.quaternion.angleTo(item.quaternion)));

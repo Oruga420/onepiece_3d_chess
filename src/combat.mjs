@@ -301,7 +301,7 @@ export function createMoveAnimation({
   if (attack?.family === 'beast') { lean += attackPulse * .20; recoil += attackPulse * .08; }
   if (attack?.family === 'quake' || variant === 'magma') { recoil += attackPulse * .09; lean += windup * .12 * attackHold; }
   pose(savedBody, attacker, recoil * attackHold, gait * .023, Math.abs(gait) * .06 + jump, lean, twist, roll);
-  attackerRig.update(p);
+  attackerRig.update(p, {gaitProgress:segment(p,0,.30), walkingBlend:1-smooth(segment(p,.18,.30))});
   attackerRig.ground(from.y);
   if (victim) {
    victim.quaternion.copy(savedVictim.quaternion).slerp(defenderFacing, smooth(segment(p, .18, .37)));

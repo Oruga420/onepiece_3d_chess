@@ -277,7 +277,10 @@ export function createMoveAnimation({
   const defeat = smooth(segment(p, .65, .88)), recover = smooth(segment(p, .88, 1));
   const faceProgress = smooth(segment(p, 0, .18));
   const lunge = smooth(segment(p, .555, .625)), followThrough = smooth(segment(p, .65, .78));
-  const advance = (-windup * .11 + feint * .24 - counter * .17 + lunge * .47 - followThrough * .12) * (1 - recover) * (ranged ? .25 : 1);
+  // Articulated hands/feet supply their own reach. The old full-body lunge
+  // would carry the torso through the defender at the moment of contact.
+  const articulated = attackerRig.metrics.active;
+  const advance = (-windup * .11 + feint * (articulated ? .15 : .24) - counter * .17 + lunge * (articulated ? .24 : .47) - followThrough * .12) * (1 - recover) * (ranged ? .25 : 1);
   attacker.position.lerpVectors(from, stand, approach).addScaledVector(direction, advance)
    .addScaledVector(sideways, (counter * -.13 + pulse(p, .55, .65) * .08) * (1 - recover)).lerp(destination, recover);
   attacker.quaternion.copy(savedAttacker.quaternion).slerp(facing, faceProgress).slerp(savedAttacker.quaternion, recover);

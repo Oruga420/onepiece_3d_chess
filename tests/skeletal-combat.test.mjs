@@ -132,6 +132,19 @@ test('disposing instance bone textures leaves shared meshes and other skeletons 
  assert.equal(released,1);assert.equal(geometryDisposed,0);assert.equal(materialDisposed,0);assert(other.skeleton.boneTexture);
 });
 
+test('articulated strikes leave torso spacing for the real arm or foot to make contact', async () => {
+ for(const role of ['king','queen','bishop']) {
+  const a=model(),v=model(),attacker=new THREE.Group(),victim=new THREE.Group();attacker.add(a.root);victim.add(v.root);victim.position.z=2;
+  let frame;
+  const animation=createMoveAnimation({attacker,victim,end:victim.position.clone(),attack:getCharacterAttack('mugiwara',role),now:()=>0,requestFrame:f=>{frame=f;return 1;},cancelFrame(){}});
+  frame(.62*3480);
+  const torsoGap=v.root.getWorldPosition(new THREE.Vector3()).z-a.root.getWorldPosition(new THREE.Vector3()).z;
+  assert(torsoGap>.3&&torsoGap<.7,role+' torsos remain apart while limbs extend');
+  assert(animation.metrics.articulation.attacker.movedJoints>=6);
+  animation.cancel();await animation.finished;
+ }
+});
+
 test('rigid legacy models report inactive rather than falsely claiming limb motion', () => {
  const root=new THREE.Group();root.add(new THREE.Mesh(new THREE.BoxGeometry(),new THREE.MeshBasicMaterial()));
  const rig=createSkeletalCombat(root);rig.update(.62);assert.equal(rig.metrics.active,false);assert.equal(rig.metrics.movedJoints,0);

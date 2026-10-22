@@ -30,8 +30,8 @@
       "credits": 15,
       "referenceImage": "/assets/references/mugiwara/king.png",
       "rawSha256": "727c9f2a23cbc67bec4181da9807e46237ef7a00711970f23036eaf6b5d02fbd",
-      "sha256": "03dce377be5ce039f2c2629e6a9e4d3dcc0a24307ddbf5dec57a525d6fc3b88c",
-      "bytes": 403684,
+      "sha256": "eb6233d5a1b3452dd28867bc0bc92ff63d16d88aaacc0fb6c9a99913c831e791",
+      "bytes": 579256,
       "triangles": 10288,
       "textures": [
         {
@@ -39,7 +39,17 @@
           "width": 512,
           "height": 512
         }
-      ]
+      ],
+      "rig": {
+        "version": 1,
+        "method": "offline-fitted-armature",
+        "joints": 17,
+        "originalOptimizedSha256": "03dce377be5ce039f2c2629e6a9e4d3dcc0a24307ddbf5dec57a525d6fc3b88c",
+        "trianglesPreserved": true,
+        "texturesPreserved": true,
+        "motionProfile": "humanoid",
+        "missingLimbs": []
+      }
     },
     {
       "id": "mugiwara/queen",
@@ -69,8 +79,8 @@
       "credits": 15,
       "referenceImage": "/assets/references/mugiwara/queen.png",
       "rawSha256": "ba837f2face632a5b97a3aa489e5154206deff60305ea91b48d3cee52ff10fb9",
-      "sha256": "e9b7c1438ac2c9fb1d73c9697ec8514e7a6a945cf80bd1be7860961a51131e64",
-      "bytes": 404984,
+      "sha256": "5d96f3b0509ed5d8d5fe0b3b571ffd72748b77ac41c4af04a5b8eca8dd90be35",
+      "bytes": 590144,
       "triangles": 10297,
       "textures": [
         {
@@ -78,7 +88,17 @@
           "width": 512,
           "height": 512
         }
-      ]
+      ],
+      "rig": {
+        "version": 1,
+        "method": "offline-fitted-armature",
+        "joints": 17,
+        "originalOptimizedSha256": "e9b7c1438ac2c9fb1d73c9697ec8514e7a6a945cf80bd1be7860961a51131e64",
+        "trianglesPreserved": true,
+        "texturesPreserved": true,
+        "motionProfile": "humanoid",
+        "missingLimbs": []
+      }
     },
     {
       "id": "mugiwara/rook",
@@ -147,8 +167,8 @@
       "credits": 15,
       "referenceImage": "/assets/references/mugiwara/bishop.png",
       "rawSha256": "e1cd399788ea150032c57c942c00569af5973de7818fecdc970a99d01c18830e",
-      "sha256": "9e32011c5147a7d0f722f2941259f3ef6226efa70ed1d9db09d6f11e956d3b7b",
-      "bytes": 382760,
+      "sha256": "9a05d70b75175436333aa874017633831c623cf12dd84ae7135f6e473e9fa62c",
+      "bytes": 555876,
       "triangles": 10410,
       "textures": [
         {
@@ -156,7 +176,17 @@
           "width": 512,
           "height": 512
         }
-      ]
+      ],
+      "rig": {
+        "version": 1,
+        "method": "offline-fitted-armature",
+        "joints": 17,
+        "originalOptimizedSha256": "9e32011c5147a7d0f722f2941259f3ef6226efa70ed1d9db09d6f11e956d3b7b",
+        "trianglesPreserved": true,
+        "texturesPreserved": true,
+        "motionProfile": "humanoid",
+        "missingLimbs": []
+      }
     },
     {
       "id": "mugiwara/knight",

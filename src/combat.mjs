@@ -1,5 +1,6 @@
 import * as THREE from '../vendor/three/three.module.js';
 import {createAttackEffects} from './attack-effects.mjs';
+import {createSkeletalCombat} from './skeletal-combat.mjs';
 
 const clamp = value => Math.max(0, Math.min(1, value));
 const smooth = value => { const p = clamp(value); return p * p * (3 - 2 * p); };
@@ -174,6 +175,7 @@ export function createMoveAnimation({
  const rookBody = rook?.userData.combatBody || rook?.children[0] || null;
  const savedAttacker = snapshot(attacker), savedBody = snapshot(body), savedVictim = snapshot(victim), savedDefenderBody = snapshot(defenderBody), savedRook = snapshot(rook), savedRookBody = snapshot(rookBody);
  const originals = [savedAttacker, savedBody, savedVictim, savedDefenderBody, savedRook, savedRookBody];
+ const attackerRig = createSkeletalCombat(body, {attack}), defenderRig = createSkeletalCombat(defenderBody, {attack, defender:true}), rookRig = createSkeletalCombat(rookBody);
  const from = start.clone(), destination = end.clone(), rookDestination = rookEnd?.clone();
  const target = victim ? victim.position.clone() : destination.clone();
  const direction = target.clone().sub(from); direction.y = 0;
@@ -192,11 +194,12 @@ export function createMoveAnimation({
  const scratch = new THREE.Vector3(), corner = new THREE.Vector3(), inverse = new THREE.Quaternion(), poseRotation = new THREE.Quaternion(), poseEuler = new THREE.Euler();
  const duration = reducedMotion ? 0 : capture ? 3600 : 600;
  const metrics = {phase: 'approach', progress: 0, impactCount: 0, effects: 0, profile: profile.name, duration, hitStop: false, cameraPunch: 0, bloodParticles: 0, bloodSplats: 0, shards: 0,
-  characterAttack: attack?.id || null, character: attack?.character || null, family: attack?.family || null, signatureEffects: 0};
+  characterAttack: attack?.id || null, character: attack?.character || null, family: attack?.family || null, signatureEffects: 0,
+  articulation:{attacker:attackerRig.metrics, defender:defenderRig.metrics}};
  let landed = false;
  let frameId = null, settled = false, effects = null, signature = null, resolveFinished;
  const finished = new Promise(resolve => { resolveFinished = resolve; });
- const restoreAll = () => originals.forEach(restore);
+ const restoreAll = () => { originals.forEach(restore); attackerRig.restore(); defenderRig.restore(); rookRig.restore(); };
  const impact = () => {
   if (!settled && capture && metrics.impactCount === 0) { metrics.impactCount = 1; onImpact({position: target.clone(), profile: profile.name, side, attack}); }
  };
@@ -261,7 +264,11 @@ export function createMoveAnimation({
    const rookSteps = Math.min(6, Math.max(2, Math.round(savedRook.position.distanceTo(rookDestination) * 2)));
    const rookGait = Math.sin(eased * Math.PI * rookSteps * 2) * envelope;
    pose(savedRookBody, rook, 0, rookGait * .018, rookGait * rookGait * .045, drive * .7, 0, rookGait * .035, rookDirection);
+   rookRig.update(p, {walking:true});
+   rookRig.ground(savedRook.position.y);
   }
+  attackerRig.update(p, {walking:true});
+  attackerRig.ground(from.y);
  }
 
  function battle(p) {
@@ -291,6 +298,8 @@ export function createMoveAnimation({
   if (attack?.family === 'beast') { lean += attackPulse * .20; recoil += attackPulse * .08; }
   if (attack?.family === 'quake' || variant === 'magma') { recoil += attackPulse * .09; lean += windup * .12 * attackHold; }
   pose(savedBody, attacker, recoil * attackHold, gait * .023, Math.abs(gait) * .06 + jump, lean, twist, roll);
+  attackerRig.update(p);
+  attackerRig.ground(from.y);
   if (victim) {
    victim.quaternion.copy(savedVictim.quaternion).slerp(defenderFacing, smooth(segment(p, .18, .37)));
    const brace = pulse(p, .43, .49), stagger = pulse(p, .62, .72);
@@ -308,6 +317,8 @@ export function createMoveAnimation({
     if (p >= .82) ground(savedDefenderBody, 0);
    }
    victim.visible = savedVictim.visible && p < .88;
+   defenderRig.update(p);
+   defenderRig.ground(savedVictim.position.y);
   }
   effects?.update(p);
   signature?.update(p);

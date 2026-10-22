@@ -1,6 +1,28 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {GameRenderer} from '../src/renderer.mjs';
+import {GameRenderer,fitCharacterModel} from '../src/renderer.mjs';
+
+test('normalization measures initialized skin joints rather than a stale compressed rest box',async()=>{
+ const THREE=await import('../vendor/three/three.module.js');
+ const root=new THREE.Group(),armature=new THREE.Group(),lower=new THREE.Bone(),upper=new THREE.Bone();
+ lower.add(upper);upper.position.y=.7;armature.add(lower);
+ const geometry=new THREE.BoxGeometry(.3,1,.2).translate(0,.5,0),indices=[],weights=[];
+ for(let i=0;i<geometry.attributes.position.count;i++){indices.push(geometry.attributes.position.getY(i)>.5?1:0,0,0,0);weights.push(1,0,0,0);}
+ geometry.setAttribute('skinIndex',new THREE.Uint16BufferAttribute(indices,4));geometry.setAttribute('skinWeight',new THREE.Float32BufferAttribute(weights,4));
+ const mesh=new THREE.SkinnedMesh(geometry,new THREE.MeshBasicMaterial());
+ root.add(mesh,armature);root.position.set(.3,2,-.4);root.scale.setScalar(1.2);root.updateMatrixWorld(true);
+ mesh.bind(new THREE.Skeleton([lower,upper]));
+ // This reproduces glTF's mesh-before-armature ordering plus a previously
+ // computed invalid box. The final renderer must ignore both stale values.
+ lower.matrixWorld.identity();upper.matrixWorld.identity();mesh.boundingBox=new THREE.Box3(new THREE.Vector3(-.1,0,-.1),new THREE.Vector3(.1,.3,.1));
+ const fitted=fitCharacterModel(root);fitted.updateMatrixWorld(true);
+ const actual=new THREE.Box3().setFromObject(fitted,true),size=actual.getSize(new THREE.Vector3()),center=actual.getCenter(new THREE.Vector3());
+ assert(Math.abs(size.y-.9)<1e-6,'real skinned height fits one tile instead of growing to three');
+ assert(size.x<=.72+1e-6&&size.z<=.72+1e-6);assert(Math.abs(actual.min.y)<1e-6);
+ assert(Math.abs(center.x)<1e-6&&Math.abs(center.z)<1e-6);
+ assert(Math.abs(fitted.userData.combatBounds.height-size.y)<1e-6);
+ const cached=new THREE.Box3().setFromObject(fitted);assert(Math.abs(cached.getSize(new THREE.Vector3()).y-.9)<1e-6,'cached diagnostic bounds are refreshed too');
+});
 
 test('renderer resolves fruit-transformed and marine attackers from their actual model slot', async () => {
  const THREE = await import('../vendor/three/three.module.js');

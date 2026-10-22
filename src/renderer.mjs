@@ -2,9 +2,34 @@ import * as THREE from '../vendor/three/three.module.js';
 import { GLTFLoader } from '../vendor/three/GLTFLoader.js';
 import { createMoveAnimation } from './combat.mjs';
 import { getCharacterAttack } from './attacks.mjs';
+import { cloneCharacter, disposeCharacterSkeletons } from './skeletal-combat.mjs';
 
 const squarePosition = square => new THREE.Vector3(square.charCodeAt(0)-65-3.5, .146, 3.5-(Number(square[1])-1));
-const disposeTree = tree => { const seen=new Set(); tree.traverse(o=>{if(o.geometry&&!seen.has(o.geometry)){seen.add(o.geometry);o.geometry.dispose();}for(const m of [o.material].flat().filter(Boolean)){if(seen.has(m))continue;seen.add(m);for(const v of Object.values(m))if(v?.isTexture&&!seen.has(v)){seen.add(v);v.dispose();}m.dispose();}}); };
+const disposeTree = tree => { disposeCharacterSkeletons(tree); const seen=new Set(); tree.traverse(o=>{if(o.geometry&&!seen.has(o.geometry)){seen.add(o.geometry);o.geometry.dispose();}for(const m of [o.material].flat().filter(Boolean)){if(seen.has(m))continue;seen.add(m);for(const v of Object.values(m))if(v?.isTexture&&!seen.has(v)){seen.add(v);v.dispose();}m.dispose();}}); };
+
+export function fitCharacterModel(root) {
+ const box = new THREE.Box3(), size = new THREE.Vector3();
+ const measure = object => {
+  // glTF may list a mesh before its armature. Initialize every bone first,
+  // then update SkinnedMesh.bindMatrixInverse before reading skinned vertices.
+  object.updateWorldMatrix(true,true);
+  object.updateMatrixWorld(true);
+  return box.setFromObject(object,true);
+ };
+ measure(root).getSize(size);
+ root.scale.multiplyScalar(Math.min(.9/Math.max(size.y,.001),.72/Math.max(size.x,size.z,.001)));
+ measure(root);
+ const center = box.getCenter(new THREE.Vector3());
+ root.position.sub(new THREE.Vector3(center.x,box.min.y,center.z));
+ const wrapper = new THREE.Group();wrapper.add(root);
+ measure(wrapper).getSize(size);
+ wrapper.userData.combatBounds={halfWidth:size.x/2,halfDepth:size.z/2,height:size.y};
+ wrapper.traverse(object=>{
+  if(object.isSkinnedMesh){object.computeBoundingBox();object.computeBoundingSphere();}
+  if(object.isMesh){object.castShadow=true;object.receiveShadow=true;}
+ });
+ return wrapper;
+}
 export class GameRenderer {
  constructor({canvas,onSquare=()=>{},onReady=()=>{}}){
   this.canvas=canvas;this.onSquare=onSquare;this.onReady=onReady;this.scene=new THREE.Scene();this.scene.background=new THREE.Color('#071d26');this.scene.fog=new THREE.FogExp2('#071d26',.023);this.camera=new THREE.PerspectiveCamera(38,1,.1,100);this.cameraMode='front';this.zoomLevel=.9;this.cache=new Map();this.pieces=new Map();this.generation=0;this.combatMetrics=null;this.reducedMotion=matchMedia('(prefers-reduced-motion: reduce)').matches;this.metrics={loadedModels:0,missingModels:[],pieceCount:0,frameMs:0};
@@ -63,15 +88,15 @@ export class GameRenderer {
   return this.manifestPromise;
  }
  async setPosition(board,crew='mugiwara'){
-  const generation=++this.generation;this.cancelAnimations();this.pieceGroup.clear();this.pieces.clear();this.metrics.pieceCount=0;
+  const generation=++this.generation;this.cancelAnimations();disposeCharacterSkeletons(this.pieceGroup);this.pieceGroup.clear();this.pieces.clear();this.metrics.pieceCount=0;
   if(this.crew!==crew){for(const m of this.cache.values())disposeTree(m);this.cache.clear();this.crew=crew;}
   this.metrics.missingModels=[];
   let manifest;try{manifest=await this.loadManifest();}catch(e){this.metrics.missingModels=['manifest'];this.onReady({ready:false,error:'Los modelos 3D todavía no están disponibles.'});return;}
   const entries=Array.isArray(manifest)?manifest:manifest.models||manifest.assets||manifest.entries||[];
   const lookup=(team,role)=>{let found=Array.isArray(entries)?entries.find(x=>(x.crew===team||x.team===team||x.faction===team)&&x.role===role):entries[`${team}/${role}`]||entries[`${team}:${role}`]||entries[team]?.[role];return found;};
-   const roles=['king','queen','rook','bishop','knight','pawn'];const loader=new GLTFLoader();await Promise.all(['marines',crew].flatMap(team=>roles.map(async role=>{const key=`${team}/${role}`;if(this.cache.has(key))return;const entry=lookup(team,role);const url=typeof entry==='string'?entry:entry?.path||entry?.url||entry?.file||entry?.glb;if(!url||(entry.status&&entry.status!=='ready')){this.metrics.missingModels.push(key);return;}try{const gltf=await loader.loadAsync(url);if(generation!==this.generation){disposeTree(gltf.scene);return;}const root=gltf.scene;const box=new THREE.Box3().setFromObject(root);const size=box.getSize(new THREE.Vector3());const scale=Math.min(.9/Math.max(size.y,.001),.72/Math.max(size.x,size.z,.001));root.scale.multiplyScalar(scale);box.setFromObject(root);const center=box.getCenter(new THREE.Vector3());root.position.set(-center.x,-box.min.y,-center.z);const wrapper=new THREE.Group();wrapper.add(root);const fittedSize=new THREE.Box3().setFromObject(wrapper).getSize(new THREE.Vector3());wrapper.userData.combatBounds={halfWidth:fittedSize.x/2,halfDepth:fittedSize.z/2,height:fittedSize.y};wrapper.traverse(o=>{if(o.isMesh){o.castShadow=true;o.receiveShadow=true;}});this.cache.set(key,wrapper);}catch(e){if(generation===this.generation)this.metrics.missingModels.push(key);}})));
+   const roles=['king','queen','rook','bishop','knight','pawn'];const loader=new GLTFLoader();await Promise.all(['marines',crew].flatMap(team=>roles.map(async role=>{const key=`${team}/${role}`;if(this.cache.has(key))return;const entry=lookup(team,role);const url=typeof entry==='string'?entry:entry?.path||entry?.url||entry?.file||entry?.glb;if(!url||(entry.status&&entry.status!=='ready')){this.metrics.missingModels.push(key);return;}try{const gltf=await loader.loadAsync(url);if(generation!==this.generation){disposeTree(gltf.scene);return;}const wrapper=fitCharacterModel(gltf.scene);this.cache.set(key,wrapper);}catch(e){if(generation===this.generation)this.metrics.missingModels.push(key);}})));
   if(generation!==this.generation)return;
-  for(let r=0;r<8;r++)for(let c=0;c<8;c++){const piece=board[r]?.[c];if(!piece)continue;const team=piece.player==='marine'?'marines':crew;const model=this.cache.get(`${team}/${piece.type}`);if(!model)continue;const square=String.fromCharCode(65+c)+(r+1),root=new THREE.Group();const character=model.clone(true);character.name='character-model';root.add(character);root.position.copy(squarePosition(square));root.rotation.y=piece.player==='pirate'?Math.PI:0;root.userData={square,piece};this.pieceGroup.add(root);this.pieces.set(square,root);}
+  for(let r=0;r<8;r++)for(let c=0;c<8;c++){const piece=board[r]?.[c];if(!piece)continue;const team=piece.player==='marine'?'marines':crew;const model=this.cache.get(`${team}/${piece.type}`);if(!model)continue;const square=String.fromCharCode(65+c)+(r+1),root=new THREE.Group();const character=cloneCharacter(model);character.name='character-model';root.add(character);root.position.copy(squarePosition(square));root.rotation.y=piece.player==='pirate'?Math.PI:0;root.userData={square,piece};this.pieceGroup.add(root);this.pieces.set(square,root);}
   this.activeAssetBytes=['marines',crew].flatMap(t=>roles.map(r=>lookup(t,r))).reduce((sum,e)=>sum+(Number(e?.bytes)||0),0);this.metrics.loadedModels=this.cache.size;this.metrics.pieceCount=this.pieces.size;this.onReady({ready:this.metrics.missingModels.length===0,missing:[...this.metrics.missingModels]});
  }
  highlight({selected=null,candidates=[],moves=[]}={}){disposeTree(this.highlights);this.highlights.clear();const add=(square,color,ring=false)=>{if(!/^[A-H][1-8]$/.test(square))return;const mesh=new THREE.Mesh(ring?new THREE.RingGeometry(.35,.46,40):new THREE.CircleGeometry(.14,24),new THREE.MeshBasicMaterial({color,transparent:true,opacity:.9,side:THREE.DoubleSide,depthWrite:false}));mesh.rotation.x=-Math.PI/2;mesh.position.copy(squarePosition(square));mesh.position.y=.155;this.highlights.add(mesh);};for(const s of candidates)add(typeof s==='string'?s:s.square,'#edc173',true);if(selected)add(selected,'#55ffe2',true);for(const m of moves)add(typeof m==='string'?m:m.to,'#55ffe2');}
@@ -108,6 +133,6 @@ export class GameRenderer {
   finally{if(this.activeAnimation===animation){this.activeAnimation=null;this.combatFocus=null;this.updateCamera();}}
  }
  squareToScreen(square){const rect=this.canvas.getBoundingClientRect(),p=squarePosition(square).project(this.camera);return {x:rect.left+(p.x+1)*rect.width/2,y:rect.top+(1-p.y)*rect.height/2};}
- getMetrics(){const textures=new Set(),geometries=new Set(),modelBounds=[];let triangles=0,textureBytes=0;for(const [id,model] of this.cache){let meshCount=0;model.traverse(o=>{if(o.isMesh)meshCount++;if(o.geometry&&!geometries.has(o.geometry)){geometries.add(o.geometry);triangles+=(o.geometry.index?.count||o.geometry.attributes.position?.count||0)/3;}for(const material of [o.material].flat().filter(Boolean))for(const v of Object.values(material))if(v?.isTexture&&!textures.has(v)){textures.add(v);const image=v.image;textureBytes+=(image?.width||0)*(image?.height||0)*4*4/3;}});const box=new THREE.Box3().setFromObject(model),size=box.getSize(new THREE.Vector3()),center=box.getCenter(new THREE.Vector3());modelBounds.push({id,width:size.x,height:size.y,depth:size.z,minY:box.min.y,centerX:center.x,centerZ:center.z,meshCount});}return {...this.metrics,activeAssetBytes:this.activeAssetBytes||0,uniqueTriangles:triangles,decodedTextureBytes:Math.ceil(textureBytes),modelBounds,squareIds:[...this.squareIds],camera:this.cameraMode,zoom:this.zoomLevel,cameraControls:{yaw:this.cameraYaw,elevation:this.cameraElevation,target:this.cameraLookTarget?.toArray()||[0,0,0],position:this.camera.position.toArray(),dragging:Boolean(this.down?.orbit)},resources:{...this.renderer.info.memory},effects:this.activeAnimation?.metrics.effects||0,combat:this.combatMetrics?{...this.combatMetrics}:null};}
+ getMetrics(){const textures=new Set(),geometries=new Set(),modelBounds=[];let triangles=0,textureBytes=0;for(const [id,model] of this.cache){let meshCount=0,skinnedMeshCount=0,boneCount=0;model.traverse(o=>{if(o.isBone)boneCount++;if(o.isSkinnedMesh)skinnedMeshCount++;if(o.isMesh)meshCount++;if(o.geometry&&!geometries.has(o.geometry)){geometries.add(o.geometry);triangles+=(o.geometry.index?.count||o.geometry.attributes.position?.count||0)/3;}for(const material of [o.material].flat().filter(Boolean))for(const v of Object.values(material))if(v?.isTexture&&!textures.has(v)){textures.add(v);const image=v.image;textureBytes+=(image?.width||0)*(image?.height||0)*4*4/3;}});const box=new THREE.Box3().setFromObject(model),size=box.getSize(new THREE.Vector3()),center=box.getCenter(new THREE.Vector3());modelBounds.push({id,width:size.x,height:size.y,depth:size.z,minY:box.min.y,centerX:center.x,centerZ:center.z,meshCount,skinnedMeshCount,boneCount});}return {...this.metrics,activeAssetBytes:this.activeAssetBytes||0,uniqueTriangles:triangles,decodedTextureBytes:Math.ceil(textureBytes),modelBounds,squareIds:[...this.squareIds],camera:this.cameraMode,zoom:this.zoomLevel,cameraControls:{yaw:this.cameraYaw,elevation:this.cameraElevation,target:this.cameraLookTarget?.toArray()||[0,0,0],position:this.camera.position.toArray(),dragging:Boolean(this.down?.orbit)},resources:{...this.renderer.info.memory},effects:this.activeAnimation?.metrics.effects||0,combat:this.combatMetrics?{...this.combatMetrics}:null};}
  dispose(){this.generation++;this.cancelAnimations();cancelAnimationFrame(this.raf);this.resizeObserver.disconnect();this.canvas.removeEventListener('pointerdown',this.pointerDown);this.canvas.removeEventListener('pointerup',this.pointerUp);this.canvas.removeEventListener('pointermove',this.pointerMove);this.canvas.removeEventListener('pointercancel',this.pointerCancel);this.canvas.removeEventListener('lostpointercapture',this.pointerCancel);this.canvas.removeEventListener('wheel',this.cameraWheel);window.removeEventListener('blur',this.clearPointer);this.clearPointer();disposeTree(this.scene);for(const m of this.cache.values())disposeTree(m);this.cache.clear();this.renderer.dispose();}
 }

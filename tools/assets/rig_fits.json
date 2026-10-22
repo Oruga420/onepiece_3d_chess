@@ -1,0 +1,8269 @@
+{
+  "mugiwara/rook": {
+    "center": 0.0,
+    "bodyY": 0.0,
+    "hip": 0.545,
+    "waist": 0.68,
+    "chest": 0.77,
+    "neck": 0.855,
+    "head": 0.915,
+    "headTail": 0.97,
+    "arms": [
+      [
+        [
+          0.078,
+          0.025,
+          0.805
+        ],
+        [
+          0.112,
+          0.095,
+          0.738
+        ],
+        [
+          0.104,
+          -0.022,
+          0.652
+        ],
+        [
+          0.103,
+          -0.065,
+          0.618
+        ]
+      ],
+      [
+        [
+          -0.07,
+          0.015,
+          0.805
+        ],
+        [
+          -0.065,
+          -0.04,
+          0.675
+        ],
+        [
+          -0.062,
+          -0.107,
+          0.524
+        ],
+        [
+          -0.05,
+          -0.09,
+          0.468
+        ]
+      ]
+    ],
+    "legs": [
+      [
+        [
+          0.05,
+          0.0,
+          0.49
+        ],
+        [
+          0.09,
+          0.008,
+          0.27
+        ],
+        [
+          0.13,
+          0.012,
+          0.055
+        ],
+        [
+          0.13,
+          -0.065,
+          0.025
+        ]
+      ],
+      [
+        [
+          -0.05,
+          0.0,
+          0.49
+        ],
+        [
+          -0.09,
+          0.008,
+          0.27
+        ],
+        [
+          -0.13,
+          0.012,
+          0.055
+        ],
+        [
+          -0.13,
+          -0.065,
+          0.025
+        ]
+      ]
+    ],
+    "motionProfile": "humanoid",
+    "limbLimits": {
+      "arms": 0.9,
+      "legs": 0.8,
+      "shoulders": 0.9,
+      "elbows": 1
+    },
+    "fitNotes": "Nami: narrow shoulders, left hand resting on hip, splayed boots Revised from textured source vertex plots: dangling wrist is X-.062/Y-.107, raised elbow Y+.095; skirt behind bent left hand anchored pelvis.",
+    "fitSource": "Front/side geometry review and .local/rigging/fit-audit/geometry.json",
+    "reviewImages": [
+      "tools/assets/reviews/mugiwara/rook/front.png",
+      "tools/assets/reviews/mugiwara/rook/side.png",
+      "tools/assets/reviews/mugiwara/rook/back.png"
+    ],
+    "armRadii": {
+      "upper_arm.L": 0.028,
+      "forearm.L": 0.022,
+      "hand.L": 0.021,
+      "upper_arm.R": 0.025,
+      "forearm.R": 0.022,
+      "hand.R": 0.025
+    },
+    "rigidRegions": [
+      {
+        "bone": "hips",
+        "min": [
+          -0.13,
+          -0.14,
+          0.535
+        ],
+        "max": [
+          0.075,
+          0.09,
+          0.66
+        ]
+      },
+      {
+        "bone": "hips",
+        "min": [
+          0.075,
+          0.005,
+          0.535
+        ],
+        "max": [
+          0.14,
+          0.09,
+          0.66
+        ]
+      }
+    ]
+  },
+  "mugiwara/knight": {
+    "center": 0.0,
+    "bodyY": 0.035,
+    "hip": 0.47,
+    "waist": 0.6,
+    "chest": 0.72,
+    "neck": 0.83,
+    "head": 0.89,
+    "headTail": 0.96,
+    "arms": [
+      [
+        [
+          0.105,
+          0.075,
+          0.79
+        ],
+        [
+          0.17,
+          0.12,
+          0.63
+        ],
+        [
+          0.18,
+          0.16,
+          0.535
+        ],
+        [
+          0.18,
+          0.175,
+          0.505
+        ]
+      ],
+      [
+        [
+          -0.11,
+          0.065,
+          0.79
+        ],
+        [
+          -0.17,
+          0.06,
+          0.62
+        ],
+        [
+          -0.17,
+          0.05,
+          0.5
+        ],
+        [
+          -0.17,
+          0.055,
+          0.445
+        ]
+      ]
+    ],
+    "legs": [
+      [
+        [
+          0.065,
+          0.035,
+          0.47
+        ],
+        [
+          0.0925,
+          0.043,
+          0.26
+        ],
+        [
+          0.12,
+          0.047,
+          0.055
+        ],
+        [
+          0.12,
+          -0.03,
+          0.025
+        ]
+      ],
+      [
+        [
+          -0.065,
+          0.035,
+          0.47
+        ],
+        [
+          -0.0925,
+          0.043,
+          0.26
+        ],
+        [
+          -0.12,
+          0.047,
+          0.055
+        ],
+        [
+          -0.12,
+          -0.03,
+          0.025
+        ]
+      ]
+    ],
+    "motionProfile": "humanoid",
+    "limbLimits": {
+      "arms": 0.9,
+      "legs": 0.8,
+      "shoulders": 0.9,
+      "elbows": 1
+    },
+    "fitNotes": "Usopp: large back hair and pouch; slingshot in left hand Revised from textured source vertex plots: right palm Y+.055, left hand Y+.175; belt pouches at lower/front torso and orange bag remain pelvis-bound.",
+    "fitSource": "Front/side geometry review and .local/rigging/fit-audit/geometry.json",
+    "rigidRegions": [
+      {
+        "bone": "head",
+        "min": [
+          -0.2,
+          0.13,
+          0.67
+        ],
+        "max": [
+          0.2,
+          0.3,
+          0.99
+        ]
+      },
+      {
+        "bone": "hips",
+        "min": [
+          -0.14,
+          -0.075,
+          0.47
+        ],
+        "max": [
+          0.14,
+          0.09,
+          0.61
+        ]
+      },
+      {
+        "bone": "hips",
+        "min": [
+          0.12,
+          0.09,
+          0.4
+        ],
+        "max": [
+          0.26,
+          0.24,
+          0.5
+        ]
+      }
+    ],
+    "reviewImages": [
+      "tools/assets/reviews/mugiwara/knight/front.png",
+      "tools/assets/reviews/mugiwara/knight/side.png",
+      "tools/assets/reviews/mugiwara/knight/back.png"
+    ],
+    "armRadii": {
+      "upper_arm.L": 0.045,
+      "forearm.L": 0.032,
+      "hand.L": 0.025,
+      "upper_arm.R": 0.045,
+      "forearm.R": 0.033,
+      "hand.R": 0.027
+    }
+  },
+  "mugiwara/pawn": {
+    "center": 0.0,
+    "bodyY": 0.0,
+    "hip": 0.19,
+    "waist": 0.27,
+    "chest": 0.34,
+    "neck": 0.43,
+    "head": 0.54,
+    "headTail": 0.6100000000000001,
+    "arms": [
+      [
+        [
+          0.135,
+          0,
+          0.37
+        ],
+        [
+          0.18,
+          -0.035,
+          0.36
+        ],
+        [
+          0.19,
+          -0.09,
+          0.42
+        ],
+        [
+          0.19,
+          -0.12,
+          0.44
+        ]
+      ],
+      [
+        [
+          -0.135,
+          0.0,
+          0.37
+        ],
+        [
+          -0.17,
+          -0.008,
+          0.29
+        ],
+        [
+          -0.19,
+          -0.025,
+          0.24
+        ],
+        [
+          -0.1735,
+          0.0078,
+          0.2328
+        ]
+      ]
+    ],
+    "legs": [
+      [
+        [
+          0.065,
+          0.0,
+          0.19
+        ],
+        [
+          0.0775,
+          0.008,
+          0.105
+        ],
+        [
+          0.09,
+          0.012,
+          0.055
+        ],
+        [
+          0.09,
+          -0.065,
+          0.025
+        ]
+      ],
+      [
+        [
+          -0.065,
+          0.0,
+          0.19
+        ],
+        [
+          -0.0775,
+          0.008,
+          0.105
+        ],
+        [
+          -0.09,
+          0.012,
+          0.055
+        ],
+        [
+          -0.09,
+          -0.065,
+          0.025
+        ]
+      ]
+    ],
+    "motionProfile": "humanoid",
+    "limbLimits": {
+      "arms": 0.8,
+      "legs": 0.65,
+      "shoulders": 0.9,
+      "elbows": 1
+    },
+    "fitNotes": "Chopper: huge hat and head occupy top half; short legs; left hand raised",
+    "fitSource": "Front/side geometry review and .local/rigging/fit-audit/geometry.json",
+    "rigidRegions": [
+      {
+        "bone": "head",
+        "min": [
+          -0.5,
+          -0.5,
+          0.48
+        ],
+        "max": [
+          0.5,
+          0.5,
+          1.01
+        ]
+      }
+    ],
+    "reviewImages": [
+      "tools/assets/reviews/mugiwara/pawn/front.png",
+      "tools/assets/reviews/mugiwara/pawn/side.png",
+      "tools/assets/reviews/mugiwara/pawn/back.png"
+    ]
+  },
+  "buggy/king": {
+    "center": 0.0,
+    "bodyY": 0.0,
+    "hip": 0.48,
+    "waist": 0.59,
+    "chest": 0.72,
+    "neck": 0.82,
+    "head": 0.88,
+    "headTail": 0.95,
+    "arms": [
+      [
+        [
+          0.135,
+          0.015,
+          0.78
+        ],
+        [
+          0.185,
+          0.025,
+          0.65
+        ],
+        [
+          0.115,
+          -0.045,
+          0.55
+        ],
+        [
+          0.095,
+          -0.065,
+          0.505
+        ]
+      ],
+      [
+        [
+          -0.13,
+          0.015,
+          0.78
+        ],
+        [
+          -0.17,
+          0.0,
+          0.64
+        ],
+        [
+          -0.185,
+          -0.035,
+          0.505
+        ],
+        [
+          -0.185,
+          -0.04,
+          0.445
+        ]
+      ]
+    ],
+    "legs": [
+      [
+        [
+          0.075,
+          0.0,
+          0.48
+        ],
+        [
+          0.0975,
+          0.008,
+          0.25
+        ],
+        [
+          0.12,
+          0.012,
+          0.055
+        ],
+        [
+          0.12,
+          -0.065,
+          0.025
+        ]
+      ],
+      [
+        [
+          -0.075,
+          0.0,
+          0.48
+        ],
+        [
+          -0.0975,
+          0.008,
+          0.25
+        ],
+        [
+          -0.12,
+          0.012,
+          0.055
+        ],
+        [
+          -0.12,
+          -0.065,
+          0.025
+        ]
+      ]
+    ],
+    "motionProfile": "humanoid",
+    "limbLimits": {
+      "arms": 0.72,
+      "legs": 0.55,
+      "shoulders": 0.65,
+      "elbows": 1
+    },
+    "fitNotes": "Buggy: cape anchored behind torso, left hand on belt Revised against textured original GLB vertex coordinates, including actual palm depth and fingertip extent.",
+    "fitSource": "Front/side geometry review and .local/rigging/fit-audit/geometry.json",
+    "rigidRegions": [
+      {
+        "bone": "chest",
+        "min": [
+          -0.3,
+          0.065,
+          0.16
+        ],
+        "max": [
+          0.3,
+          0.28,
+          0.81
+        ]
+      },
+      {
+        "bone": "hips",
+        "min": [
+          -0.12,
+          -0.08,
+          0.4
+        ],
+        "max": [
+          0.065,
+          0.06,
+          0.605
+        ]
+      }
+    ],
+    "reviewImages": [
+      "tools/assets/reviews/buggy/king/front.png",
+      "tools/assets/reviews/buggy/king/side.png",
+      "tools/assets/reviews/buggy/king/back.png"
+    ],
+    "armRadii": {
+      "upper_arm.L": 0.038,
+      "forearm.L": 0.03,
+      "hand.L": 0.029,
+      "upper_arm.R": 0.038,
+      "forearm.R": 0.03,
+      "hand.R": 0.029
+    }
+  },
+  "buggy/queen": {
+    "center": -0.02,
+    "bodyY": 0.0,
+    "hip": 0.48,
+    "waist": 0.59,
+    "chest": 0.71,
+    "neck": 0.8,
+    "head": 0.86,
+    "headTail": 0.9299999999999999,
+    "arms": [
+      [
+        [
+          0.105,
+          0.005,
+          0.79
+        ],
+        [
+          0.155,
+          -0.005,
+          0.675
+        ],
+        [
+          0.085,
+          -0.105,
+          0.625
+        ],
+        [
+          0.065,
+          -0.115,
+          0.585
+        ]
+      ],
+      [
+        [
+          -0.105,
+          0,
+          0.79
+        ],
+        [
+          -0.13,
+          -0.075,
+          0.685
+        ],
+        [
+          -0.155,
+          -0.1,
+          0.765
+        ],
+        [
+          -0.16,
+          -0.11,
+          0.805
+        ]
+      ]
+    ],
+    "legs": [
+      [
+        [
+          0.045,
+          0.0,
+          0.48
+        ],
+        [
+          0.0725,
+          0.008,
+          0.25
+        ],
+        [
+          0.1,
+          0.012,
+          0.055
+        ],
+        [
+          0.1,
+          -0.065,
+          0.025
+        ]
+      ],
+      [
+        [
+          -0.085,
+          0.0,
+          0.48
+        ],
+        [
+          -0.1125,
+          0.008,
+          0.25
+        ],
+        [
+          -0.0657,
+          -0.0316,
+          0.0545
+        ],
+        [
+          -0.14,
+          -0.065,
+          0.025
+        ]
+      ]
+    ],
+    "motionProfile": "humanoid",
+    "limbLimits": {
+      "arms": 0.72,
+      "legs": 0.55,
+      "shoulders": 0.65,
+      "elbows": 1
+    },
+    "fitNotes": "Alvida: long cloak, right forearm raised to shoulder club Revised against textured original GLB vertex coordinates, including actual palm depth and fingertip extent. Left hand is on hip, not hanging; right hand holds the club near shoulder.",
+    "fitSource": "Front/side geometry review and .local/rigging/fit-audit/geometry.json",
+    "rigidRegions": [
+      {
+        "bone": "chest",
+        "min": [
+          -0.3,
+          0.05,
+          0.22
+        ],
+        "max": [
+          0.3,
+          0.22,
+          0.81
+        ]
+      },
+      {
+        "bone": "hips",
+        "min": [
+          -0.09,
+          -0.11,
+          0.46
+        ],
+        "max": [
+          0.055,
+          0.05,
+          0.615
+        ]
+      }
+    ],
+    "reviewImages": [
+      "tools/assets/reviews/buggy/queen/front.png",
+      "tools/assets/reviews/buggy/queen/side.png",
+      "tools/assets/reviews/buggy/queen/back.png"
+    ],
+    "armRadii": {
+      "upper_arm.L": 0.031,
+      "forearm.L": 0.026,
+      "hand.L": 0.028,
+      "upper_arm.R": 0.031,
+      "forearm.R": 0.026,
+      "hand.R": 0.027
+    }
+  },
+  "buggy/rook": {
+    "center": 0.0,
+    "bodyY": 0.015,
+    "hip": 0.48,
+    "waist": 0.6,
+    "chest": 0.73,
+    "neck": 0.84,
+    "head": 0.91,
+    "headTail": 0.98,
+    "arms": [
+      [
+        [
+          0.12,
+          0.05,
+          0.79
+        ],
+        [
+          0.16,
+          0.045,
+          0.65
+        ],
+        [
+          0.165,
+          0.045,
+          0.52
+        ],
+        [
+          0.165,
+          0.05,
+          0.475
+        ]
+      ],
+      [
+        [
+          -0.12,
+          0.055,
+          0.79
+        ],
+        [
+          -0.16,
+          0.05,
+          0.65
+        ],
+        [
+          -0.17,
+          0.04,
+          0.52
+        ],
+        [
+          -0.17,
+          0.04,
+          0.475
+        ]
+      ]
+    ],
+    "legs": [
+      [
+        [
+          0.065,
+          0.015,
+          0.48
+        ],
+        [
+          0.0925,
+          0.023,
+          0.25
+        ],
+        [
+          0.12,
+          0.027,
+          0.055
+        ],
+        [
+          0.12,
+          -0.05,
+          0.025
+        ]
+      ],
+      [
+        [
+          -0.065,
+          0.015,
+          0.48
+        ],
+        [
+          -0.0925,
+          0.023,
+          0.25
+        ],
+        [
+          -0.12,
+          0.027,
+          0.055
+        ],
+        [
+          -0.1569,
+          0.0567,
+          0.0164
+        ]
+      ]
+    ],
+    "motionProfile": "humanoid",
+    "limbLimits": {
+      "arms": 0.9,
+      "legs": 0.8,
+      "shoulders": 0.9,
+      "elbows": 1
+    },
+    "fitNotes": "Mohji: hood follows head; whip hangs from left hand Revised against textured original GLB vertex coordinates, including actual palm depth and fingertip extent.",
+    "fitSource": "Front/side geometry review and .local/rigging/fit-audit/geometry.json",
+    "reviewImages": [
+      "tools/assets/reviews/buggy/rook/front.png",
+      "tools/assets/reviews/buggy/rook/side.png",
+      "tools/assets/reviews/buggy/rook/back.png"
+    ],
+    "armRadii": {
+      "upper_arm.L": 0.038,
+      "forearm.L": 0.03,
+      "hand.L": 0.029,
+      "upper_arm.R": 0.038,
+      "forearm.R": 0.03,
+      "hand.R": 0.029
+    },
+    "rigidRegions": [
+      {
+        "bone": "head",
+        "min": [
+          -0.2,
+          -0.2,
+          0.81
+        ],
+        "max": [
+          0.2,
+          0.22,
+          1.01
+        ]
+      },
+      {
+        "bone": "hips",
+        "min": [
+          -0.1,
+          -0.07,
+          0.43
+        ],
+        "max": [
+          0.1,
+          0.1,
+          0.61
+        ]
+      }
+    ]
+  },
+  "buggy/bishop": {
+    "center": 0.0,
+    "bodyY": -0.015,
+    "hip": 0.47,
+    "waist": 0.59,
+    "chest": 0.73,
+    "neck": 0.84,
+    "head": 0.9,
+    "headTail": 0.97,
+    "arms": [
+      [
+        [
+          0.1,
+          -0.015,
+          0.79
+        ],
+        [
+          0.13,
+          -0.005,
+          0.675
+        ],
+        [
+          0.065,
+          -0.125,
+          0.625
+        ],
+        [
+          0.03,
+          -0.14,
+          0.59
+        ]
+      ],
+      [
+        [
+          -0.105,
+          -0.015,
+          0.79
+        ],
+        [
+          -0.145,
+          -0.005,
+          0.64
+        ],
+        [
+          -0.15,
+          -0.005,
+          0.51
+        ],
+        [
+          -0.155,
+          -0.02,
+          0.465
+        ]
+      ]
+    ],
+    "legs": [
+      [
+        [
+          0.055,
+          -0.015,
+          0.47
+        ],
+        [
+          0.0725,
+          -0.007,
+          0.25
+        ],
+        [
+          0.09,
+          -0.003,
+          0.055
+        ],
+        [
+          0.09,
+          -0.08,
+          0.025
+        ]
+      ],
+      [
+        [
+          -0.055,
+          -0.015,
+          0.47
+        ],
+        [
+          -0.0725,
+          -0.007,
+          0.25
+        ],
+        [
+          -0.09,
+          -0.003,
+          0.055
+        ],
+        [
+          -0.09,
+          -0.08,
+          0.025
+        ]
+      ]
+    ],
+    "motionProfile": "humanoid",
+    "limbLimits": {
+      "arms": 0.72,
+      "legs": 0.55,
+      "shoulders": 0.65,
+      "elbows": 1
+    },
+    "fitNotes": "Cabaji: cape and wheel behind; left hand at waist Revised against textured original GLB vertex coordinates, including actual palm depth and fingertip extent.",
+    "fitSource": "Front/side geometry review and .local/rigging/fit-audit/geometry.json",
+    "rigidRegions": [
+      {
+        "bone": "chest",
+        "min": [
+          -0.31,
+          0.06,
+          0.25
+        ],
+        "max": [
+          0.31,
+          0.26,
+          0.82
+        ]
+      },
+      {
+        "bone": "hips",
+        "min": [
+          -0.12,
+          -0.09,
+          0.46
+        ],
+        "max": [
+          0.12,
+          0.06,
+          0.61
+        ]
+      }
+    ],
+    "reviewImages": [
+      "tools/assets/reviews/buggy/bishop/front.png",
+      "tools/assets/reviews/buggy/bishop/side.png",
+      "tools/assets/reviews/buggy/bishop/back.png"
+    ],
+    "armRadii": {
+      "upper_arm.L": 0.038,
+      "forearm.L": 0.03,
+      "hand.L": 0.029,
+      "upper_arm.R": 0.038,
+      "forearm.R": 0.03,
+      "hand.R": 0.029
+    }
+  },
+  "buggy/pawn": {
+    "center": 0.0,
+    "bodyY": 0.0,
+    "hip": 0.47,
+    "waist": 0.58,
+    "chest": 0.72,
+    "neck": 0.82,
+    "head": 0.89,
+    "headTail": 0.96,
+    "arms": [
+      [
+        [
+          0.1,
+          0.045,
+          0.77
+        ],
+        [
+          0.195,
+          0.075,
+          0.645
+        ],
+        [
+          0.065,
+          -0.13,
+          0.61
+        ],
+        [
+          0.035,
+          -0.16,
+          0.585
+        ]
+      ],
+      [
+        [
+          -0.1,
+          0.03,
+          0.77
+        ],
+        [
+          -0.155,
+          0.045,
+          0.64
+        ],
+        [
+          -0.17,
+          0.05,
+          0.49
+        ],
+        [
+          -0.17,
+          0.05,
+          0.43
+        ]
+      ]
+    ],
+    "legs": [
+      [
+        [
+          0.065,
+          0.0,
+          0.47
+        ],
+        [
+          0.0875,
+          0.008,
+          0.25
+        ],
+        [
+          0.11,
+          0.012,
+          0.055
+        ],
+        [
+          0.11,
+          -0.065,
+          0.025
+        ]
+      ],
+      [
+        [
+          -0.065,
+          0.0,
+          0.47
+        ],
+        [
+          -0.0875,
+          0.008,
+          0.25
+        ],
+        [
+          -0.11,
+          0.012,
+          0.055
+        ],
+        [
+          -0.1545,
+          -0.0038,
+          0.0177
+        ]
+      ]
+    ],
+    "motionProfile": "humanoid",
+    "limbLimits": {
+      "arms": 0.9,
+      "legs": 0.8,
+      "shoulders": 0.9,
+      "elbows": 1
+    },
+    "fitNotes": "Striped crew: left forearm bent across belt to sword Revised against textured original GLB vertex coordinates, including actual palm depth and fingertip extent.",
+    "fitSource": "Front/side geometry review and .local/rigging/fit-audit/geometry.json",
+    "reviewImages": [
+      "tools/assets/reviews/buggy/pawn/front.png",
+      "tools/assets/reviews/buggy/pawn/side.png",
+      "tools/assets/reviews/buggy/pawn/back.png"
+    ],
+    "armRadii": {
+      "upper_arm.L": 0.038,
+      "forearm.L": 0.03,
+      "hand.L": 0.029,
+      "upper_arm.R": 0.038,
+      "forearm.R": 0.03,
+      "hand.R": 0.029
+    },
+    "rigidRegions": [
+      {
+        "bone": "hips",
+        "min": [
+          -0.11,
+          -0.08,
+          0.49
+        ],
+        "max": [
+          0.11,
+          0.13,
+          0.6
+        ]
+      }
+    ]
+  },
+  "shanks/king": {
+    "center": 0.0,
+    "bodyY": -0.035,
+    "hip": 0.43,
+    "waist": 0.57,
+    "chest": 0.7,
+    "neck": 0.8,
+    "head": 0.88,
+    "headTail": 0.95,
+    "arms": [
+      [
+        [
+          0.1,
+          -0.035,
+          0.76
+        ],
+        [
+          0.14,
+          -0.043,
+          0.62
+        ],
+        [
+          0.14,
+          -0.06,
+          0.46
+        ],
+        [
+          0.14,
+          -0.07,
+          0.425
+        ]
+      ],
+      [
+        [
+          -0.1,
+          -0.035,
+          0.76
+        ],
+        [
+          -0.14,
+          -0.055,
+          0.64
+        ],
+        [
+          -0.13,
+          -0.14,
+          0.59
+        ],
+        [
+          -0.13,
+          -0.16,
+          0.57
+        ]
+      ]
+    ],
+    "legs": [
+      [
+        [
+          0.06,
+          -0.035,
+          0.43
+        ],
+        [
+          0.0825,
+          -0.027,
+          0.23
+        ],
+        [
+          0.105,
+          -0.023,
+          0.055
+        ],
+        [
+          0.105,
+          -0.1,
+          0.025
+        ]
+      ],
+      [
+        [
+          -0.06,
+          -0.035,
+          0.43
+        ],
+        [
+          -0.0825,
+          -0.027,
+          0.23
+        ],
+        [
+          -0.105,
+          -0.023,
+          0.055
+        ],
+        [
+          -0.105,
+          -0.1,
+          0.025
+        ]
+      ]
+    ],
+    "motionProfile": "humanoid",
+    "limbLimits": {
+      "arms": 0.72,
+      "legs": 0.55,
+      "shoulders": 0.65,
+      "elbows": 1
+    },
+    "fitNotes": "Shanks: visible right hand carries sword; absent left arm concealed by cape",
+    "fitSource": "Front/side geometry review and .local/rigging/fit-audit/geometry.json",
+    "missingLimbs": [
+      "L"
+    ],
+    "rigidRegions": [
+      {
+        "bone": "chest",
+        "min": [
+          -0.5,
+          0.06,
+          0.2
+        ],
+        "max": [
+          0.5,
+          0.6,
+          0.78
+        ]
+      }
+    ],
+    "reviewImages": [
+      "tools/assets/reviews/shanks/king/front.png",
+      "tools/assets/reviews/shanks/king/side.png",
+      "tools/assets/reviews/shanks/king/back.png"
+    ]
+  },
+  "shanks/queen": {
+    "center": 0.01,
+    "bodyY": 0.0,
+    "hip": 0.47,
+    "waist": 0.59,
+    "chest": 0.73,
+    "neck": 0.84,
+    "head": 0.91,
+    "headTail": 0.98,
+    "arms": [
+      [
+        [
+          0.13,
+          0.025,
+          0.79
+        ],
+        [
+          0.14,
+          0.03,
+          0.665
+        ],
+        [
+          0.1,
+          0.015,
+          0.58
+        ],
+        [
+          0.1,
+          -0.01,
+          0.55
+        ]
+      ],
+      [
+        [
+          -0.11,
+          0.015,
+          0.79
+        ],
+        [
+          -0.145,
+          0.005,
+          0.65
+        ],
+        [
+          -0.165,
+          -0.035,
+          0.5
+        ],
+        [
+          -0.17,
+          -0.055,
+          0.455
+        ]
+      ]
+    ],
+    "legs": [
+      [
+        [
+          0.075,
+          0.0,
+          0.47
+        ],
+        [
+          0.1025,
+          0.008,
+          0.25
+        ],
+        [
+          0.13,
+          0.012,
+          0.055
+        ],
+        [
+          0.13,
+          -0.065,
+          0.025
+        ]
+      ],
+      [
+        [
+          -0.055,
+          0.0,
+          0.47
+        ],
+        [
+          -0.0825,
+          0.008,
+          0.25
+        ],
+        [
+          -0.11,
+          0.012,
+          0.055
+        ],
+        [
+          -0.11,
+          -0.065,
+          0.025
+        ]
+      ]
+    ],
+    "motionProfile": "humanoid",
+    "limbLimits": {
+      "arms": 0.72,
+      "legs": 0.55,
+      "shoulders": 0.65,
+      "elbows": 1
+    },
+    "fitNotes": "Beckman: long cloak, right hand carries hanging rifle Revised against textured original GLB vertex coordinates, including actual palm depth and fingertip extent.",
+    "fitSource": "Front/side geometry review and .local/rigging/fit-audit/geometry.json",
+    "rigidRegions": [
+      {
+        "bone": "chest",
+        "min": [
+          -0.31,
+          0.07,
+          0.16
+        ],
+        "max": [
+          0.31,
+          0.23,
+          0.81
+        ]
+      },
+      {
+        "bone": "hips",
+        "min": [
+          -0.11,
+          -0.12,
+          0.46
+        ],
+        "max": [
+          0.07,
+          0.03,
+          0.61
+        ]
+      },
+      {
+        "bone": "hand.R",
+        "min": [
+          -0.33,
+          -0.15,
+          0.08
+        ],
+        "max": [
+          -0.17,
+          0.02,
+          0.49
+        ]
+      }
+    ],
+    "reviewImages": [
+      "tools/assets/reviews/shanks/queen/front.png",
+      "tools/assets/reviews/shanks/queen/side.png",
+      "tools/assets/reviews/shanks/queen/back.png"
+    ],
+    "armRadii": {
+      "upper_arm.L": 0.038,
+      "forearm.L": 0.03,
+      "hand.L": 0.029,
+      "upper_arm.R": 0.038,
+      "forearm.R": 0.03,
+      "hand.R": 0.029
+    }
+  },
+  "shanks/rook": {
+    "center": 0.0,
+    "bodyY": -0.025,
+    "hip": 0.45,
+    "waist": 0.56,
+    "chest": 0.7,
+    "neck": 0.8,
+    "head": 0.88,
+    "headTail": 0.95,
+    "arms": [
+      [
+        [
+          0.14,
+          -0.035,
+          0.76
+        ],
+        [
+          0.18,
+          -0.04,
+          0.61
+        ],
+        [
+          0.2,
+          -0.065,
+          0.495
+        ],
+        [
+          0.19,
+          -0.085,
+          0.45
+        ]
+      ],
+      [
+        [
+          -0.1,
+          -0.03,
+          0.76
+        ],
+        [
+          -0.14,
+          -0.035,
+          0.61
+        ],
+        [
+          -0.15,
+          -0.07,
+          0.495
+        ],
+        [
+          -0.14,
+          -0.07,
+          0.45
+        ]
+      ]
+    ],
+    "legs": [
+      [
+        [
+          0.065,
+          -0.025,
+          0.45
+        ],
+        [
+          0.0925,
+          -0.017,
+          0.24
+        ],
+        [
+          0.12,
+          -0.013,
+          0.055
+        ],
+        [
+          0.12,
+          -0.09,
+          0.025
+        ]
+      ],
+      [
+        [
+          -0.065,
+          -0.025,
+          0.45
+        ],
+        [
+          -0.0925,
+          -0.017,
+          0.24
+        ],
+        [
+          -0.12,
+          -0.013,
+          0.055
+        ],
+        [
+          -0.12,
+          -0.09,
+          0.025
+        ]
+      ]
+    ],
+    "motionProfile": "humanoid",
+    "limbLimits": {
+      "arms": 0.72,
+      "legs": 0.55,
+      "shoulders": 0.65,
+      "elbows": 1
+    },
+    "fitNotes": "Yasopp: back rifle crosses cloak; both arms at sides Revised against textured original GLB vertex coordinates, including actual palm depth and fingertip extent.",
+    "fitSource": "Front/side geometry review and .local/rigging/fit-audit/geometry.json",
+    "rigidRegions": [
+      {
+        "bone": "chest",
+        "min": [
+          -0.32,
+          0.01,
+          0.16
+        ],
+        "max": [
+          0.32,
+          0.2,
+          1.01
+        ]
+      },
+      {
+        "bone": "hips",
+        "min": [
+          -0.1,
+          -0.12,
+          0.48
+        ],
+        "max": [
+          0.15,
+          0.01,
+          0.59
+        ]
+      }
+    ],
+    "reviewImages": [
+      "tools/assets/reviews/shanks/rook/front.png",
+      "tools/assets/reviews/shanks/rook/side.png",
+      "tools/assets/reviews/shanks/rook/back.png"
+    ],
+    "armRadii": {
+      "upper_arm.L": 0.038,
+      "forearm.L": 0.03,
+      "hand.L": 0.029,
+      "upper_arm.R": 0.038,
+      "forearm.R": 0.03,
+      "hand.R": 0.029
+    }
+  },
+  "shanks/bishop": {
+    "center": 0.0,
+    "bodyY": 0.0,
+    "hip": 0.3,
+    "waist": 0.44,
+    "chest": 0.62,
+    "neck": 0.78,
+    "head": 0.87,
+    "headTail": 0.94,
+    "arms": [
+      [
+        [
+          0.2,
+          0,
+          0.73
+        ],
+        [
+          0.29,
+          -0.035,
+          0.66
+        ],
+        [
+          0.21,
+          -0.19,
+          0.75
+        ],
+        [
+          0.17,
+          -0.22,
+          0.76
+        ]
+      ],
+      [
+        [
+          -0.2,
+          0,
+          0.73
+        ],
+        [
+          -0.29,
+          0,
+          0.59
+        ],
+        [
+          -0.22,
+          -0.15,
+          0.44
+        ],
+        [
+          -0.2,
+          -0.17,
+          0.42
+        ]
+      ]
+    ],
+    "legs": [
+      [
+        [
+          0.1,
+          0.0,
+          0.3
+        ],
+        [
+          0.125,
+          0.008,
+          0.16
+        ],
+        [
+          0.15,
+          0.012,
+          0.055
+        ],
+        [
+          0.15,
+          -0.065,
+          0.025
+        ]
+      ],
+      [
+        [
+          -0.1,
+          0.0,
+          0.3
+        ],
+        [
+          -0.125,
+          0.008,
+          0.16
+        ],
+        [
+          -0.15,
+          0.012,
+          0.055
+        ],
+        [
+          -0.15,
+          -0.065,
+          0.025
+        ]
+      ]
+    ],
+    "motionProfile": "humanoid",
+    "limbLimits": {
+      "arms": 0.9,
+      "legs": 0.8,
+      "shoulders": 0.9,
+      "elbows": 1
+    },
+    "fitNotes": "Lucky Roux: wide belly, short legs, left hand holds meat at chest",
+    "fitSource": "Front/side geometry review and .local/rigging/fit-audit/geometry.json",
+    "reviewImages": [
+      "tools/assets/reviews/shanks/bishop/front.png",
+      "tools/assets/reviews/shanks/bishop/side.png",
+      "tools/assets/reviews/shanks/bishop/back.png"
+    ]
+  },
+  "shanks/knight": {
+    "center": 0.0,
+    "bodyY": -0.025,
+    "hip": 0.43,
+    "waist": 0.55,
+    "chest": 0.69,
+    "neck": 0.79,
+    "head": 0.85,
+    "headTail": 0.9199999999999999,
+    "arms": [
+      [
+        [
+          0.13,
+          -0.02,
+          0.75
+        ],
+        [
+          0.2,
+          -0.025,
+          0.58
+        ],
+        [
+          0.23,
+          -0.065,
+          0.435
+        ],
+        [
+          0.23,
+          -0.075,
+          0.37
+        ]
+      ],
+      [
+        [
+          -0.13,
+          -0.02,
+          0.75
+        ],
+        [
+          -0.2,
+          -0.025,
+          0.58
+        ],
+        [
+          -0.235,
+          -0.075,
+          0.43
+        ],
+        [
+          -0.23,
+          -0.085,
+          0.35
+        ]
+      ]
+    ],
+    "legs": [
+      [
+        [
+          0.065,
+          -0.025,
+          0.43
+        ],
+        [
+          0.0975,
+          -0.017,
+          0.23
+        ],
+        [
+          0.13,
+          -0.013,
+          0.055
+        ],
+        [
+          0.13,
+          -0.09,
+          0.025
+        ]
+      ],
+      [
+        [
+          -0.065,
+          -0.025,
+          0.43
+        ],
+        [
+          -0.0975,
+          -0.017,
+          0.23
+        ],
+        [
+          -0.13,
+          -0.013,
+          0.055
+        ],
+        [
+          -0.13,
+          -0.09,
+          0.025
+        ]
+      ]
+    ],
+    "motionProfile": "humanoid",
+    "limbLimits": {
+      "arms": 0.9,
+      "legs": 0.8,
+      "shoulders": 0.9,
+      "elbows": 1
+    },
+    "fitNotes": "Rockstar: tall hair above head; sheathed sword at hip Revised against textured original GLB vertex coordinates, including actual palm depth and fingertip extent.",
+    "fitSource": "Front/side geometry review and .local/rigging/fit-audit/geometry.json",
+    "reviewImages": [
+      "tools/assets/reviews/shanks/knight/front.png",
+      "tools/assets/reviews/shanks/knight/side.png",
+      "tools/assets/reviews/shanks/knight/back.png"
+    ],
+    "armRadii": {
+      "upper_arm.L": 0.045,
+      "forearm.L": 0.035,
+      "hand.L": 0.029,
+      "upper_arm.R": 0.045,
+      "forearm.R": 0.035,
+      "hand.R": 0.029
+    },
+    "rigidRegions": [
+      {
+        "bone": "hips",
+        "min": [
+          -0.14,
+          -0.18,
+          0.32
+        ],
+        "max": [
+          0.16,
+          0.1,
+          0.54
+        ]
+      },
+      {
+        "bone": "hips",
+        "min": [
+          0.15,
+          0.02,
+          0.15
+        ],
+        "max": [
+          0.29,
+          0.25,
+          0.53
+        ]
+      }
+    ]
+  },
+  "shanks/pawn": {
+    "center": 0.0,
+    "bodyY": 0.015,
+    "hip": 0.49,
+    "waist": 0.61,
+    "chest": 0.75,
+    "neck": 0.85,
+    "head": 0.92,
+    "headTail": 0.99,
+    "arms": [
+      [
+        [
+          0.12,
+          0.015,
+          0.81
+        ],
+        [
+          0.15,
+          0.007,
+          0.67
+        ],
+        [
+          0.16,
+          -0.01,
+          0.51
+        ],
+        [
+          0.16,
+          -0.02,
+          0.475
+        ]
+      ],
+      [
+        [
+          -0.12,
+          0.015,
+          0.81
+        ],
+        [
+          -0.17,
+          -0.015,
+          0.66
+        ],
+        [
+          -0.1,
+          -0.08,
+          0.55
+        ],
+        [
+          -0.07,
+          -0.1,
+          0.54
+        ]
+      ]
+    ],
+    "legs": [
+      [
+        [
+          0.065,
+          0.015,
+          0.49
+        ],
+        [
+          0.0925,
+          0.023,
+          0.27
+        ],
+        [
+          0.12,
+          0.027,
+          0.055
+        ],
+        [
+          0.12,
+          -0.05,
+          0.025
+        ]
+      ],
+      [
+        [
+          -0.065,
+          0.015,
+          0.49
+        ],
+        [
+          -0.0925,
+          0.023,
+          0.27
+        ],
+        [
+          -0.12,
+          0.027,
+          0.055
+        ],
+        [
+          -0.12,
+          -0.05,
+          0.025
+        ]
+      ]
+    ],
+    "motionProfile": "humanoid",
+    "limbLimits": {
+      "arms": 0.9,
+      "legs": 0.8,
+      "shoulders": 0.9,
+      "elbows": 1
+    },
+    "fitNotes": "Crew: rifle on diagonal back strap, right hand touches belt",
+    "fitSource": "Front/side geometry review and .local/rigging/fit-audit/geometry.json",
+    "rigidRegions": [
+      {
+        "bone": "chest",
+        "min": [
+          -0.5,
+          0.065,
+          0.4
+        ],
+        "max": [
+          0.5,
+          0.6,
+          0.98
+        ]
+      }
+    ],
+    "reviewImages": [
+      "tools/assets/reviews/shanks/pawn/front.png",
+      "tools/assets/reviews/shanks/pawn/side.png",
+      "tools/assets/reviews/shanks/pawn/back.png"
+    ]
+  },
+  "bigmom/king": {
+    "center": 0.0,
+    "bodyY": 0.1,
+    "hip": 0.27,
+    "waist": 0.42,
+    "chest": 0.6,
+    "neck": 0.73,
+    "head": 0.8,
+    "headTail": 0.8700000000000001,
+    "arms": [
+      [
+        [
+          0.22,
+          0.1,
+          0.68
+        ],
+        [
+          0.28,
+          0.092,
+          0.53
+        ],
+        [
+          0.29,
+          0.075,
+          0.41
+        ],
+        [
+          0.29,
+          0.065,
+          0.375
+        ]
+      ],
+      [
+        [
+          -0.22,
+          0.1,
+          0.68
+        ],
+        [
+          -0.28,
+          0.092,
+          0.53
+        ],
+        [
+          -0.29,
+          0.075,
+          0.41
+        ],
+        [
+          -0.29,
+          0.065,
+          0.375
+        ]
+      ]
+    ],
+    "legs": [
+      [
+        [
+          0.13,
+          0.1,
+          0.27
+        ],
+        [
+          0.155,
+          0.108,
+          0.15
+        ],
+        [
+          0.18,
+          0.112,
+          0.055
+        ],
+        [
+          0.18,
+          0.035,
+          0.025
+        ]
+      ],
+      [
+        [
+          -0.13,
+          0.1,
+          0.27
+        ],
+        [
+          -0.155,
+          0.108,
+          0.15
+        ],
+        [
+          -0.18,
+          0.112,
+          0.055
+        ],
+        [
+          -0.18,
+          0.035,
+          0.025
+        ]
+      ]
+    ],
+    "motionProfile": "humanoid",
+    "limbLimits": {
+      "arms": 0.68,
+      "legs": 0.18,
+      "shoulders": 0.65,
+      "elbows": 1
+    },
+    "fitNotes": "Big Mom: dress over legs, cape behind, right hand grips large saber",
+    "fitSource": "Front/side geometry review and .local/rigging/fit-audit/geometry.json",
+    "rigidRegions": [
+      {
+        "bone": "chest",
+        "min": [
+          -0.5,
+          0.22,
+          0.2
+        ],
+        "max": [
+          0.5,
+          0.6,
+          0.71
+        ]
+      },
+      {
+        "bone": "hips",
+        "min": [
+          -0.28,
+          -0.13,
+          0.14
+        ],
+        "max": [
+          0.28,
+          0.23,
+          0.42
+        ]
+      }
+    ],
+    "reviewImages": [
+      "tools/assets/reviews/bigmom/king/front.png",
+      "tools/assets/reviews/bigmom/king/side.png",
+      "tools/assets/reviews/bigmom/king/back.png"
+    ]
+  },
+  "bigmom/queen": {
+    "center": 0.07,
+    "bodyY": 0.0,
+    "hip": 0.49,
+    "waist": 0.61,
+    "chest": 0.73,
+    "neck": 0.83,
+    "head": 0.9,
+    "headTail": 0.97,
+    "arms": [
+      [
+        [
+          0.2,
+          0.0,
+          0.79
+        ],
+        [
+          0.24,
+          -0.008,
+          0.65
+        ],
+        [
+          0.26,
+          -0.025,
+          0.5
+        ],
+        [
+          0.26,
+          -0.035,
+          0.465
+        ]
+      ],
+      [
+        [
+          -0.06,
+          0.0,
+          0.79
+        ],
+        [
+          -0.1,
+          -0.008,
+          0.65
+        ],
+        [
+          -0.0998,
+          0.0368,
+          0.503
+        ],
+        [
+          -0.1007,
+          0.014,
+          0.4409
+        ]
+      ]
+    ],
+    "legs": [
+      [
+        [
+          0.14,
+          0.0,
+          0.49
+        ],
+        [
+          0.17,
+          0.008,
+          0.26
+        ],
+        [
+          0.2,
+          0.012,
+          0.055
+        ],
+        [
+          0.2,
+          -0.065,
+          0.025
+        ]
+      ],
+      [
+        [
+          0.0,
+          0.0,
+          0.49
+        ],
+        [
+          -0.03,
+          0.008,
+          0.26
+        ],
+        [
+          -0.06,
+          0.012,
+          0.055
+        ],
+        [
+          -0.1022,
+          -0.0065,
+          0.0179
+        ]
+      ]
+    ],
+    "motionProfile": "humanoid",
+    "limbLimits": {
+      "arms": 0.9,
+      "legs": 0.8,
+      "shoulders": 0.9,
+      "elbows": 1
+    },
+    "fitNotes": "Katakuri: off-center torso from long trident on right; scarf rigid with chest",
+    "fitSource": "Front/side geometry review and .local/rigging/fit-audit/geometry.json",
+    "reviewImages": [
+      "tools/assets/reviews/bigmom/queen/front.png",
+      "tools/assets/reviews/bigmom/queen/side.png",
+      "tools/assets/reviews/bigmom/queen/back.png"
+    ]
+  },
+  "bigmom/rook": {
+    "center": 0.0,
+    "bodyY": 0.015,
+    "hip": 0.36,
+    "waist": 0.47,
+    "chest": 0.6,
+    "neck": 0.72,
+    "head": 0.8,
+    "headTail": 0.8700000000000001,
+    "arms": [
+      [
+        [
+          0.19,
+          0.015,
+          0.65
+        ],
+        [
+          0.28,
+          0.007,
+          0.58
+        ],
+        [
+          0.25,
+          -0.01,
+          0.49
+        ],
+        [
+          0.25,
+          -0.02,
+          0.455
+        ]
+      ],
+      [
+        [
+          -0.19,
+          0.015,
+          0.65
+        ],
+        [
+          -0.28,
+          0.007,
+          0.58
+        ],
+        [
+          -0.25,
+          -0.01,
+          0.49
+        ],
+        [
+          -0.25,
+          -0.02,
+          0.455
+        ]
+      ]
+    ],
+    "legs": [
+      [
+        [
+          0.13,
+          0.015,
+          0.36
+        ],
+        [
+          0.145,
+          0.023,
+          0.2
+        ],
+        [
+          0.16,
+          0.027,
+          0.055
+        ],
+        [
+          0.16,
+          -0.05,
+          0.025
+        ]
+      ],
+      [
+        [
+          -0.13,
+          0.015,
+          0.36
+        ],
+        [
+          -0.145,
+          0.023,
+          0.2
+        ],
+        [
+          -0.16,
+          0.027,
+          0.055
+        ],
+        [
+          -0.16,
+          -0.05,
+          0.025
+        ]
+      ]
+    ],
+    "motionProfile": "humanoid",
+    "limbLimits": {
+      "arms": 0.45,
+      "legs": 0.35,
+      "shoulders": 0.4,
+      "elbows": 0.5
+    },
+    "fitNotes": "Cracker: biscuit armor multiple appendages; dominant foreground legs and arms fitted",
+    "fitSource": "Front/side geometry review and .local/rigging/fit-audit/geometry.json",
+    "secondaryAppendages": "Sculpted rear armor limbs remain torso-weighted; dominant arms and foreground leg pair articulate.",
+    "reviewImages": [
+      "tools/assets/reviews/bigmom/rook/front.png",
+      "tools/assets/reviews/bigmom/rook/side.png",
+      "tools/assets/reviews/bigmom/rook/back.png"
+    ]
+  },
+  "bigmom/bishop": {
+    "center": 0.0,
+    "bodyY": 0.0,
+    "hip": 0.49,
+    "waist": 0.59,
+    "chest": 0.7,
+    "neck": 0.8,
+    "head": 0.87,
+    "headTail": 0.94,
+    "arms": [
+      [
+        [
+          0.075,
+          0,
+          0.76
+        ],
+        [
+          0.14,
+          -0.015,
+          0.64
+        ],
+        [
+          0.18,
+          -0.1,
+          0.72
+        ],
+        [
+          0.19,
+          -0.13,
+          0.73
+        ]
+      ],
+      [
+        [
+          -0.075,
+          0.0,
+          0.76
+        ],
+        [
+          -0.12,
+          -0.008,
+          0.63
+        ],
+        [
+          -0.12,
+          -0.025,
+          0.49
+        ],
+        [
+          -0.12,
+          -0.035,
+          0.455
+        ]
+      ]
+    ],
+    "legs": [
+      [
+        [
+          0.055,
+          0.0,
+          0.49
+        ],
+        [
+          0.0925,
+          0.008,
+          0.26
+        ],
+        [
+          0.13,
+          0.012,
+          0.055
+        ],
+        [
+          0.13,
+          -0.065,
+          0.025
+        ]
+      ],
+      [
+        [
+          -0.055,
+          0.0,
+          0.49
+        ],
+        [
+          -0.0925,
+          0.008,
+          0.26
+        ],
+        [
+          -0.13,
+          0.012,
+          0.055
+        ],
+        [
+          -0.1948,
+          -0.0385,
+          0.0167
+        ]
+      ]
+    ],
+    "motionProfile": "humanoid",
+    "limbLimits": {
+      "arms": 0.9,
+      "legs": 0.8,
+      "shoulders": 0.9,
+      "elbows": 1
+    },
+    "fitNotes": "Smoothie: left elbow bent to cup, back sword and long hair",
+    "fitSource": "Front/side geometry review and .local/rigging/fit-audit/geometry.json",
+    "reviewImages": [
+      "tools/assets/reviews/bigmom/bishop/front.png",
+      "tools/assets/reviews/bigmom/bishop/side.png",
+      "tools/assets/reviews/bigmom/bishop/back.png"
+    ]
+  },
+  "bigmom/knight": {
+    "center": -0.015,
+    "bodyY": 0.01,
+    "hip": 0.36,
+    "waist": 0.48,
+    "chest": 0.64,
+    "neck": 0.76,
+    "head": 0.83,
+    "headTail": 0.8999999999999999,
+    "arms": [
+      [
+        [
+          0.075,
+          0.01,
+          0.77
+        ],
+        [
+          0.1506,
+          -0.0816,
+          0.7469
+        ],
+        [
+          0.24,
+          -0.06,
+          0.76
+        ],
+        [
+          0.26,
+          -0.08,
+          0.77
+        ]
+      ],
+      [
+        [
+          -0.105,
+          0.01,
+          0.7
+        ],
+        [
+          -0.17,
+          -0.03,
+          0.52
+        ],
+        [
+          -0.25,
+          -0.08,
+          0.51
+        ],
+        [
+          -0.28,
+          -0.1,
+          0.52
+        ]
+      ]
+    ],
+    "legs": [
+      [
+        [
+          0.035,
+          0.01,
+          0.36
+        ],
+        [
+          0.055,
+          0.018,
+          0.19
+        ],
+        [
+          0.075,
+          0.022,
+          0.055
+        ],
+        [
+          0.075,
+          -0.055,
+          0.025
+        ]
+      ],
+      [
+        [
+          -0.065,
+          0.01,
+          0.36
+        ],
+        [
+          -0.085,
+          0.018,
+          0.19
+        ],
+        [
+          -0.105,
+          0.022,
+          0.055
+        ],
+        [
+          -0.105,
+          -0.055,
+          0.025
+        ]
+      ]
+    ],
+    "motionProfile": "humanoid",
+    "limbLimits": {
+      "arms": 0.5,
+      "legs": 0.22,
+      "shoulders": 0.45,
+      "elbows": 0.55
+    },
+    "fitNotes": "Perospero: left arm extended to lollipop, long coat and sculpted candy swirls",
+    "fitSource": "Front/side geometry review and .local/rigging/fit-audit/geometry.json",
+    "reviewImages": [
+      "tools/assets/reviews/bigmom/knight/front.png",
+      "tools/assets/reviews/bigmom/knight/side.png",
+      "tools/assets/reviews/bigmom/knight/back.png"
+    ]
+  },
+  "bigmom/pawn": {
+    "center": 0.0,
+    "bodyY": 0.0,
+    "hip": 0.43,
+    "waist": 0.56,
+    "chest": 0.7,
+    "neck": 0.81,
+    "head": 0.87,
+    "headTail": 0.94,
+    "arms": [
+      [
+        [
+          0.1,
+          0,
+          0.76
+        ],
+        [
+          0.23,
+          -0.005,
+          0.63
+        ],
+        [
+          0.1,
+          -0.07,
+          0.54
+        ],
+        [
+          0.07,
+          -0.09,
+          0.53
+        ]
+      ],
+      [
+        [
+          -0.1,
+          0,
+          0.76
+        ],
+        [
+          -0.23,
+          -0.005,
+          0.63
+        ],
+        [
+          -0.1,
+          -0.07,
+          0.54
+        ],
+        [
+          -0.07,
+          -0.09,
+          0.53
+        ]
+      ]
+    ],
+    "legs": [
+      [
+        [
+          0.055,
+          0.0,
+          0.43
+        ],
+        [
+          0.0775,
+          0.008,
+          0.23
+        ],
+        [
+          0.1,
+          0.012,
+          0.055
+        ],
+        [
+          0.1,
+          -0.065,
+          0.025
+        ]
+      ],
+      [
+        [
+          -0.055,
+          0.0,
+          0.43
+        ],
+        [
+          -0.0775,
+          0.008,
+          0.23
+        ],
+        [
+          -0.1,
+          0.012,
+          0.055
+        ],
+        [
+          -0.1,
+          -0.065,
+          0.025
+        ]
+      ]
+    ],
+    "motionProfile": "humanoid",
+    "limbLimits": {
+      "arms": 0.9,
+      "legs": 0.8,
+      "shoulders": 0.9,
+      "elbows": 1
+    },
+    "fitNotes": "Candy crew: both elbows outward and hands on hips; rifle across belt",
+    "fitSource": "Front/side geometry review and .local/rigging/fit-audit/geometry.json",
+    "reviewImages": [
+      "tools/assets/reviews/bigmom/pawn/front.png",
+      "tools/assets/reviews/bigmom/pawn/side.png",
+      "tools/assets/reviews/bigmom/pawn/back.png"
+    ]
+  },
+  "kaido/king": {
+    "center": 0.025,
+    "bodyY": 0.0,
+    "hip": 0.4,
+    "waist": 0.53,
+    "chest": 0.69,
+    "neck": 0.81,
+    "head": 0.88,
+    "headTail": 0.95,
+    "arms": [
+      [
+        [
+          0.245,
+          0,
+          0.75
+        ],
+        [
+          0.29,
+          -0.005,
+          0.6
+        ],
+        [
+          0.31,
+          -0.095,
+          0.415
+        ],
+        [
+          0.305,
+          -0.105,
+          0.335
+        ]
+      ],
+      [
+        [
+          -0.195,
+          0,
+          0.75
+        ],
+        [
+          -0.245,
+          -0.005,
+          0.6
+        ],
+        [
+          -0.245,
+          -0.1,
+          0.415
+        ],
+        [
+          -0.24,
+          -0.105,
+          0.335
+        ]
+      ]
+    ],
+    "legs": [
+      [
+        [
+          0.135,
+          0.0,
+          0.4
+        ],
+        [
+          0.155,
+          0.008,
+          0.22
+        ],
+        [
+          0.175,
+          0.012,
+          0.055
+        ],
+        [
+          0.175,
+          -0.065,
+          0.025
+        ]
+      ],
+      [
+        [
+          -0.085,
+          0.0,
+          0.4
+        ],
+        [
+          -0.105,
+          0.008,
+          0.22
+        ],
+        [
+          -0.125,
+          0.012,
+          0.055
+        ],
+        [
+          -0.125,
+          -0.065,
+          0.025
+        ]
+      ]
+    ],
+    "motionProfile": "humanoid",
+    "limbLimits": {
+      "arms": 0.9,
+      "legs": 0.8,
+      "shoulders": 0.9,
+      "elbows": 1
+    },
+    "fitNotes": "Kaido: broad bare shoulders, huge forearms, club behind right hip; corrected v2 textured vertex front/side hand fit, wrist Y=-.10 and fingers Z=.335; broad arm capsules",
+    "fitSource": "Front/side geometry review and .local/rigging/fit-audit/geometry.json",
+    "rigidRegions": [
+      {
+        "bone": "head",
+        "min": [
+          -0.26,
+          0.09,
+          0.67
+        ],
+        "max": [
+          0.26,
+          0.3,
+          1.01
+        ]
+      }
+    ],
+    "reviewImages": [
+      "tools/assets/reviews/kaido/king/front.png",
+      "tools/assets/reviews/kaido/king/side.png",
+      "tools/assets/reviews/kaido/king/back.png"
+    ],
+    "armRadii": {
+      "upper_arm.L": 0.075,
+      "forearm.L": 0.075,
+      "hand.L": 0.073,
+      "upper_arm.R": 0.075,
+      "forearm.R": 0.075,
+      "hand.R": 0.073
+    }
+  },
+  "kaido/queen": {
+    "center": 0.0,
+    "bodyY": -0.025,
+    "hip": 0.42,
+    "waist": 0.54,
+    "chest": 0.69,
+    "neck": 0.8,
+    "head": 0.87,
+    "headTail": 0.94,
+    "arms": [
+      [
+        [
+          0.15,
+          -0.025,
+          0.75
+        ],
+        [
+          0.19,
+          -0.033,
+          0.61
+        ],
+        [
+          0.19,
+          -0.05,
+          0.44
+        ],
+        [
+          0.19,
+          -0.06,
+          0.405
+        ]
+      ],
+      [
+        [
+          -0.15,
+          -0.025,
+          0.75
+        ],
+        [
+          -0.19,
+          -0.033,
+          0.61
+        ],
+        [
+          -0.19,
+          -0.05,
+          0.44
+        ],
+        [
+          -0.19,
+          -0.06,
+          0.405
+        ]
+      ]
+    ],
+    "legs": [
+      [
+        [
+          0.075,
+          -0.025,
+          0.42
+        ],
+        [
+          0.1025,
+          -0.017,
+          0.23
+        ],
+        [
+          0.13,
+          -0.013,
+          0.055
+        ],
+        [
+          0.13,
+          -0.09,
+          0.025
+        ]
+      ],
+      [
+        [
+          -0.075,
+          -0.025,
+          0.42
+        ],
+        [
+          -0.1025,
+          -0.017,
+          0.23
+        ],
+        [
+          -0.13,
+          -0.013,
+          0.055
+        ],
+        [
+          -0.13,
+          -0.09,
+          0.025
+        ]
+      ]
+    ],
+    "motionProfile": "humanoid",
+    "limbLimits": {
+      "arms": 0.72,
+      "legs": 0.55,
+      "shoulders": 0.65,
+      "elbows": 1
+    },
+    "fitNotes": "King: black wings behind torso and flame on head",
+    "fitSource": "Front/side geometry review and .local/rigging/fit-audit/geometry.json",
+    "rigidRegions": [
+      {
+        "bone": "chest",
+        "min": [
+          -0.5,
+          0.05,
+          0.2
+        ],
+        "max": [
+          0.5,
+          0.6,
+          0.78
+        ]
+      },
+      {
+        "bone": "chest",
+        "min": [
+          -0.5,
+          0.05,
+          0.18
+        ],
+        "max": [
+          0.5,
+          0.6,
+          0.86
+        ]
+      }
+    ],
+    "reviewImages": [
+      "tools/assets/reviews/kaido/queen/front.png",
+      "tools/assets/reviews/kaido/queen/side.png",
+      "tools/assets/reviews/kaido/queen/back.png"
+    ]
+  },
+  "kaido/rook": {
+    "center": 0.015,
+    "bodyY": 0.0,
+    "hip": 0.29,
+    "waist": 0.43,
+    "chest": 0.62,
+    "neck": 0.78,
+    "head": 0.86,
+    "headTail": 0.9299999999999999,
+    "arms": [
+      [
+        [
+          0.235,
+          0.025,
+          0.72
+        ],
+        [
+          0.3,
+          0.02,
+          0.535
+        ],
+        [
+          0.29,
+          -0.065,
+          0.35
+        ],
+        [
+          0.28,
+          -0.07,
+          0.285
+        ]
+      ],
+      [
+        [
+          -0.205,
+          0.025,
+          0.72
+        ],
+        [
+          -0.275,
+          0.035,
+          0.535
+        ],
+        [
+          -0.29,
+          -0.055,
+          0.315
+        ],
+        [
+          -0.3,
+          -0.065,
+          0.25
+        ]
+      ]
+    ],
+    "legs": [
+      [
+        [
+          0.125,
+          0.0,
+          0.29
+        ],
+        [
+          0.14,
+          0.008,
+          0.16
+        ],
+        [
+          0.155,
+          0.012,
+          0.055
+        ],
+        [
+          0.155,
+          -0.065,
+          0.025
+        ]
+      ],
+      [
+        [
+          -0.095,
+          0.0,
+          0.29
+        ],
+        [
+          -0.11,
+          0.008,
+          0.16
+        ],
+        [
+          -0.125,
+          0.012,
+          0.055
+        ],
+        [
+          -0.125,
+          -0.065,
+          0.025
+        ]
+      ]
+    ],
+    "motionProfile": "humanoid",
+    "limbLimits": {
+      "arms": 0.9,
+      "legs": 0.8,
+      "shoulders": 0.9,
+      "elbows": 1
+    },
+    "fitNotes": "Queen: broad torso, short legs, mechanical right arm, long braid; v2 textured front/side fit: Queen: asymmetric mechanical forearm, mechanical finger Z=.25, bare fist Z=.285",
+    "fitSource": "Front/side geometry review and .local/rigging/fit-audit/geometry.json",
+    "reviewImages": [
+      "tools/assets/reviews/kaido/rook/front.png",
+      "tools/assets/reviews/kaido/rook/side.png",
+      "tools/assets/reviews/kaido/rook/back.png"
+    ],
+    "armRadii": {
+      "upper_arm.L": 0.085,
+      "forearm.L": 0.075,
+      "hand.L": 0.07,
+      "upper_arm.R": 0.085,
+      "forearm.R": 0.075,
+      "hand.R": 0.07
+    }
+  },
+  "kaido/bishop": {
+    "center": 0.0,
+    "bodyY": -0.035,
+    "hip": 0.34,
+    "waist": 0.46,
+    "chest": 0.6,
+    "neck": 0.73,
+    "head": 0.81,
+    "headTail": 0.8800000000000001,
+    "arms": [
+      [
+        [
+          0.19,
+          -0.035,
+          0.66
+        ],
+        [
+          0.24,
+          -0.043,
+          0.53
+        ],
+        [
+          0.18,
+          -0.06,
+          0.46
+        ],
+        [
+          0.18,
+          -0.07,
+          0.425
+        ]
+      ],
+      [
+        [
+          -0.19,
+          -0.035,
+          0.66
+        ],
+        [
+          -0.25,
+          -0.06,
+          0.54
+        ],
+        [
+          -0.11,
+          -0.18,
+          0.48
+        ],
+        [
+          -0.08,
+          -0.2,
+          0.48
+        ]
+      ]
+    ],
+    "legs": [
+      [
+        [
+          0.1,
+          -0.035,
+          0.34
+        ],
+        [
+          0.125,
+          -0.027,
+          0.18
+        ],
+        [
+          0.15,
+          -0.023,
+          0.055
+        ],
+        [
+          0.15,
+          -0.1,
+          0.025
+        ]
+      ],
+      [
+        [
+          -0.1,
+          -0.035,
+          0.34
+        ],
+        [
+          -0.125,
+          -0.027,
+          0.18
+        ],
+        [
+          -0.15,
+          -0.023,
+          0.055
+        ],
+        [
+          -0.15,
+          -0.1,
+          0.025
+        ]
+      ]
+    ],
+    "motionProfile": "humanoid",
+    "limbLimits": {
+      "arms": 0.72,
+      "legs": 0.55,
+      "shoulders": 0.65,
+      "elbows": 1
+    },
+    "fitNotes": "Jack: huge coat; right fist bent at belt; horns and braid",
+    "fitSource": "Front/side geometry review and .local/rigging/fit-audit/geometry.json",
+    "rigidRegions": [
+      {
+        "bone": "chest",
+        "min": [
+          -0.5,
+          0.065,
+          0.2
+        ],
+        "max": [
+          0.5,
+          0.6,
+          0.71
+        ]
+      }
+    ],
+    "reviewImages": [
+      "tools/assets/reviews/kaido/bishop/front.png",
+      "tools/assets/reviews/kaido/bishop/side.png",
+      "tools/assets/reviews/kaido/bishop/back.png"
+    ]
+  },
+  "kaido/knight": {
+    "center": 0.0,
+    "bodyY": -0.035,
+    "hip": 0.44,
+    "waist": 0.56,
+    "chest": 0.69,
+    "neck": 0.79,
+    "head": 0.85,
+    "headTail": 0.9199999999999999,
+    "arms": [
+      [
+        [
+          0.105,
+          -0.035,
+          0.75
+        ],
+        [
+          0.16,
+          -0.07,
+          0.64
+        ],
+        [
+          0.12,
+          -0.15,
+          0.72
+        ],
+        [
+          0.1,
+          -0.17,
+          0.74
+        ]
+      ],
+      [
+        [
+          -0.105,
+          -0.035,
+          0.75
+        ],
+        [
+          -0.14,
+          -0.043,
+          0.62
+        ],
+        [
+          -0.15,
+          -0.06,
+          0.46
+        ],
+        [
+          -0.15,
+          -0.07,
+          0.425
+        ]
+      ]
+    ],
+    "legs": [
+      [
+        [
+          0.055,
+          -0.035,
+          0.44
+        ],
+        [
+          0.0825,
+          -0.027,
+          0.23
+        ],
+        [
+          0.11,
+          -0.023,
+          0.055
+        ],
+        [
+          0.11,
+          -0.1,
+          0.025
+        ]
+      ],
+      [
+        [
+          -0.055,
+          -0.035,
+          0.44
+        ],
+        [
+          -0.0825,
+          -0.027,
+          0.23
+        ],
+        [
+          -0.11,
+          -0.023,
+          0.055
+        ],
+        [
+          -0.11,
+          -0.1,
+          0.025
+        ]
+      ]
+    ],
+    "motionProfile": "humanoid",
+    "limbLimits": {
+      "arms": 0.9,
+      "legs": 0.8,
+      "shoulders": 0.9,
+      "elbows": 1
+    },
+    "fitNotes": "Who's Who: tall horns; left forearm bent up; sword sheathed behind",
+    "fitSource": "Front/side geometry review and .local/rigging/fit-audit/geometry.json",
+    "reviewImages": [
+      "tools/assets/reviews/kaido/knight/front.png",
+      "tools/assets/reviews/kaido/knight/side.png",
+      "tools/assets/reviews/kaido/knight/back.png"
+    ]
+  },
+  "kaido/pawn": {
+    "center": 0.0,
+    "bodyY": -0.03,
+    "hip": 0.42,
+    "waist": 0.55,
+    "chest": 0.69,
+    "neck": 0.8,
+    "head": 0.87,
+    "headTail": 0.94,
+    "arms": [
+      [
+        [
+          0.15,
+          -0.03,
+          0.75
+        ],
+        [
+          0.2,
+          -0.038,
+          0.61
+        ],
+        [
+          0.19,
+          -0.055,
+          0.45
+        ],
+        [
+          0.19,
+          -0.065,
+          0.415
+        ]
+      ],
+      [
+        [
+          -0.15,
+          -0.03,
+          0.75
+        ],
+        [
+          -0.23,
+          -0.06,
+          0.63
+        ],
+        [
+          -0.11,
+          -0.17,
+          0.7
+        ],
+        [
+          -0.08,
+          -0.18,
+          0.72
+        ]
+      ]
+    ],
+    "legs": [
+      [
+        [
+          0.07,
+          -0.03,
+          0.42
+        ],
+        [
+          0.1,
+          -0.022,
+          0.23
+        ],
+        [
+          0.13,
+          -0.018,
+          0.055
+        ],
+        [
+          0.13,
+          -0.095,
+          0.025
+        ]
+      ],
+      [
+        [
+          -0.07,
+          -0.03,
+          0.42
+        ],
+        [
+          -0.1,
+          -0.022,
+          0.23
+        ],
+        [
+          -0.13,
+          -0.018,
+          0.055
+        ],
+        [
+          -0.13,
+          -0.095,
+          0.025
+        ]
+      ]
+    ],
+    "motionProfile": "humanoid",
+    "limbLimits": {
+      "arms": 0.72,
+      "legs": 0.55,
+      "shoulders": 0.65,
+      "elbows": 1
+    },
+    "fitNotes": "Beast crew: thick fur cloak; right hand raised against chest",
+    "fitSource": "Front/side geometry review and .local/rigging/fit-audit/geometry.json",
+    "rigidRegions": [
+      {
+        "bone": "chest",
+        "min": [
+          -0.5,
+          0.07,
+          0.2
+        ],
+        "max": [
+          0.5,
+          0.6,
+          0.78
+        ]
+      }
+    ],
+    "reviewImages": [
+      "tools/assets/reviews/kaido/pawn/front.png",
+      "tools/assets/reviews/kaido/pawn/side.png",
+      "tools/assets/reviews/kaido/pawn/back.png"
+    ]
+  },
+  "buggy/knight": {
+    "center": 0,
+    "bodyY": 0,
+    "hip": 0.54,
+    "waist": 0.58,
+    "chest": 0.61,
+    "neck": 0.69,
+    "head": 0.76,
+    "headTail": 0.84,
+    "motionProfile": "quadruped",
+    "limbLimits": {
+      "arms": 0.8,
+      "legs": 0.65,
+      "shoulders": 0.85,
+      "elbows": 0.7
+    },
+    "fitNotes": "Richie: horizontal trunk; mane and face ahead of forelegs; digitigrade hind hocks; tail remains pelvis weighted.",
+    "bodyJoints": {
+      "hips": [
+        [
+          0,
+          0.18,
+          0.54
+        ],
+        [
+          0,
+          0.02,
+          0.59
+        ]
+      ],
+      "spine": [
+        [
+          0,
+          0.02,
+          0.59
+        ],
+        [
+          0,
+          -0.2,
+          0.61
+        ]
+      ],
+      "chest": [
+        [
+          0,
+          -0.2,
+          0.61
+        ],
+        [
+          0,
+          -0.36,
+          0.64
+        ]
+      ],
+      "neck": [
+        [
+          0,
+          -0.36,
+          0.64
+        ],
+        [
+          0,
+          -0.48,
+          0.74
+        ]
+      ],
+      "head": [
+        [
+          0,
+          -0.48,
+          0.74
+        ],
+        [
+          0,
+          -0.61,
+          0.78
+        ]
+      ]
+    },
+    "arms": [
+      [
+        [
+          0.13,
+          -0.3,
+          0.58
+        ],
+        [
+          0.14,
+          -0.34,
+          0.3
+        ],
+        [
+          0.14,
+          -0.4,
+          0.1
+        ],
+        [
+          0.14,
+          -0.48,
+          0.04
+        ]
+      ],
+      [
+        [
+          -0.13,
+          -0.3,
+          0.58
+        ],
+        [
+          -0.14,
+          -0.34,
+          0.3
+        ],
+        [
+          -0.14,
+          -0.4,
+          0.1
+        ],
+        [
+          -0.14,
+          -0.48,
+          0.04
+        ]
+      ]
+    ],
+    "legs": [
+      [
+        [
+          0.14,
+          0.21,
+          0.53
+        ],
+        [
+          0.1199,
+          0.2393,
+          0.2478
+        ],
+        [
+          0.15,
+          0.22,
+          0.11
+        ],
+        [
+          0.15,
+          0.14,
+          0.04
+        ]
+      ],
+      [
+        [
+          -0.14,
+          0.21,
+          0.53
+        ],
+        [
+          -0.1139,
+          0.2383,
+          0.2629
+        ],
+        [
+          -0.15,
+          0.22,
+          0.11
+        ],
+        [
+          -0.15,
+          0.14,
+          0.04
+        ]
+      ]
+    ],
+    "rigidRegions": [
+      {
+        "bone": "head",
+        "min": [
+          -0.4,
+          -0.72,
+          0.48
+        ],
+        "max": [
+          0.4,
+          -0.39,
+          1.01
+        ]
+      },
+      {
+        "bone": "hips",
+        "min": [
+          -0.3,
+          0.35,
+          0
+        ],
+        "max": [
+          0.3,
+          0.72,
+          0.7
+        ]
+      }
+    ],
+    "reviewImages": [
+      "tools/assets/reviews/buggy/knight/front.png",
+      "tools/assets/reviews/buggy/knight/side.png",
+      "tools/assets/reviews/buggy/knight/back.png"
+    ]
+  },
+  "doflamingo/king": {
+    "center": 0.0,
+    "bodyY": -0.025,
+    "hip": 0.47,
+    "waist": 0.59,
+    "chest": 0.73,
+    "neck": 0.84,
+    "head": 0.91,
+    "headTail": 0.98,
+    "arms": [
+      [
+        [
+          0.12,
+          -0.025,
+          0.8
+        ],
+        [
+          0.16,
+          -0.045,
+          0.68
+        ],
+        [
+          0.08,
+          -0.15,
+          0.63
+        ],
+        [
+          0.065,
+          -0.17,
+          0.61
+        ]
+      ],
+      [
+        [
+          -0.12,
+          -0.025,
+          0.8
+        ],
+        [
+          -0.16,
+          -0.033,
+          0.65
+        ],
+        [
+          -0.17,
+          -0.05,
+          0.49
+        ],
+        [
+          -0.17,
+          -0.06,
+          0.455
+        ]
+      ]
+    ],
+    "legs": [
+      [
+        [
+          0.06,
+          -0.025,
+          0.47
+        ],
+        [
+          0.09,
+          -0.017,
+          0.25
+        ],
+        [
+          0.12,
+          -0.013,
+          0.055
+        ],
+        [
+          0.12,
+          -0.09,
+          0.025
+        ]
+      ],
+      [
+        [
+          -0.06,
+          -0.025,
+          0.47
+        ],
+        [
+          -0.09,
+          -0.017,
+          0.25
+        ],
+        [
+          -0.12,
+          -0.013,
+          0.055
+        ],
+        [
+          -0.12,
+          -0.09,
+          0.025
+        ]
+      ]
+    ],
+    "motionProfile": "humanoid",
+    "limbLimits": {
+      "arms": 0.72,
+      "legs": 0.55,
+      "shoulders": 0.65,
+      "elbows": 1
+    },
+    "fitNotes": "Doflamingo: pink feather cloak, left forearm bent with hand close to waist.",
+    "fitSource": "Front/side geometry review and .local/rigging/fit-audit/geometry.json",
+    "rigidRegions": [
+      {
+        "bone": "chest",
+        "min": [
+          -0.5,
+          0.065,
+          0.2
+        ],
+        "max": [
+          0.5,
+          0.6,
+          0.82
+        ]
+      }
+    ],
+    "reviewImages": [
+      "tools/assets/reviews/doflamingo/king/front.png",
+      "tools/assets/reviews/doflamingo/king/side.png",
+      "tools/assets/reviews/doflamingo/king/back.png"
+    ]
+  },
+  "doflamingo/queen": {
+    "center": 0.0,
+    "bodyY": 0.0,
+    "hip": 0.47,
+    "waist": 0.6,
+    "chest": 0.74,
+    "neck": 0.85,
+    "head": 0.92,
+    "headTail": 0.99,
+    "arms": [
+      [
+        [
+          0.105,
+          0.0,
+          0.8
+        ],
+        [
+          0.0605,
+          -0.0029,
+          0.6549
+        ],
+        [
+          0.13,
+          -0.025,
+          0.51
+        ],
+        [
+          0.13,
+          -0.035,
+          0.475
+        ]
+      ],
+      [
+        [
+          -0.105,
+          0,
+          0.8
+        ],
+        [
+          -0.15,
+          -0.02,
+          0.66
+        ],
+        [
+          -0.04,
+          -0.1,
+          0.6
+        ],
+        [
+          0.005,
+          -0.12,
+          0.59
+        ]
+      ]
+    ],
+    "legs": [
+      [
+        [
+          0.06,
+          0.0,
+          0.47
+        ],
+        [
+          0.08,
+          0.008,
+          0.25
+        ],
+        [
+          0.1,
+          0.012,
+          0.055
+        ],
+        [
+          0.1,
+          -0.065,
+          0.025
+        ]
+      ],
+      [
+        [
+          -0.06,
+          0.0,
+          0.47
+        ],
+        [
+          -0.08,
+          0.008,
+          0.25
+        ],
+        [
+          -0.1,
+          0.012,
+          0.055
+        ],
+        [
+          -0.1212,
+          0.0148,
+          0.0103
+        ]
+      ]
+    ],
+    "motionProfile": "humanoid",
+    "limbLimits": {
+      "arms": 0.72,
+      "legs": 0.55,
+      "shoulders": 0.65,
+      "elbows": 1
+    },
+    "fitNotes": "Vergo: long coat, right forearm bent across abdomen",
+    "fitSource": "Front/side geometry review and .local/rigging/fit-audit/geometry.json",
+    "rigidRegions": [
+      {
+        "bone": "chest",
+        "min": [
+          -0.5,
+          0.075,
+          0.2
+        ],
+        "max": [
+          0.5,
+          0.6,
+          0.83
+        ]
+      }
+    ],
+    "reviewImages": [
+      "tools/assets/reviews/doflamingo/queen/front.png",
+      "tools/assets/reviews/doflamingo/queen/side.png",
+      "tools/assets/reviews/doflamingo/queen/back.png"
+    ]
+  },
+  "doflamingo/rook": {
+    "center": 0.0,
+    "bodyY": -0.015,
+    "hip": 0.28,
+    "waist": 0.43,
+    "chest": 0.6,
+    "neck": 0.75,
+    "head": 0.84,
+    "headTail": 0.9099999999999999,
+    "arms": [
+      [
+        [
+          0.21,
+          -0.015,
+          0.66
+        ],
+        [
+          0.29,
+          -0.023,
+          0.51
+        ],
+        [
+          0.3003,
+          -0.0109,
+          0.4525
+        ],
+        [
+          0.365,
+          -0.0873,
+          0.4052
+        ]
+      ],
+      [
+        [
+          -0.21,
+          -0.015,
+          0.66
+        ],
+        [
+          -0.29,
+          -0.023,
+          0.51
+        ],
+        [
+          -0.3046,
+          -0.0099,
+          0.4485
+        ],
+        [
+          -0.3614,
+          -0.0775,
+          0.4066
+        ]
+      ]
+    ],
+    "legs": [
+      [
+        [
+          0.11,
+          -0.015,
+          0.28
+        ],
+        [
+          0.135,
+          -0.007,
+          0.16
+        ],
+        [
+          0.16,
+          -0.003,
+          0.055
+        ],
+        [
+          0.16,
+          -0.08,
+          0.025
+        ]
+      ],
+      [
+        [
+          -0.11,
+          -0.015,
+          0.28
+        ],
+        [
+          -0.135,
+          -0.007,
+          0.16
+        ],
+        [
+          -0.16,
+          -0.003,
+          0.055
+        ],
+        [
+          -0.16,
+          -0.08,
+          0.025
+        ]
+      ]
+    ],
+    "motionProfile": "humanoid",
+    "limbLimits": {
+      "arms": 0.55,
+      "legs": 0.3,
+      "shoulders": 0.5,
+      "elbows": 1
+    },
+    "fitNotes": "Trebol: wide bulky cloak, bent posture and hands spread outward",
+    "fitSource": "Front/side geometry review and .local/rigging/fit-audit/geometry.json",
+    "reviewImages": [
+      "tools/assets/reviews/doflamingo/rook/front.png",
+      "tools/assets/reviews/doflamingo/rook/side.png",
+      "tools/assets/reviews/doflamingo/rook/back.png"
+    ]
+  },
+  "doflamingo/bishop": {
+    "center": 0.015,
+    "bodyY": -0.015,
+    "hip": 0.35,
+    "waist": 0.49,
+    "chest": 0.63,
+    "neck": 0.73,
+    "head": 0.81,
+    "headTail": 0.8800000000000001,
+    "arms": [
+      [
+        [
+          0.115,
+          -0.015,
+          0.69
+        ],
+        [
+          0.225,
+          -0.04,
+          0.57
+        ],
+        [
+          0.105,
+          -0.13,
+          0.53
+        ],
+        [
+          0.065,
+          -0.15,
+          0.53
+        ]
+      ],
+      [
+        [
+          -0.085,
+          -0.015,
+          0.69
+        ],
+        [
+          -0.195,
+          -0.04,
+          0.57
+        ],
+        [
+          -0.075,
+          -0.13,
+          0.53
+        ],
+        [
+          -0.035,
+          -0.15,
+          0.53
+        ]
+      ]
+    ],
+    "legs": [
+      [
+        [
+          0.07,
+          -0.015,
+          0.35
+        ],
+        [
+          0.0925,
+          -0.007,
+          0.19
+        ],
+        [
+          0.115,
+          -0.003,
+          0.055
+        ],
+        [
+          0.115,
+          -0.08,
+          0.025
+        ]
+      ],
+      [
+        [
+          -0.04,
+          -0.015,
+          0.35
+        ],
+        [
+          -0.0625,
+          -0.007,
+          0.19
+        ],
+        [
+          -0.085,
+          -0.003,
+          0.055
+        ],
+        [
+          -0.085,
+          -0.08,
+          0.025
+        ]
+      ]
+    ],
+    "motionProfile": "humanoid",
+    "limbLimits": {
+      "arms": 0.72,
+      "legs": 0.55,
+      "shoulders": 0.65,
+      "elbows": 1
+    },
+    "fitNotes": "Diamante: very tall hat, cloak, both hands near belt with elbows splayed",
+    "fitSource": "Front/side geometry review and .local/rigging/fit-audit/geometry.json",
+    "rigidRegions": [
+      {
+        "bone": "chest",
+        "min": [
+          -0.5,
+          0.065,
+          0.2
+        ],
+        "max": [
+          0.5,
+          0.6,
+          0.71
+        ]
+      }
+    ],
+    "reviewImages": [
+      "tools/assets/reviews/doflamingo/bishop/front.png",
+      "tools/assets/reviews/doflamingo/bishop/side.png",
+      "tools/assets/reviews/doflamingo/bishop/back.png"
+    ]
+  },
+  "doflamingo/knight": {
+    "center": 0.0,
+    "bodyY": 0.0,
+    "hip": 0.4,
+    "waist": 0.54,
+    "chest": 0.72,
+    "neck": 0.84,
+    "head": 0.92,
+    "headTail": 0.99,
+    "arms": [
+      [
+        [
+          0.19,
+          0.0,
+          0.78
+        ],
+        [
+          0.24,
+          -0.008,
+          0.63
+        ],
+        [
+          0.24,
+          -0.025,
+          0.44
+        ],
+        [
+          0.24,
+          -0.035,
+          0.405
+        ]
+      ],
+      [
+        [
+          -0.19,
+          0.0,
+          0.78
+        ],
+        [
+          -0.24,
+          -0.008,
+          0.63
+        ],
+        [
+          -0.24,
+          -0.025,
+          0.44
+        ],
+        [
+          -0.24,
+          -0.035,
+          0.405
+        ]
+      ]
+    ],
+    "legs": [
+      [
+        [
+          0.1,
+          0.0,
+          0.4
+        ],
+        [
+          0.12,
+          0.008,
+          0.23
+        ],
+        [
+          0.14,
+          0.012,
+          0.055
+        ],
+        [
+          0.14,
+          -0.065,
+          0.025
+        ]
+      ],
+      [
+        [
+          -0.1,
+          0.0,
+          0.4
+        ],
+        [
+          -0.12,
+          0.008,
+          0.23
+        ],
+        [
+          -0.14,
+          0.012,
+          0.055
+        ],
+        [
+          -0.14,
+          -0.065,
+          0.025
+        ]
+      ]
+    ],
+    "motionProfile": "humanoid",
+    "limbLimits": {
+      "arms": 0.9,
+      "legs": 0.8,
+      "shoulders": 0.9,
+      "elbows": 1
+    },
+    "fitNotes": "Pica: stone broad shoulders, large bracers, short heavy legs",
+    "fitSource": "Front/side geometry review and .local/rigging/fit-audit/geometry.json",
+    "reviewImages": [
+      "tools/assets/reviews/doflamingo/knight/front.png",
+      "tools/assets/reviews/doflamingo/knight/side.png",
+      "tools/assets/reviews/doflamingo/knight/back.png"
+    ]
+  },
+  "doflamingo/pawn": {
+    "center": 0.0,
+    "bodyY": -0.02,
+    "hip": 0.43,
+    "waist": 0.56,
+    "chest": 0.7,
+    "neck": 0.8,
+    "head": 0.87,
+    "headTail": 0.94,
+    "arms": [
+      [
+        [
+          0.115,
+          -0.02,
+          0.76
+        ],
+        [
+          0.15,
+          -0.028,
+          0.62
+        ],
+        [
+          0.16,
+          -0.045,
+          0.45
+        ],
+        [
+          0.16,
+          -0.055,
+          0.415
+        ]
+      ],
+      [
+        [
+          -0.115,
+          -0.02,
+          0.76
+        ],
+        [
+          -0.15,
+          -0.028,
+          0.62
+        ],
+        [
+          -0.16,
+          -0.045,
+          0.45
+        ],
+        [
+          -0.16,
+          -0.055,
+          0.415
+        ]
+      ]
+    ],
+    "legs": [
+      [
+        [
+          0.06,
+          -0.02,
+          0.43
+        ],
+        [
+          0.085,
+          -0.012,
+          0.23
+        ],
+        [
+          0.11,
+          -0.008,
+          0.055
+        ],
+        [
+          0.11,
+          -0.085,
+          0.025
+        ]
+      ],
+      [
+        [
+          -0.06,
+          -0.02,
+          0.43
+        ],
+        [
+          -0.085,
+          -0.012,
+          0.23
+        ],
+        [
+          -0.11,
+          -0.008,
+          0.055
+        ],
+        [
+          -0.11,
+          -0.085,
+          0.025
+        ]
+      ]
+    ],
+    "motionProfile": "humanoid",
+    "limbLimits": {
+      "arms": 0.9,
+      "legs": 0.8,
+      "shoulders": 0.9,
+      "elbows": 1
+    },
+    "fitNotes": "Striped crew: feather collar behind upper body, arms hanging straight",
+    "fitSource": "Front/side geometry review and .local/rigging/fit-audit/geometry.json",
+    "reviewImages": [
+      "tools/assets/reviews/doflamingo/pawn/front.png",
+      "tools/assets/reviews/doflamingo/pawn/side.png",
+      "tools/assets/reviews/doflamingo/pawn/back.png"
+    ]
+  },
+  "heart/king": {
+    "center": -0.025,
+    "bodyY": -0.02,
+    "hip": 0.46,
+    "waist": 0.59,
+    "chest": 0.73,
+    "neck": 0.83,
+    "head": 0.9,
+    "headTail": 0.97,
+    "arms": [
+      [
+        [
+          0.085,
+          -0.02,
+          0.79
+        ],
+        [
+          0.17,
+          -0.07,
+          0.67
+        ],
+        [
+          0.21,
+          -0.19,
+          0.72
+        ],
+        [
+          0.23,
+          -0.22,
+          0.75
+        ]
+      ],
+      [
+        [
+          -0.09,
+          -0.02,
+          0.79
+        ],
+        [
+          -0.19,
+          -0.04,
+          0.64
+        ],
+        [
+          -0.23,
+          -0.16,
+          0.6
+        ],
+        [
+          -0.25,
+          -0.18,
+          0.62
+        ]
+      ]
+    ],
+    "legs": [
+      [
+        [
+          0.04,
+          -0.02,
+          0.46
+        ],
+        [
+          0.0675,
+          -0.012,
+          0.25
+        ],
+        [
+          0.095,
+          -0.008,
+          0.055
+        ],
+        [
+          0.1664,
+          -0.056,
+          0.0093
+        ]
+      ],
+      [
+        [
+          -0.09,
+          -0.02,
+          0.46
+        ],
+        [
+          -0.0563,
+          0.0262,
+          0.2664
+        ],
+        [
+          -0.145,
+          -0.008,
+          0.055
+        ],
+        [
+          -0.1284,
+          -0.009,
+          0.012
+        ]
+      ]
+    ],
+    "motionProfile": "humanoid",
+    "limbLimits": {
+      "arms": 0.72,
+      "legs": 0.55,
+      "shoulders": 0.65,
+      "elbows": 1
+    },
+    "fitNotes": "Law: right arm down to sword grip, left forearm raised palm-up; long sheathed sword at right hip.",
+    "fitSource": "Front/side geometry review and .local/rigging/fit-audit/geometry.json",
+    "rigidRegions": [
+      {
+        "bone": "chest",
+        "min": [
+          -0.5,
+          0.08,
+          0.2
+        ],
+        "max": [
+          0.5,
+          0.6,
+          0.8099999999999999
+        ]
+      }
+    ],
+    "reviewImages": [
+      "tools/assets/reviews/heart/king/front.png",
+      "tools/assets/reviews/heart/king/side.png",
+      "tools/assets/reviews/heart/king/back.png"
+    ]
+  },
+  "heart/queen": {
+    "center": 0.0,
+    "bodyY": 0.015,
+    "hip": 0.31,
+    "waist": 0.45,
+    "chest": 0.61,
+    "neck": 0.75,
+    "head": 0.86,
+    "headTail": 0.9299999999999999,
+    "arms": [
+      [
+        [
+          0.18,
+          0.015,
+          0.69
+        ],
+        [
+          0.23,
+          0.007,
+          0.53
+        ],
+        [
+          0.24,
+          -0.01,
+          0.37
+        ],
+        [
+          0.24,
+          -0.02,
+          0.335
+        ]
+      ],
+      [
+        [
+          -0.18,
+          0.015,
+          0.69
+        ],
+        [
+          -0.25,
+          -0.025,
+          0.55
+        ],
+        [
+          -0.23,
+          -0.15,
+          0.66
+        ],
+        [
+          -0.22,
+          -0.18,
+          0.69
+        ]
+      ]
+    ],
+    "legs": [
+      [
+        [
+          0.1,
+          0.015,
+          0.31
+        ],
+        [
+          0.12,
+          0.023,
+          0.18
+        ],
+        [
+          0.14,
+          0.027,
+          0.055
+        ],
+        [
+          0.14,
+          -0.05,
+          0.025
+        ]
+      ],
+      [
+        [
+          -0.1,
+          0.015,
+          0.31
+        ],
+        [
+          -0.12,
+          0.023,
+          0.18
+        ],
+        [
+          -0.14,
+          0.027,
+          0.055
+        ],
+        [
+          -0.14,
+          -0.05,
+          0.025
+        ]
+      ]
+    ],
+    "motionProfile": "humanoid",
+    "limbLimits": {
+      "arms": 0.9,
+      "legs": 0.8,
+      "shoulders": 0.9,
+      "elbows": 1
+    },
+    "fitNotes": "Bepo: broad bear torso; right forearm raised in fist; short jumpsuit legs",
+    "fitSource": "Front/side geometry review and .local/rigging/fit-audit/geometry.json",
+    "reviewImages": [
+      "tools/assets/reviews/heart/queen/front.png",
+      "tools/assets/reviews/heart/queen/side.png",
+      "tools/assets/reviews/heart/queen/back.png"
+    ]
+  },
+  "heart/rook": {
+    "center": 0.0,
+    "bodyY": -0.015,
+    "hip": 0.44,
+    "waist": 0.58,
+    "chest": 0.74,
+    "neck": 0.85,
+    "head": 0.93,
+    "headTail": 0.99,
+    "arms": [
+      [
+        [
+          0.17,
+          -0.015,
+          0.8
+        ],
+        [
+          0.22,
+          -0.023,
+          0.65
+        ],
+        [
+          0.23,
+          -0.04,
+          0.45
+        ],
+        [
+          0.23,
+          -0.05,
+          0.415
+        ]
+      ],
+      [
+        [
+          -0.17,
+          -0.015,
+          0.8
+        ],
+        [
+          -0.22,
+          -0.023,
+          0.65
+        ],
+        [
+          -0.23,
+          -0.04,
+          0.45
+        ],
+        [
+          -0.23,
+          -0.05,
+          0.415
+        ]
+      ]
+    ],
+    "legs": [
+      [
+        [
+          0.08,
+          -0.015,
+          0.44
+        ],
+        [
+          0.105,
+          -0.007,
+          0.24
+        ],
+        [
+          0.13,
+          -0.003,
+          0.055
+        ],
+        [
+          0.13,
+          -0.08,
+          0.025
+        ]
+      ],
+      [
+        [
+          -0.08,
+          -0.015,
+          0.44
+        ],
+        [
+          -0.105,
+          -0.007,
+          0.24
+        ],
+        [
+          -0.13,
+          -0.003,
+          0.055
+        ],
+        [
+          -0.13,
+          -0.08,
+          0.025
+        ]
+      ]
+    ],
+    "motionProfile": "humanoid",
+    "limbLimits": {
+      "arms": 0.9,
+      "legs": 0.8,
+      "shoulders": 0.9,
+      "elbows": 1
+    },
+    "fitNotes": "Jean Bart: muscular exposed arms, long hair behind neck",
+    "fitSource": "Front/side geometry review and .local/rigging/fit-audit/geometry.json",
+    "rigidRegions": [
+      {
+        "bone": "head",
+        "min": [
+          -0.5,
+          0.09,
+          0.65
+        ],
+        "max": [
+          0.5,
+          0.6,
+          0.99
+        ]
+      }
+    ],
+    "reviewImages": [
+      "tools/assets/reviews/heart/rook/front.png",
+      "tools/assets/reviews/heart/rook/side.png",
+      "tools/assets/reviews/heart/rook/back.png"
+    ]
+  },
+  "heart/bishop": {
+    "center": -0.025,
+    "bodyY": 0.0,
+    "hip": 0.45,
+    "waist": 0.57,
+    "chest": 0.72,
+    "neck": 0.83,
+    "head": 0.9,
+    "headTail": 0.97,
+    "arms": [
+      [
+        [
+          0.075,
+          0,
+          0.78
+        ],
+        [
+          0.16,
+          0.01,
+          0.66
+        ],
+        [
+          0.09,
+          -0.05,
+          0.57
+        ],
+        [
+          0.06,
+          -0.065,
+          0.55
+        ]
+      ],
+      [
+        [
+          -0.125,
+          0.0,
+          0.78
+        ],
+        [
+          -0.165,
+          -0.008,
+          0.64
+        ],
+        [
+          -0.165,
+          -0.025,
+          0.46
+        ],
+        [
+          -0.165,
+          -0.035,
+          0.425
+        ]
+      ]
+    ],
+    "legs": [
+      [
+        [
+          0.035,
+          0.0,
+          0.45
+        ],
+        [
+          0.06,
+          0.008,
+          0.25
+        ],
+        [
+          0.085,
+          0.012,
+          0.055
+        ],
+        [
+          0.085,
+          -0.065,
+          0.025
+        ]
+      ],
+      [
+        [
+          -0.085,
+          0.0,
+          0.45
+        ],
+        [
+          -0.11,
+          0.008,
+          0.25
+        ],
+        [
+          -0.135,
+          0.012,
+          0.055
+        ],
+        [
+          -0.135,
+          -0.065,
+          0.025
+        ]
+      ]
+    ],
+    "motionProfile": "humanoid",
+    "limbLimits": {
+      "arms": 0.9,
+      "legs": 0.8,
+      "shoulders": 0.9,
+      "elbows": 1
+    },
+    "fitNotes": "Shachi: left hand on hip, narrow white jumpsuit",
+    "fitSource": "Front/side geometry review and .local/rigging/fit-audit/geometry.json",
+    "reviewImages": [
+      "tools/assets/reviews/heart/bishop/front.png",
+      "tools/assets/reviews/heart/bishop/side.png",
+      "tools/assets/reviews/heart/bishop/back.png"
+    ]
+  },
+  "heart/knight": {
+    "center": 0.0,
+    "bodyY": 0.0,
+    "hip": 0.43,
+    "waist": 0.56,
+    "chest": 0.7,
+    "neck": 0.8,
+    "head": 0.87,
+    "headTail": 0.94,
+    "arms": [
+      [
+        [
+          0.085,
+          0.0,
+          0.76
+        ],
+        [
+          0.115,
+          -0.008,
+          0.62
+        ],
+        [
+          0.125,
+          -0.025,
+          0.45
+        ],
+        [
+          0.125,
+          -0.035,
+          0.415
+        ]
+      ],
+      [
+        [
+          -0.085,
+          0.0,
+          0.76
+        ],
+        [
+          -0.115,
+          -0.008,
+          0.62
+        ],
+        [
+          -0.125,
+          -0.025,
+          0.45
+        ],
+        [
+          -0.125,
+          -0.035,
+          0.415
+        ]
+      ]
+    ],
+    "legs": [
+      [
+        [
+          0.055,
+          0.0,
+          0.43
+        ],
+        [
+          0.0775,
+          0.008,
+          0.24
+        ],
+        [
+          0.1,
+          0.012,
+          0.055
+        ],
+        [
+          0.1,
+          -0.065,
+          0.025
+        ]
+      ],
+      [
+        [
+          -0.055,
+          0.0,
+          0.43
+        ],
+        [
+          -0.0775,
+          0.008,
+          0.24
+        ],
+        [
+          -0.1,
+          0.012,
+          0.055
+        ],
+        [
+          -0.1,
+          -0.065,
+          0.025
+        ]
+      ]
+    ],
+    "motionProfile": "humanoid",
+    "limbLimits": {
+      "arms": 0.9,
+      "legs": 0.8,
+      "shoulders": 0.9,
+      "elbows": 1
+    },
+    "fitNotes": "Penguin: elongated hat above head, straight relaxed arms",
+    "fitSource": "Front/side geometry review and .local/rigging/fit-audit/geometry.json",
+    "reviewImages": [
+      "tools/assets/reviews/heart/knight/front.png",
+      "tools/assets/reviews/heart/knight/side.png",
+      "tools/assets/reviews/heart/knight/back.png"
+    ]
+  },
+  "heart/pawn": {
+    "center": 0.0,
+    "bodyY": 0.0,
+    "hip": 0.43,
+    "waist": 0.56,
+    "chest": 0.71,
+    "neck": 0.82,
+    "head": 0.89,
+    "headTail": 0.96,
+    "arms": [
+      [
+        [
+          0.13,
+          0.0,
+          0.77
+        ],
+        [
+          0.16,
+          -0.008,
+          0.62
+        ],
+        [
+          0.17,
+          -0.025,
+          0.46
+        ],
+        [
+          0.17,
+          -0.035,
+          0.425
+        ]
+      ],
+      [
+        [
+          -0.13,
+          0.0,
+          0.77
+        ],
+        [
+          -0.16,
+          -0.008,
+          0.62
+        ],
+        [
+          -0.17,
+          -0.025,
+          0.46
+        ],
+        [
+          -0.17,
+          -0.035,
+          0.425
+        ]
+      ]
+    ],
+    "legs": [
+      [
+        [
+          0.065,
+          0.0,
+          0.43
+        ],
+        [
+          0.0925,
+          0.008,
+          0.23
+        ],
+        [
+          0.12,
+          0.012,
+          0.055
+        ],
+        [
+          0.12,
+          -0.065,
+          0.025
+        ]
+      ],
+      [
+        [
+          -0.065,
+          0.0,
+          0.43
+        ],
+        [
+          -0.0925,
+          0.008,
+          0.23
+        ],
+        [
+          -0.12,
+          0.012,
+          0.055
+        ],
+        [
+          -0.12,
+          -0.065,
+          0.025
+        ]
+      ]
+    ],
+    "motionProfile": "humanoid",
+    "limbLimits": {
+      "arms": 0.9,
+      "legs": 0.8,
+      "shoulders": 0.9,
+      "elbows": 1
+    },
+    "fitNotes": "Heart crew: padded white jumpsuit and fists at sides, support removed",
+    "fitSource": "Front/side geometry review and .local/rigging/fit-audit/geometry.json",
+    "reviewImages": [
+      "tools/assets/reviews/heart/pawn/front.png",
+      "tools/assets/reviews/heart/pawn/side.png",
+      "tools/assets/reviews/heart/pawn/back.png"
+    ]
+  },
+  "kid/king": {
+    "center": 0.0,
+    "bodyY": -0.025,
+    "hip": 0.4,
+    "waist": 0.53,
+    "chest": 0.68,
+    "neck": 0.79,
+    "head": 0.86,
+    "headTail": 0.9299999999999999,
+    "arms": [
+      [
+        [
+          0.135,
+          -0.025,
+          0.74
+        ],
+        [
+          0.18,
+          -0.033,
+          0.6
+        ],
+        [
+          0.19,
+          -0.05,
+          0.43
+        ],
+        [
+          0.19,
+          -0.06,
+          0.395
+        ]
+      ],
+      [
+        [
+          -0.135,
+          -0.025,
+          0.74
+        ],
+        [
+          -0.18,
+          -0.033,
+          0.6
+        ],
+        [
+          -0.19,
+          -0.05,
+          0.43
+        ],
+        [
+          -0.19,
+          -0.06,
+          0.395
+        ]
+      ]
+    ],
+    "legs": [
+      [
+        [
+          0.065,
+          -0.025,
+          0.4
+        ],
+        [
+          0.0925,
+          -0.017,
+          0.22
+        ],
+        [
+          0.12,
+          -0.013,
+          0.055
+        ],
+        [
+          0.12,
+          -0.09,
+          0.025
+        ]
+      ],
+      [
+        [
+          -0.065,
+          -0.025,
+          0.4
+        ],
+        [
+          -0.0925,
+          -0.017,
+          0.22
+        ],
+        [
+          -0.12,
+          -0.013,
+          0.055
+        ],
+        [
+          -0.12,
+          -0.09,
+          0.025
+        ]
+      ]
+    ],
+    "motionProfile": "humanoid",
+    "limbLimits": {
+      "arms": 0.72,
+      "legs": 0.55,
+      "shoulders": 0.65,
+      "elbows": 1
+    },
+    "fitNotes": "Kid: mechanical left forearm and black cloak, tall red hair",
+    "fitSource": "Front/side geometry review and .local/rigging/fit-audit/geometry.json",
+    "rigidRegions": [
+      {
+        "bone": "chest",
+        "min": [
+          -0.5,
+          0.07,
+          0.2
+        ],
+        "max": [
+          0.5,
+          0.6,
+          0.77
+        ]
+      }
+    ],
+    "reviewImages": [
+      "tools/assets/reviews/kid/king/front.png",
+      "tools/assets/reviews/kid/king/side.png",
+      "tools/assets/reviews/kid/king/back.png"
+    ]
+  },
+  "kid/queen": {
+    "center": 0.0,
+    "bodyY": 0.0,
+    "hip": 0.46,
+    "waist": 0.59,
+    "chest": 0.73,
+    "neck": 0.83,
+    "head": 0.9,
+    "headTail": 0.97,
+    "arms": [
+      [
+        [
+          0.13,
+          0.0,
+          0.79
+        ],
+        [
+          0.16,
+          -0.008,
+          0.65
+        ],
+        [
+          0.17,
+          -0.025,
+          0.49
+        ],
+        [
+          0.17,
+          -0.035,
+          0.455
+        ]
+      ],
+      [
+        [
+          -0.13,
+          0.0,
+          0.79
+        ],
+        [
+          -0.16,
+          -0.008,
+          0.65
+        ],
+        [
+          -0.17,
+          -0.025,
+          0.49
+        ],
+        [
+          -0.17,
+          -0.035,
+          0.455
+        ]
+      ]
+    ],
+    "legs": [
+      [
+        [
+          0.065,
+          0.0,
+          0.46
+        ],
+        [
+          0.0925,
+          0.008,
+          0.25
+        ],
+        [
+          0.12,
+          0.012,
+          0.055
+        ],
+        [
+          0.12,
+          -0.065,
+          0.025
+        ]
+      ],
+      [
+        [
+          -0.065,
+          0.0,
+          0.46
+        ],
+        [
+          -0.0925,
+          0.008,
+          0.25
+        ],
+        [
+          -0.12,
+          0.012,
+          0.055
+        ],
+        [
+          -0.12,
+          -0.065,
+          0.025
+        ]
+      ]
+    ],
+    "motionProfile": "humanoid",
+    "limbLimits": {
+      "arms": 0.9,
+      "legs": 0.8,
+      "shoulders": 0.9,
+      "elbows": 1
+    },
+    "fitNotes": "Killer: sickle blades mounted to hands; hair and headgear rigid",
+    "fitSource": "Front/side geometry review and .local/rigging/fit-audit/geometry.json",
+    "reviewImages": [
+      "tools/assets/reviews/kid/queen/front.png",
+      "tools/assets/reviews/kid/queen/side.png",
+      "tools/assets/reviews/kid/queen/back.png"
+    ]
+  },
+  "kid/rook": {
+    "center": 0.0,
+    "bodyY": 0.0,
+    "hip": 0.46,
+    "waist": 0.59,
+    "chest": 0.73,
+    "neck": 0.84,
+    "head": 0.91,
+    "headTail": 0.98,
+    "arms": [
+      [
+        [
+          0.1,
+          0.0,
+          0.79
+        ],
+        [
+          0.14,
+          -0.008,
+          0.65
+        ],
+        [
+          0.16,
+          -0.025,
+          0.48
+        ],
+        [
+          0.16,
+          -0.035,
+          0.445
+        ]
+      ],
+      [
+        [
+          -0.1,
+          0.0,
+          0.79
+        ],
+        [
+          -0.14,
+          -0.008,
+          0.65
+        ],
+        [
+          -0.16,
+          -0.025,
+          0.48
+        ],
+        [
+          -0.16,
+          -0.035,
+          0.445
+        ]
+      ]
+    ],
+    "legs": [
+      [
+        [
+          0.065,
+          0.0,
+          0.46
+        ],
+        [
+          0.0925,
+          0.008,
+          0.25
+        ],
+        [
+          0.12,
+          0.012,
+          0.055
+        ],
+        [
+          0.12,
+          -0.065,
+          0.025
+        ]
+      ],
+      [
+        [
+          -0.065,
+          0.0,
+          0.46
+        ],
+        [
+          -0.0925,
+          0.008,
+          0.25
+        ],
+        [
+          -0.12,
+          0.012,
+          0.055
+        ],
+        [
+          -0.12,
+          -0.065,
+          0.025
+        ]
+      ]
+    ],
+    "motionProfile": "humanoid",
+    "limbLimits": {
+      "arms": 0.9,
+      "legs": 0.8,
+      "shoulders": 0.9,
+      "elbows": 1
+    },
+    "fitNotes": "Heat: thin arms and large long pale hair behind torso",
+    "fitSource": "Front/side geometry review and .local/rigging/fit-audit/geometry.json",
+    "rigidRegions": [
+      {
+        "bone": "head",
+        "min": [
+          -0.5,
+          0.07,
+          0.5
+        ],
+        "max": [
+          0.5,
+          0.6,
+          0.95
+        ]
+      }
+    ],
+    "reviewImages": [
+      "tools/assets/reviews/kid/rook/front.png",
+      "tools/assets/reviews/kid/rook/side.png",
+      "tools/assets/reviews/kid/rook/back.png"
+    ]
+  },
+  "kid/bishop": {
+    "center": 0.015,
+    "bodyY": 0.0,
+    "hip": 0.44,
+    "waist": 0.56,
+    "chest": 0.69,
+    "neck": 0.79,
+    "head": 0.86,
+    "headTail": 0.9299999999999999,
+    "arms": [
+      [
+        [
+          0.1,
+          0.0,
+          0.75
+        ],
+        [
+          0.135,
+          -0.008,
+          0.62
+        ],
+        [
+          0.145,
+          -0.025,
+          0.46
+        ],
+        [
+          0.145,
+          -0.035,
+          0.425
+        ]
+      ],
+      [
+        [
+          -0.07,
+          0.0,
+          0.75
+        ],
+        [
+          -0.105,
+          -0.008,
+          0.62
+        ],
+        [
+          -0.115,
+          -0.025,
+          0.46
+        ],
+        [
+          -0.115,
+          -0.035,
+          0.425
+        ]
+      ]
+    ],
+    "legs": [
+      [
+        [
+          0.07,
+          0.0,
+          0.44
+        ],
+        [
+          0.0925,
+          0.008,
+          0.24
+        ],
+        [
+          0.115,
+          0.012,
+          0.055
+        ],
+        [
+          0.115,
+          -0.065,
+          0.025
+        ]
+      ],
+      [
+        [
+          -0.04,
+          0.0,
+          0.44
+        ],
+        [
+          -0.0625,
+          0.008,
+          0.24
+        ],
+        [
+          -0.085,
+          0.012,
+          0.055
+        ],
+        [
+          -0.085,
+          -0.065,
+          0.025
+        ]
+      ]
+    ],
+    "motionProfile": "humanoid",
+    "limbLimits": {
+      "arms": 0.72,
+      "legs": 0.55,
+      "shoulders": 0.65,
+      "elbows": 1
+    },
+    "fitNotes": "Wire: thin limbs with long black cape, trident in right hand",
+    "fitSource": "Front/side geometry review and .local/rigging/fit-audit/geometry.json",
+    "rigidRegions": [
+      {
+        "bone": "chest",
+        "min": [
+          -0.5,
+          0.06,
+          0.2
+        ],
+        "max": [
+          0.5,
+          0.6,
+          0.77
+        ]
+      }
+    ],
+    "reviewImages": [
+      "tools/assets/reviews/kid/bishop/front.png",
+      "tools/assets/reviews/kid/bishop/side.png",
+      "tools/assets/reviews/kid/bishop/back.png"
+    ]
+  },
+  "kid/knight": {
+    "center": 0.0,
+    "bodyY": -0.025,
+    "hip": 0.37,
+    "waist": 0.49,
+    "chest": 0.64,
+    "neck": 0.75,
+    "head": 0.83,
+    "headTail": 0.8999999999999999,
+    "arms": [
+      [
+        [
+          0.13,
+          -0.025,
+          0.7
+        ],
+        [
+          0.18,
+          -0.033,
+          0.56
+        ],
+        [
+          0.18,
+          -0.05,
+          0.39
+        ],
+        [
+          0.18,
+          -0.06,
+          0.355
+        ]
+      ],
+      [
+        [
+          -0.13,
+          -0.025,
+          0.7
+        ],
+        [
+          -0.18,
+          -0.033,
+          0.56
+        ],
+        [
+          -0.18,
+          -0.05,
+          0.39
+        ],
+        [
+          -0.18,
+          -0.06,
+          0.355
+        ]
+      ]
+    ],
+    "legs": [
+      [
+        [
+          0.07,
+          -0.025,
+          0.37
+        ],
+        [
+          0.095,
+          -0.017,
+          0.2
+        ],
+        [
+          0.12,
+          -0.013,
+          0.055
+        ],
+        [
+          0.12,
+          -0.09,
+          0.025
+        ]
+      ],
+      [
+        [
+          -0.07,
+          -0.025,
+          0.37
+        ],
+        [
+          -0.095,
+          -0.017,
+          0.2
+        ],
+        [
+          -0.12,
+          -0.013,
+          0.055
+        ],
+        [
+          -0.12,
+          -0.09,
+          0.025
+        ]
+      ]
+    ],
+    "motionProfile": "humanoid",
+    "limbLimits": {
+      "arms": 0.72,
+      "legs": 0.55,
+      "shoulders": 0.65,
+      "elbows": 1
+    },
+    "fitNotes": "Shark: hood and spines above head, cape and large forearm guards",
+    "fitSource": "Front/side geometry review and .local/rigging/fit-audit/geometry.json",
+    "rigidRegions": [
+      {
+        "bone": "chest",
+        "min": [
+          -0.5,
+          0.065,
+          0.2
+        ],
+        "max": [
+          0.5,
+          0.6,
+          0.73
+        ]
+      }
+    ],
+    "reviewImages": [
+      "tools/assets/reviews/kid/knight/front.png",
+      "tools/assets/reviews/kid/knight/side.png",
+      "tools/assets/reviews/kid/knight/back.png"
+    ]
+  },
+  "kid/pawn": {
+    "center": 0.0,
+    "bodyY": -0.015,
+    "hip": 0.46,
+    "waist": 0.59,
+    "chest": 0.73,
+    "neck": 0.84,
+    "head": 0.91,
+    "headTail": 0.98,
+    "arms": [
+      [
+        [
+          0.105,
+          -0.015,
+          0.79
+        ],
+        [
+          0.14,
+          -0.023,
+          0.65
+        ],
+        [
+          0.15,
+          -0.04,
+          0.48
+        ],
+        [
+          0.15,
+          -0.05,
+          0.445
+        ]
+      ],
+      [
+        [
+          -0.105,
+          -0.015,
+          0.79
+        ],
+        [
+          -0.14,
+          -0.023,
+          0.65
+        ],
+        [
+          -0.15,
+          -0.04,
+          0.48
+        ],
+        [
+          -0.15,
+          -0.05,
+          0.445
+        ]
+      ]
+    ],
+    "legs": [
+      [
+        [
+          0.06,
+          -0.015,
+          0.46
+        ],
+        [
+          0.085,
+          -0.007,
+          0.25
+        ],
+        [
+          0.11,
+          -0.003,
+          0.055
+        ],
+        [
+          0.11,
+          -0.08,
+          0.025
+        ]
+      ],
+      [
+        [
+          -0.06,
+          -0.015,
+          0.46
+        ],
+        [
+          -0.085,
+          -0.007,
+          0.25
+        ],
+        [
+          -0.11,
+          -0.003,
+          0.055
+        ],
+        [
+          -0.11,
+          -0.08,
+          0.025
+        ]
+      ]
+    ],
+    "motionProfile": "humanoid",
+    "limbLimits": {
+      "arms": 0.9,
+      "legs": 0.8,
+      "shoulders": 0.9,
+      "elbows": 1
+    },
+    "fitNotes": "Crew: sleeveless vest, swept pale hair, short blade near right waist",
+    "fitSource": "Front/side geometry review and .local/rigging/fit-audit/geometry.json",
+    "reviewImages": [
+      "tools/assets/reviews/kid/pawn/front.png",
+      "tools/assets/reviews/kid/pawn/side.png",
+      "tools/assets/reviews/kid/pawn/back.png"
+    ]
+  },
+  "blackbeard/king": {
+    "center": -0.015,
+    "bodyY": -0.015,
+    "hip": 0.32,
+    "waist": 0.47,
+    "chest": 0.65,
+    "neck": 0.78,
+    "head": 0.87,
+    "headTail": 0.94,
+    "arms": [
+      [
+        [
+          0.165,
+          -0.015,
+          0.72
+        ],
+        [
+          0.245,
+          -0.045,
+          0.59
+        ],
+        [
+          0.23,
+          -0.17,
+          0.68
+        ],
+        [
+          0.22,
+          -0.2,
+          0.7
+        ]
+      ],
+      [
+        [
+          -0.195,
+          -0.015,
+          0.72
+        ],
+        [
+          -0.255,
+          -0.023,
+          0.56
+        ],
+        [
+          -0.265,
+          -0.04,
+          0.39
+        ],
+        [
+          -0.265,
+          -0.05,
+          0.355
+        ]
+      ]
+    ],
+    "legs": [
+      [
+        [
+          0.07,
+          -0.015,
+          0.32
+        ],
+        [
+          0.0975,
+          -0.007,
+          0.18
+        ],
+        [
+          0.125,
+          -0.003,
+          0.055
+        ],
+        [
+          0.125,
+          -0.08,
+          0.025
+        ]
+      ],
+      [
+        [
+          -0.1,
+          -0.015,
+          0.32
+        ],
+        [
+          -0.1275,
+          -0.007,
+          0.18
+        ],
+        [
+          -0.155,
+          -0.003,
+          0.055
+        ],
+        [
+          -0.155,
+          -0.08,
+          0.025
+        ]
+      ]
+    ],
+    "motionProfile": "humanoid",
+    "limbLimits": {
+      "arms": 0.72,
+      "legs": 0.55,
+      "shoulders": 0.65,
+      "elbows": 1
+    },
+    "fitNotes": "Blackbeard: broad belly, long coat, left elbow bent with hand at chest",
+    "fitSource": "Front/side geometry review and .local/rigging/fit-audit/geometry.json",
+    "rigidRegions": [
+      {
+        "bone": "chest",
+        "min": [
+          -0.5,
+          0.075,
+          0.2
+        ],
+        "max": [
+          0.5,
+          0.6,
+          0.76
+        ]
+      }
+    ],
+    "reviewImages": [
+      "tools/assets/reviews/blackbeard/king/front.png",
+      "tools/assets/reviews/blackbeard/king/side.png",
+      "tools/assets/reviews/blackbeard/king/back.png"
+    ]
+  },
+  "blackbeard/queen": {
+    "center": 0.0,
+    "bodyY": 0.0,
+    "hip": 0.42,
+    "waist": 0.57,
+    "chest": 0.74,
+    "neck": 0.85,
+    "head": 0.92,
+    "headTail": 0.99,
+    "arms": [
+      [
+        [
+          0.18,
+          0.0,
+          0.78
+        ],
+        [
+          0.25,
+          -0.005,
+          0.62
+        ],
+        [
+          0.25,
+          -0.065,
+          0.445
+        ],
+        [
+          0.245,
+          -0.08,
+          0.35
+        ]
+      ],
+      [
+        [
+          -0.18,
+          0.0,
+          0.78
+        ],
+        [
+          -0.25,
+          -0.005,
+          0.62
+        ],
+        [
+          -0.25,
+          -0.065,
+          0.445
+        ],
+        [
+          -0.245,
+          -0.08,
+          0.35
+        ]
+      ]
+    ],
+    "legs": [
+      [
+        [
+          0.085,
+          0.0,
+          0.42
+        ],
+        [
+          0.1075,
+          0.008,
+          0.23
+        ],
+        [
+          0.13,
+          0.012,
+          0.055
+        ],
+        [
+          0.13,
+          -0.065,
+          0.025
+        ]
+      ],
+      [
+        [
+          -0.085,
+          0.0,
+          0.42
+        ],
+        [
+          -0.1075,
+          0.008,
+          0.23
+        ],
+        [
+          -0.13,
+          0.012,
+          0.055
+        ],
+        [
+          -0.13,
+          -0.065,
+          0.025
+        ]
+      ]
+    ],
+    "motionProfile": "humanoid",
+    "limbLimits": {
+      "arms": 0.9,
+      "legs": 0.8,
+      "shoulders": 0.9,
+      "elbows": 1
+    },
+    "fitNotes": "Burgess: large bare arms, broad torso and hair, boots apart; v2 textured front/side fit: Burgess: bare arm center X=.25, wrist Y=-.065, fingers Z=.35 instead of .405",
+    "fitSource": "Front/side geometry review and .local/rigging/fit-audit/geometry.json",
+    "reviewImages": [
+      "tools/assets/reviews/blackbeard/queen/front.png",
+      "tools/assets/reviews/blackbeard/queen/side.png",
+      "tools/assets/reviews/blackbeard/queen/back.png"
+    ],
+    "armRadii": {
+      "upper_arm.L": 0.065,
+      "forearm.L": 0.065,
+      "hand.L": 0.06,
+      "upper_arm.R": 0.065,
+      "forearm.R": 0.065,
+      "hand.R": 0.06
+    }
+  },
+  "blackbeard/rook": {
+    "center": 0.035,
+    "bodyY": 0.0,
+    "hip": 0.45,
+    "waist": 0.58,
+    "chest": 0.72,
+    "neck": 0.82,
+    "head": 0.89,
+    "headTail": 0.96,
+    "arms": [
+      [
+        [
+          0.155,
+          0,
+          0.78
+        ],
+        [
+          0.195,
+          -0.02,
+          0.65
+        ],
+        [
+          0.14,
+          -0.1,
+          0.58
+        ],
+        [
+          0.115,
+          -0.12,
+          0.56
+        ]
+      ],
+      [
+        [
+          -0.085,
+          0.0,
+          0.78
+        ],
+        [
+          -0.125,
+          -0.008,
+          0.64
+        ],
+        [
+          -0.115,
+          -0.025,
+          0.49
+        ],
+        [
+          -0.115,
+          -0.035,
+          0.455
+        ]
+      ]
+    ],
+    "legs": [
+      [
+        [
+          0.1,
+          0.0,
+          0.45
+        ],
+        [
+          0.1275,
+          0.008,
+          0.25
+        ],
+        [
+          0.155,
+          0.012,
+          0.055
+        ],
+        [
+          0.155,
+          -0.065,
+          0.025
+        ]
+      ],
+      [
+        [
+          -0.03,
+          0.0,
+          0.45
+        ],
+        [
+          -0.0575,
+          0.008,
+          0.25
+        ],
+        [
+          -0.085,
+          0.012,
+          0.055
+        ],
+        [
+          -0.085,
+          -0.065,
+          0.025
+        ]
+      ]
+    ],
+    "motionProfile": "humanoid",
+    "limbLimits": {
+      "arms": 0.72,
+      "legs": 0.55,
+      "shoulders": 0.65,
+      "elbows": 1
+    },
+    "fitNotes": "Shiryu: cloak covers shoulders; sword grip in left hand and scabbard behind",
+    "fitSource": "Front/side geometry review and .local/rigging/fit-audit/geometry.json",
+    "rigidRegions": [
+      {
+        "bone": "chest",
+        "min": [
+          -0.5,
+          0.08,
+          0.2
+        ],
+        "max": [
+          0.5,
+          0.6,
+          0.7999999999999999
+        ]
+      }
+    ],
+    "reviewImages": [
+      "tools/assets/reviews/blackbeard/rook/front.png",
+      "tools/assets/reviews/blackbeard/rook/side.png",
+      "tools/assets/reviews/blackbeard/rook/back.png"
+    ]
+  },
+  "blackbeard/bishop": {
+    "center": 0.0,
+    "bodyY": -0.015,
+    "hip": 0.38,
+    "waist": 0.5,
+    "chest": 0.62,
+    "neck": 0.73,
+    "head": 0.8,
+    "headTail": 0.8700000000000001,
+    "arms": [
+      [
+        [
+          0.09,
+          -0.015,
+          0.68
+        ],
+        [
+          0.16,
+          -0.04,
+          0.56
+        ],
+        [
+          0.1981,
+          -0.1579,
+          0.655
+        ],
+        [
+          0.197,
+          -0.1577,
+          0.6665
+        ]
+      ],
+      [
+        [
+          -0.09,
+          -0.015,
+          0.68
+        ],
+        [
+          -0.15,
+          -0.055,
+          0.58
+        ],
+        [
+          -0.08,
+          -0.13,
+          0.74
+        ],
+        [
+          -0.05,
+          -0.145,
+          0.77
+        ]
+      ]
+    ],
+    "legs": [
+      [
+        [
+          0.05,
+          -0.015,
+          0.38
+        ],
+        [
+          0.0725,
+          -0.007,
+          0.21
+        ],
+        [
+          0.095,
+          -0.003,
+          0.055
+        ],
+        [
+          0.095,
+          -0.08,
+          0.025
+        ]
+      ],
+      [
+        [
+          -0.05,
+          -0.015,
+          0.38
+        ],
+        [
+          -0.0725,
+          -0.007,
+          0.21
+        ],
+        [
+          -0.095,
+          -0.003,
+          0.055
+        ],
+        [
+          -0.095,
+          -0.08,
+          0.025
+        ]
+      ]
+    ],
+    "motionProfile": "humanoid",
+    "limbLimits": {
+      "arms": 0.72,
+      "legs": 0.55,
+      "shoulders": 0.65,
+      "elbows": 1
+    },
+    "fitNotes": "Van Augur: hat and diagonal rifle taller than face, both arms raised holding rifle",
+    "fitSource": "Front/side geometry review and .local/rigging/fit-audit/geometry.json",
+    "rigidRegions": [
+      {
+        "bone": "chest",
+        "min": [
+          -0.5,
+          0.08,
+          0.2
+        ],
+        "max": [
+          0.5,
+          0.6,
+          0.71
+        ]
+      }
+    ],
+    "reviewImages": [
+      "tools/assets/reviews/blackbeard/bishop/front.png",
+      "tools/assets/reviews/blackbeard/bishop/side.png",
+      "tools/assets/reviews/blackbeard/bishop/back.png"
+    ]
+  },
+  "blackbeard/knight": {
+    "center": -0.015,
+    "bodyY": 0.0,
+    "hip": 0.47,
+    "waist": 0.59,
+    "chest": 0.72,
+    "neck": 0.82,
+    "head": 0.88,
+    "headTail": 0.95,
+    "arms": [
+      [
+        [
+          0.08,
+          0.0,
+          0.77
+        ],
+        [
+          0.115,
+          -0.008,
+          0.63
+        ],
+        [
+          0.145,
+          -0.025,
+          0.47
+        ],
+        [
+          0.145,
+          -0.035,
+          0.435
+        ]
+      ],
+      [
+        [
+          -0.11,
+          0.0,
+          0.77
+        ],
+        [
+          -0.145,
+          -0.008,
+          0.63
+        ],
+        [
+          -0.175,
+          -0.025,
+          0.47
+        ],
+        [
+          -0.175,
+          -0.035,
+          0.435
+        ]
+      ]
+    ],
+    "legs": [
+      [
+        [
+          0.035,
+          0.0,
+          0.47
+        ],
+        [
+          0.0625,
+          0.008,
+          0.25
+        ],
+        [
+          0.09,
+          0.012,
+          0.055
+        ],
+        [
+          0.09,
+          -0.065,
+          0.025
+        ]
+      ],
+      [
+        [
+          -0.065,
+          0.0,
+          0.47
+        ],
+        [
+          -0.0925,
+          0.008,
+          0.25
+        ],
+        [
+          -0.12,
+          0.012,
+          0.055
+        ],
+        [
+          -0.12,
+          -0.065,
+          0.025
+        ]
+      ]
+    ],
+    "motionProfile": "humanoid",
+    "limbLimits": {
+      "arms": 0.9,
+      "legs": 0.8,
+      "shoulders": 0.9,
+      "elbows": 1
+    },
+    "fitNotes": "Laffitte: long legs, top hat, cane in right hand and left arm relaxed",
+    "fitSource": "Front/side geometry review and .local/rigging/fit-audit/geometry.json",
+    "reviewImages": [
+      "tools/assets/reviews/blackbeard/knight/front.png",
+      "tools/assets/reviews/blackbeard/knight/side.png",
+      "tools/assets/reviews/blackbeard/knight/back.png"
+    ]
+  },
+  "blackbeard/pawn": {
+    "center": 0.035,
+    "bodyY": -0.025,
+    "hip": 0.32,
+    "waist": 0.46,
+    "chest": 0.64,
+    "neck": 0.77,
+    "head": 0.87,
+    "headTail": 0.94,
+    "arms": [
+      [
+        [
+          0.195,
+          -0.025,
+          0.71
+        ],
+        [
+          0.26,
+          -0.07,
+          0.55
+        ],
+        [
+          0.23,
+          -0.21,
+          0.5
+        ],
+        [
+          0.19,
+          -0.23,
+          0.52
+        ]
+      ],
+      [
+        [
+          -0.125,
+          -0.025,
+          0.71
+        ],
+        [
+          -0.0952,
+          0.0075,
+          0.5276
+        ],
+        [
+          -0.185,
+          -0.05,
+          0.4
+        ],
+        [
+          -0.185,
+          -0.06,
+          0.365
+        ]
+      ]
+    ],
+    "legs": [
+      [
+        [
+          0.1,
+          -0.025,
+          0.32
+        ],
+        [
+          0.1275,
+          -0.017,
+          0.18
+        ],
+        [
+          0.155,
+          -0.013,
+          0.055
+        ],
+        [
+          0.155,
+          -0.09,
+          0.025
+        ]
+      ],
+      [
+        [
+          -0.03,
+          -0.025,
+          0.32
+        ],
+        [
+          -0.0575,
+          -0.017,
+          0.18
+        ],
+        [
+          -0.085,
+          -0.013,
+          0.055
+        ],
+        [
+          -0.1064,
+          0.0038,
+          0.027
+        ]
+      ]
+    ],
+    "motionProfile": "humanoid",
+    "limbLimits": {
+      "arms": 0.72,
+      "legs": 0.55,
+      "shoulders": 0.65,
+      "elbows": 1
+    },
+    "fitNotes": "Fur crew: bulky long coat, left forearm bent carrying fruit basket, right tool at side",
+    "fitSource": "Front/side geometry review and .local/rigging/fit-audit/geometry.json",
+    "rigidRegions": [
+      {
+        "bone": "chest",
+        "min": [
+          -0.5,
+          0.08,
+          0.2
+        ],
+        "max": [
+          0.5,
+          0.6,
+          0.75
+        ]
+      }
+    ],
+    "reviewImages": [
+      "tools/assets/reviews/blackbeard/pawn/front.png",
+      "tools/assets/reviews/blackbeard/pawn/side.png",
+      "tools/assets/reviews/blackbeard/pawn/back.png"
+    ]
+  },
+  "whitebeard/king": {
+    "center": 0.03,
+    "bodyY": 0.015,
+    "hip": 0.44,
+    "waist": 0.57,
+    "chest": 0.69,
+    "neck": 0.79,
+    "head": 0.86,
+    "headTail": 0.9299999999999999,
+    "arms": [
+      [
+        [
+          0.18,
+          0.015,
+          0.75
+        ],
+        [
+          0.22,
+          0.007,
+          0.61
+        ],
+        [
+          0.22,
+          -0.01,
+          0.46
+        ],
+        [
+          0.22,
+          -0.02,
+          0.425
+        ]
+      ],
+      [
+        [
+          -0.12,
+          0.015,
+          0.75
+        ],
+        [
+          -0.2,
+          -0.015,
+          0.61
+        ],
+        [
+          -0.23,
+          -0.12,
+          0.57
+        ],
+        [
+          -0.24,
+          -0.15,
+          0.56
+        ]
+      ]
+    ],
+    "legs": [
+      [
+        [
+          0.1,
+          0.015,
+          0.44
+        ],
+        [
+          0.13,
+          0.023,
+          0.24
+        ],
+        [
+          0.16,
+          0.027,
+          0.055
+        ],
+        [
+          0.16,
+          -0.05,
+          0.025
+        ]
+      ],
+      [
+        [
+          -0.04,
+          0.015,
+          0.44
+        ],
+        [
+          -0.07,
+          0.023,
+          0.24
+        ],
+        [
+          -0.1,
+          0.027,
+          0.055
+        ],
+        [
+          -0.1,
+          -0.05,
+          0.025
+        ]
+      ]
+    ],
+    "motionProfile": "humanoid",
+    "limbLimits": {
+      "arms": 0.72,
+      "legs": 0.55,
+      "shoulders": 0.65,
+      "elbows": 1
+    },
+    "fitNotes": "Whitebeard: halberd taller than head, right elbow bent to grip shaft, long cape",
+    "fitSource": "Front/side geometry review and .local/rigging/fit-audit/geometry.json",
+    "rigidRegions": [
+      {
+        "bone": "chest",
+        "min": [
+          -0.5,
+          0.08,
+          0.2
+        ],
+        "max": [
+          0.5,
+          0.6,
+          0.77
+        ]
+      }
+    ],
+    "reviewImages": [
+      "tools/assets/reviews/whitebeard/king/front.png",
+      "tools/assets/reviews/whitebeard/king/side.png",
+      "tools/assets/reviews/whitebeard/king/back.png"
+    ]
+  },
+  "whitebeard/queen": {
+    "center": 0.0,
+    "bodyY": 0.0,
+    "hip": 0.48,
+    "waist": 0.61,
+    "chest": 0.74,
+    "neck": 0.84,
+    "head": 0.91,
+    "headTail": 0.98,
+    "arms": [
+      [
+        [
+          0.13,
+          0.0,
+          0.8
+        ],
+        [
+          0.17,
+          -0.008,
+          0.66
+        ],
+        [
+          0.18,
+          -0.025,
+          0.49
+        ],
+        [
+          0.18,
+          -0.035,
+          0.455
+        ]
+      ],
+      [
+        [
+          -0.13,
+          0.0,
+          0.8
+        ],
+        [
+          -0.17,
+          -0.008,
+          0.66
+        ],
+        [
+          -0.18,
+          -0.025,
+          0.49
+        ],
+        [
+          -0.18,
+          -0.035,
+          0.455
+        ]
+      ]
+    ],
+    "legs": [
+      [
+        [
+          0.065,
+          0.0,
+          0.48
+        ],
+        [
+          0.0925,
+          0.008,
+          0.26
+        ],
+        [
+          0.12,
+          0.012,
+          0.055
+        ],
+        [
+          0.12,
+          -0.065,
+          0.025
+        ]
+      ],
+      [
+        [
+          -0.065,
+          0.0,
+          0.48
+        ],
+        [
+          -0.0925,
+          0.008,
+          0.26
+        ],
+        [
+          -0.12,
+          0.012,
+          0.055
+        ],
+        [
+          -0.12,
+          -0.065,
+          0.025
+        ]
+      ]
+    ],
+    "motionProfile": "humanoid",
+    "limbLimits": {
+      "arms": 0.9,
+      "legs": 0.8,
+      "shoulders": 0.9,
+      "elbows": 1
+    },
+    "fitNotes": "Marco: flame geometry around forearms and shins follows corresponding limbs",
+    "fitSource": "Front/side geometry review and .local/rigging/fit-audit/geometry.json",
+    "reviewImages": [
+      "tools/assets/reviews/whitebeard/queen/front.png",
+      "tools/assets/reviews/whitebeard/queen/side.png",
+      "tools/assets/reviews/whitebeard/queen/back.png"
+    ]
+  },
+  "whitebeard/rook": {
+    "center": 0.0,
+    "bodyY": -0.015,
+    "hip": 0.46,
+    "waist": 0.59,
+    "chest": 0.73,
+    "neck": 0.83,
+    "head": 0.89,
+    "headTail": 0.96,
+    "arms": [
+      [
+        [
+          0.12,
+          -0.015,
+          0.79
+        ],
+        [
+          0.15,
+          -0.023,
+          0.64
+        ],
+        [
+          0.17,
+          -0.04,
+          0.48
+        ],
+        [
+          0.17,
+          -0.05,
+          0.445
+        ]
+      ],
+      [
+        [
+          -0.12,
+          -0.015,
+          0.79
+        ],
+        [
+          -0.15,
+          -0.023,
+          0.64
+        ],
+        [
+          -0.17,
+          -0.04,
+          0.48
+        ],
+        [
+          -0.17,
+          -0.05,
+          0.445
+        ]
+      ]
+    ],
+    "legs": [
+      [
+        [
+          0.065,
+          -0.015,
+          0.46
+        ],
+        [
+          0.0925,
+          -0.007,
+          0.25
+        ],
+        [
+          0.12,
+          -0.003,
+          0.055
+        ],
+        [
+          0.12,
+          -0.08,
+          0.025
+        ]
+      ],
+      [
+        [
+          -0.065,
+          -0.015,
+          0.46
+        ],
+        [
+          -0.0925,
+          -0.007,
+          0.25
+        ],
+        [
+          -0.12,
+          -0.003,
+          0.055
+        ],
+        [
+          -0.12,
+          -0.08,
+          0.025
+        ]
+      ]
+    ],
+    "motionProfile": "humanoid",
+    "limbLimits": {
+      "arms": 0.9,
+      "legs": 0.8,
+      "shoulders": 0.9,
+      "elbows": 1
+    },
+    "fitNotes": "Ace: hat above face, bare arms and chest, belt knife at left hip",
+    "fitSource": "Front/side geometry review and .local/rigging/fit-audit/geometry.json",
+    "reviewImages": [
+      "tools/assets/reviews/whitebeard/rook/front.png",
+      "tools/assets/reviews/whitebeard/rook/side.png",
+      "tools/assets/reviews/whitebeard/rook/back.png"
+    ]
+  },
+  "whitebeard/bishop": {
+    "center": 0.0,
+    "bodyY": 0.0,
+    "hip": 0.4,
+    "waist": 0.55,
+    "chest": 0.73,
+    "neck": 0.84,
+    "head": 0.92,
+    "headTail": 0.99,
+    "arms": [
+      [
+        [
+          0.22,
+          0.035,
+          0.79
+        ],
+        [
+          0.29,
+          0.035,
+          0.6
+        ],
+        [
+          0.3,
+          -0.04,
+          0.435
+        ],
+        [
+          0.3,
+          -0.065,
+          0.345
+        ]
+      ],
+      [
+        [
+          -0.22,
+          0.035,
+          0.79
+        ],
+        [
+          -0.29,
+          0.035,
+          0.6
+        ],
+        [
+          -0.3,
+          -0.04,
+          0.435
+        ],
+        [
+          -0.3,
+          -0.065,
+          0.345
+        ]
+      ]
+    ],
+    "legs": [
+      [
+        [
+          0.1,
+          0.0,
+          0.4
+        ],
+        [
+          0.12,
+          0.008,
+          0.22
+        ],
+        [
+          0.14,
+          0.012,
+          0.055
+        ],
+        [
+          0.14,
+          -0.065,
+          0.025
+        ]
+      ],
+      [
+        [
+          -0.1,
+          0.0,
+          0.4
+        ],
+        [
+          -0.12,
+          0.008,
+          0.22
+        ],
+        [
+          -0.14,
+          0.012,
+          0.055
+        ],
+        [
+          -0.14,
+          -0.065,
+          0.025
+        ]
+      ]
+    ],
+    "motionProfile": "humanoid",
+    "limbLimits": {
+      "arms": 0.9,
+      "legs": 0.8,
+      "shoulders": 0.9,
+      "elbows": 1
+    },
+    "fitNotes": "Jozu: massive diamond-arm shapes and large torso, knees exposed; v2 textured front/side fit: Jozu: diamond shoulders and giant fists need radius .085, fist extends to Z=.33, wrists lean forward",
+    "fitSource": "Front/side geometry review and .local/rigging/fit-audit/geometry.json",
+    "reviewImages": [
+      "tools/assets/reviews/whitebeard/bishop/front.png",
+      "tools/assets/reviews/whitebeard/bishop/side.png",
+      "tools/assets/reviews/whitebeard/bishop/back.png"
+    ],
+    "armRadii": {
+      "upper_arm.L": 0.09,
+      "forearm.L": 0.085,
+      "hand.L": 0.085,
+      "upper_arm.R": 0.09,
+      "forearm.R": 0.085,
+      "hand.R": 0.085
+    }
+  },
+  "whitebeard/knight": {
+    "center": 0.0,
+    "bodyY": 0.0,
+    "hip": 0.42,
+    "waist": 0.55,
+    "chest": 0.68,
+    "neck": 0.78,
+    "head": 0.85,
+    "headTail": 0.9199999999999999,
+    "arms": [
+      [
+        [
+          0.12,
+          0.0,
+          0.74
+        ],
+        [
+          0.16,
+          -0.008,
+          0.6
+        ],
+        [
+          0.17,
+          -0.025,
+          0.45
+        ],
+        [
+          0.17,
+          -0.035,
+          0.415
+        ]
+      ],
+      [
+        [
+          -0.12,
+          0.0,
+          0.74
+        ],
+        [
+          -0.16,
+          -0.008,
+          0.6
+        ],
+        [
+          -0.17,
+          -0.025,
+          0.45
+        ],
+        [
+          -0.17,
+          -0.035,
+          0.415
+        ]
+      ]
+    ],
+    "legs": [
+      [
+        [
+          0.065,
+          0.0,
+          0.42
+        ],
+        [
+          0.0925,
+          0.008,
+          0.23
+        ],
+        [
+          0.12,
+          0.012,
+          0.055
+        ],
+        [
+          0.1581,
+          0.02,
+          0.014
+        ]
+      ],
+      [
+        [
+          -0.065,
+          0.0,
+          0.42
+        ],
+        [
+          -0.0925,
+          0.008,
+          0.23
+        ],
+        [
+          -0.12,
+          0.012,
+          0.055
+        ],
+        [
+          -0.1442,
+          0.0199,
+          0.0132
+        ]
+      ]
+    ],
+    "motionProfile": "humanoid",
+    "limbLimits": {
+      "arms": 0.72,
+      "legs": 0.55,
+      "shoulders": 0.65,
+      "elbows": 1
+    },
+    "fitNotes": "Vista: top hat, cape and twin curved sabers held at sides",
+    "fitSource": "Front/side geometry review and .local/rigging/fit-audit/geometry.json",
+    "rigidRegions": [
+      {
+        "bone": "chest",
+        "min": [
+          -0.5,
+          0.08,
+          0.2
+        ],
+        "max": [
+          0.5,
+          0.6,
+          0.76
+        ]
+      }
+    ],
+    "reviewImages": [
+      "tools/assets/reviews/whitebeard/knight/front.png",
+      "tools/assets/reviews/whitebeard/knight/side.png",
+      "tools/assets/reviews/whitebeard/knight/back.png"
+    ]
+  },
+  "whitebeard/pawn": {
+    "center": 0.0,
+    "bodyY": 0.0,
+    "hip": 0.41,
+    "waist": 0.55,
+    "chest": 0.72,
+    "neck": 0.84,
+    "head": 0.92,
+    "headTail": 0.99,
+    "arms": [
+      [
+        [
+          0.15,
+          0.0,
+          0.78
+        ],
+        [
+          0.19,
+          -0.008,
+          0.63
+        ],
+        [
+          0.21,
+          -0.025,
+          0.44
+        ],
+        [
+          0.21,
+          -0.035,
+          0.405
+        ]
+      ],
+      [
+        [
+          -0.15,
+          0.0,
+          0.78
+        ],
+        [
+          -0.19,
+          -0.008,
+          0.63
+        ],
+        [
+          -0.21,
+          -0.025,
+          0.44
+        ],
+        [
+          -0.21,
+          -0.035,
+          0.405
+        ]
+      ]
+    ],
+    "legs": [
+      [
+        [
+          0.075,
+          0.0,
+          0.41
+        ],
+        [
+          0.1075,
+          0.008,
+          0.22
+        ],
+        [
+          0.14,
+          0.012,
+          0.055
+        ],
+        [
+          0.14,
+          -0.065,
+          0.025
+        ]
+      ],
+      [
+        [
+          -0.075,
+          0.0,
+          0.41
+        ],
+        [
+          -0.1075,
+          0.008,
+          0.22
+        ],
+        [
+          -0.14,
+          0.012,
+          0.055
+        ],
+        [
+          -0.14,
+          -0.065,
+          0.025
+        ]
+      ]
+    ],
+    "motionProfile": "humanoid",
+    "limbLimits": {
+      "arms": 0.72,
+      "legs": 0.55,
+      "shoulders": 0.65,
+      "elbows": 1
+    },
+    "fitNotes": "Crew: long pale coat, long hair, tool hanging from left belt",
+    "fitSource": "Front/side geometry review and .local/rigging/fit-audit/geometry.json",
+    "rigidRegions": [
+      {
+        "bone": "chest",
+        "min": [
+          -0.5,
+          0.08,
+          0.2
+        ],
+        "max": [
+          0.5,
+          0.6,
+          0.82
+        ]
+      }
+    ],
+    "reviewImages": [
+      "tools/assets/reviews/whitebeard/pawn/front.png",
+      "tools/assets/reviews/whitebeard/pawn/side.png",
+      "tools/assets/reviews/whitebeard/pawn/back.png"
+    ]
+  },
+  "marines/king": {
+    "center": 0.0,
+    "bodyY": -0.015,
+    "hip": 0.43,
+    "waist": 0.56,
+    "chest": 0.69,
+    "neck": 0.79,
+    "head": 0.85,
+    "headTail": 0.9199999999999999,
+    "arms": [
+      [
+        [
+          0.13,
+          -0.015,
+          0.75
+        ],
+        [
+          0.17,
+          -0.023,
+          0.61
+        ],
+        [
+          0.17,
+          -0.04,
+          0.44
+        ],
+        [
+          0.17,
+          -0.05,
+          0.405
+        ]
+      ],
+      [
+        [
+          -0.13,
+          -0.015,
+          0.75
+        ],
+        [
+          -0.17,
+          -0.023,
+          0.61
+        ],
+        [
+          -0.17,
+          -0.04,
+          0.44
+        ],
+        [
+          -0.17,
+          -0.05,
+          0.405
+        ]
+      ]
+    ],
+    "legs": [
+      [
+        [
+          0.065,
+          -0.015,
+          0.43
+        ],
+        [
+          0.0925,
+          -0.007,
+          0.23
+        ],
+        [
+          0.12,
+          -0.003,
+          0.055
+        ],
+        [
+          0.12,
+          -0.08,
+          0.025
+        ]
+      ],
+      [
+        [
+          -0.065,
+          -0.015,
+          0.43
+        ],
+        [
+          -0.0925,
+          -0.007,
+          0.23
+        ],
+        [
+          -0.12,
+          -0.003,
+          0.055
+        ],
+        [
+          -0.12,
+          -0.08,
+          0.025
+        ]
+      ]
+    ],
+    "motionProfile": "humanoid",
+    "limbLimits": {
+      "arms": 0.72,
+      "legs": 0.55,
+      "shoulders": 0.65,
+      "elbows": 1
+    },
+    "fitNotes": "Sengoku: seagull and hat above head, white cape and relaxed hands",
+    "fitSource": "Front/side geometry review and .local/rigging/fit-audit/geometry.json",
+    "rigidRegions": [
+      {
+        "bone": "chest",
+        "min": [
+          -0.5,
+          0.065,
+          0.2
+        ],
+        "max": [
+          0.5,
+          0.6,
+          0.77
+        ]
+      }
+    ],
+    "reviewImages": [
+      "tools/assets/reviews/marines/king/front.png",
+      "tools/assets/reviews/marines/king/side.png",
+      "tools/assets/reviews/marines/king/back.png"
+    ]
+  },
+  "marines/queen": {
+    "center": 0.015,
+    "bodyY": 0.0,
+    "hip": 0.46,
+    "waist": 0.59,
+    "chest": 0.73,
+    "neck": 0.84,
+    "head": 0.91,
+    "headTail": 0.98,
+    "arms": [
+      [
+        [
+          0.145,
+          0.0,
+          0.79
+        ],
+        [
+          0.185,
+          -0.008,
+          0.65
+        ],
+        [
+          0.195,
+          -0.025,
+          0.48
+        ],
+        [
+          0.195,
+          -0.035,
+          0.445
+        ]
+      ],
+      [
+        [
+          -0.115,
+          0,
+          0.79
+        ],
+        [
+          -0.18,
+          -0.035,
+          0.66
+        ],
+        [
+          -0.2,
+          -0.19,
+          0.74
+        ],
+        [
+          -0.2,
+          -0.23,
+          0.76
+        ]
+      ]
+    ],
+    "legs": [
+      [
+        [
+          0.085,
+          0.0,
+          0.46
+        ],
+        [
+          0.115,
+          0.008,
+          0.25
+        ],
+        [
+          0.145,
+          0.012,
+          0.055
+        ],
+        [
+          0.145,
+          -0.065,
+          0.025
+        ]
+      ],
+      [
+        [
+          -0.055,
+          0.0,
+          0.46
+        ],
+        [
+          -0.085,
+          0.008,
+          0.25
+        ],
+        [
+          -0.115,
+          0.012,
+          0.055
+        ],
+        [
+          -0.115,
+          -0.065,
+          0.025
+        ]
+      ]
+    ],
+    "motionProfile": "humanoid",
+    "limbLimits": {
+      "arms": 0.72,
+      "legs": 0.55,
+      "shoulders": 0.65,
+      "elbows": 1
+    },
+    "fitNotes": "Akainu: right elbow raised to magma fist, flame on left hand, white cloak",
+    "fitSource": "Front/side geometry review and .local/rigging/fit-audit/geometry.json",
+    "rigidRegions": [
+      {
+        "bone": "chest",
+        "min": [
+          -0.5,
+          0.09,
+          0.2
+        ],
+        "max": [
+          0.5,
+          0.6,
+          0.82
+        ]
+      }
+    ],
+    "reviewImages": [
+      "tools/assets/reviews/marines/queen/front.png",
+      "tools/assets/reviews/marines/queen/side.png",
+      "tools/assets/reviews/marines/queen/back.png"
+    ]
+  },
+  "marines/rook": {
+    "center": 0.0,
+    "bodyY": 0.0,
+    "hip": 0.43,
+    "waist": 0.56,
+    "chest": 0.72,
+    "neck": 0.83,
+    "head": 0.91,
+    "headTail": 0.98,
+    "arms": [
+      [
+        [
+          0.15,
+          0.0,
+          0.78
+        ],
+        [
+          0.19,
+          -0.008,
+          0.63
+        ],
+        [
+          0.19,
+          -0.025,
+          0.45
+        ],
+        [
+          0.19,
+          -0.035,
+          0.415
+        ]
+      ],
+      [
+        [
+          -0.15,
+          0.0,
+          0.78
+        ],
+        [
+          -0.19,
+          -0.008,
+          0.63
+        ],
+        [
+          -0.19,
+          -0.025,
+          0.45
+        ],
+        [
+          -0.19,
+          -0.035,
+          0.415
+        ]
+      ]
+    ],
+    "legs": [
+      [
+        [
+          0.075,
+          0.0,
+          0.43
+        ],
+        [
+          0.1075,
+          0.008,
+          0.23
+        ],
+        [
+          0.14,
+          0.012,
+          0.055
+        ],
+        [
+          0.14,
+          -0.065,
+          0.025
+        ]
+      ],
+      [
+        [
+          -0.075,
+          0.0,
+          0.43
+        ],
+        [
+          -0.1075,
+          0.008,
+          0.23
+        ],
+        [
+          -0.14,
+          0.012,
+          0.055
+        ],
+        [
+          -0.14,
+          -0.065,
+          0.025
+        ]
+      ]
+    ],
+    "motionProfile": "humanoid",
+    "limbLimits": {
+      "arms": 0.72,
+      "legs": 0.55,
+      "shoulders": 0.65,
+      "elbows": 1
+    },
+    "fitNotes": "Garp: white suit and cape; coat shoulders outside real arms",
+    "fitSource": "Front/side geometry review and .local/rigging/fit-audit/geometry.json",
+    "rigidRegions": [
+      {
+        "bone": "chest",
+        "min": [
+          -0.5,
+          0.06,
+          0.2
+        ],
+        "max": [
+          0.5,
+          0.6,
+          0.8099999999999999
+        ]
+      }
+    ],
+    "reviewImages": [
+      "tools/assets/reviews/marines/rook/front.png",
+      "tools/assets/reviews/marines/rook/side.png",
+      "tools/assets/reviews/marines/rook/back.png"
+    ]
+  },
+  "marines/bishop": {
+    "center": -0.02,
+    "bodyY": 0.015,
+    "hip": 0.44,
+    "waist": 0.57,
+    "chest": 0.7,
+    "neck": 0.81,
+    "head": 0.88,
+    "headTail": 0.95,
+    "arms": [
+      [
+        [
+          0.11,
+          0.015,
+          0.76
+        ],
+        [
+          0.16,
+          -0.03,
+          0.64
+        ],
+        [
+          -0.06,
+          -0.15,
+          0.65
+        ],
+        [
+          -0.1,
+          -0.15,
+          0.67
+        ]
+      ],
+      [
+        [
+          -0.15,
+          0.015,
+          0.76
+        ],
+        [
+          -0.18,
+          -0.04,
+          0.65
+        ],
+        [
+          0.05,
+          -0.12,
+          0.63
+        ],
+        [
+          0.09,
+          -0.12,
+          0.65
+        ]
+      ]
+    ],
+    "legs": [
+      [
+        [
+          0.045,
+          0.015,
+          0.44
+        ],
+        [
+          0.0725,
+          0.023,
+          0.24
+        ],
+        [
+          0.1,
+          0.027,
+          0.055
+        ],
+        [
+          0.1,
+          -0.05,
+          0.025
+        ]
+      ],
+      [
+        [
+          -0.085,
+          0.015,
+          0.44
+        ],
+        [
+          -0.1125,
+          0.023,
+          0.24
+        ],
+        [
+          -0.14,
+          0.027,
+          0.055
+        ],
+        [
+          -0.14,
+          -0.05,
+          0.025
+        ]
+      ]
+    ],
+    "motionProfile": "humanoid",
+    "limbLimits": {
+      "arms": 0.65,
+      "legs": 0.8,
+      "shoulders": 0.65,
+      "elbows": 0.7
+    },
+    "fitNotes": "Smoker: crossed forearms in front of chest, smoke and jitte behind shoulders",
+    "fitSource": "Front/side geometry review and .local/rigging/fit-audit/geometry.json",
+    "rigidRegions": [
+      {
+        "bone": "chest",
+        "min": [
+          -0.5,
+          0.055,
+          0.62
+        ],
+        "max": [
+          0.5,
+          0.6,
+          0.99
+        ]
+      }
+    ],
+    "reviewImages": [
+      "tools/assets/reviews/marines/bishop/front.png",
+      "tools/assets/reviews/marines/bishop/side.png",
+      "tools/assets/reviews/marines/bishop/back.png"
+    ]
+  },
+  "marines/knight": {
+    "center": -0.035,
+    "bodyY": 0.015,
+    "hip": 0.52,
+    "waist": 0.64,
+    "chest": 0.76,
+    "neck": 0.86,
+    "head": 0.93,
+    "headTail": 0.99,
+    "arms": [
+      [
+        [
+          0.055,
+          0.015,
+          0.82
+        ],
+        [
+          0.1,
+          0.01,
+          0.69
+        ],
+        [
+          0.06,
+          -0.06,
+          0.61
+        ],
+        [
+          0.035,
+          -0.08,
+          0.6
+        ]
+      ],
+      [
+        [
+          -0.125,
+          0.015,
+          0.82
+        ],
+        [
+          -0.19,
+          -0.02,
+          0.71
+        ],
+        [
+          -0.075,
+          -0.105,
+          0.71
+        ],
+        [
+          -0.055,
+          -0.12,
+          0.74
+        ]
+      ]
+    ],
+    "legs": [
+      [
+        [
+          0.01,
+          0.015,
+          0.52
+        ],
+        [
+          0.0225,
+          0.023,
+          0.28
+        ],
+        [
+          0.035,
+          0.027,
+          0.055
+        ],
+        [
+          0.035,
+          -0.05,
+          0.025
+        ]
+      ],
+      [
+        [
+          -0.08,
+          0.015,
+          0.52
+        ],
+        [
+          -0.0925,
+          0.023,
+          0.28
+        ],
+        [
+          -0.105,
+          0.027,
+          0.055
+        ],
+        [
+          -0.105,
+          -0.05,
+          0.025
+        ]
+      ]
+    ],
+    "motionProfile": "humanoid",
+    "limbLimits": {
+      "arms": 0.9,
+      "legs": 0.8,
+      "shoulders": 0.9,
+      "elbows": 1
+    },
+    "fitNotes": "Tashigi: close feet, right forearm raised to sword guard, left hand at sheath",
+    "fitSource": "Front/side geometry review and .local/rigging/fit-audit/geometry.json",
+    "reviewImages": [
+      "tools/assets/reviews/marines/knight/front.png",
+      "tools/assets/reviews/marines/knight/side.png",
+      "tools/assets/reviews/marines/knight/back.png"
+    ]
+  },
+  "marines/pawn": {
+    "center": 0.0,
+    "bodyY": 0.0,
+    "hip": 0.48,
+    "waist": 0.6,
+    "chest": 0.74,
+    "neck": 0.84,
+    "head": 0.91,
+    "headTail": 0.98,
+    "arms": [
+      [
+        [
+          0.13,
+          0.0,
+          0.8
+        ],
+        [
+          0.17,
+          -0.008,
+          0.65
+        ],
+        [
+          0.18,
+          -0.025,
+          0.48
+        ],
+        [
+          0.18,
+          -0.035,
+          0.445
+        ]
+      ],
+      [
+        [
+          -0.13,
+          0.0,
+          0.8
+        ],
+        [
+          -0.17,
+          -0.008,
+          0.65
+        ],
+        [
+          -0.18,
+          -0.025,
+          0.48
+        ],
+        [
+          -0.18,
+          -0.035,
+          0.445
+        ]
+      ]
+    ],
+    "legs": [
+      [
+        [
+          0.065,
+          0.0,
+          0.48
+        ],
+        [
+          0.0925,
+          0.008,
+          0.26
+        ],
+        [
+          0.12,
+          0.012,
+          0.055
+        ],
+        [
+          0.12,
+          -0.065,
+          0.025
+        ]
+      ],
+      [
+        [
+          -0.065,
+          0.0,
+          0.48
+        ],
+        [
+          -0.0925,
+          0.008,
+          0.26
+        ],
+        [
+          -0.12,
+          0.012,
+          0.055
+        ],
+        [
+          -0.12,
+          -0.065,
+          0.025
+        ]
+      ]
+    ],
+    "motionProfile": "humanoid",
+    "limbLimits": {
+      "arms": 0.9,
+      "legs": 0.8,
+      "shoulders": 0.9,
+      "elbows": 1
+    },
+    "fitNotes": "Marine: bare muscular arms, back rifle on strap, loose trousers",
+    "fitSource": "Front/side geometry review and .local/rigging/fit-audit/geometry.json",
+    "rigidRegions": [
+      {
+        "bone": "chest",
+        "min": [
+          -0.5,
+          0.065,
+          0.42
+        ],
+        "max": [
+          0.5,
+          0.6,
+          0.99
+        ]
+      }
+    ],
+    "reviewImages": [
+      "tools/assets/reviews/marines/pawn/front.png",
+      "tools/assets/reviews/marines/pawn/side.png",
+      "tools/assets/reviews/marines/pawn/back.png"
+    ]
+  }
+}

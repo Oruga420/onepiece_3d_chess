@@ -12,6 +12,10 @@ export function createAttackEffects({scene, origin, direction, attacker, attack}
  const geometries = new Set(), materials = new Set(), animations = [];
  const color = attack.color, accent = attack.accent, variant = attack.variant || '';
  const localBody = new THREE.Vector3();
+ const joints = new Map();
+ attacker.traverse(object => { if (object.isBone) joints.set(object.name.replace(/[_.]/g,'').toLowerCase(),object); });
+ const localHands = [new THREE.Vector3(),new THREE.Vector3()], localFoot = new THREE.Vector3();
+ const handBones = [joints.get('handr'),joints.get('handl')], footBone = joints.get('footr');
  const localAttacker = new THREE.Vector3(), rotation = new THREE.Quaternion().copy(group.quaternion).invert();
  const material = (tint = color, opacity = 1) => {
   const m = new THREE.MeshBasicMaterial({color: tint, transparent: true, opacity: 0, depthWrite: false,
@@ -109,9 +113,10 @@ export function createAttackEffects({scene, origin, direction, attacker, attack}
     const knuckles=Array.from({length:4},(_,j)=>mesh(`rubber-knuckle-${i}-${j}`,new THREE.SphereGeometry(.035,8,6),fistMat));
     animations.push(({p})=>{
      const offset=i*.018, thrust=ramp(p,.55+offset,.603+offset), retract=ramp(p,.65+offset,.76+offset);
-     const reach=thrust*(1-retract), sign=i%2?1:-1, x=sign*(.17+Math.floor(i/2)*.055), y=.47+i*.038;
-     const end=THREE.MathUtils.lerp(localAttacker.z+.10,.09,reach);
-     arm.userData.bend(x,y,localAttacker.z,end,sign*.21*(1-reach),mochi?.074:.047);
+     const reach=thrust*(1-retract), sign=i%2?1:-1, hand=handBones[i%2]?localHands[i%2]:null;
+     const x=hand?.x??sign*(.17+Math.floor(i/2)*.055), y=hand?.y??(.47+i*.038), start=hand?.z??localAttacker.z;
+     const end=THREE.MathUtils.lerp(start+.04,.09,reach);
+     arm.userData.bend(x,y,start,end,sign*.13*(1-reach),mochi?.074:.035);
      fist.position.set(x*.35,y+.02,end);fist.scale.set(1.22,1,1.25);
      fist.rotation.y=sign*(1-reach)*.45;
      for(let j=0;j<4;j++){knuckles[j].position.set(fist.position.x+(j-1.5)*.047,fist.position.y+.045,fist.position.z+.095);knuckles[j].visible=p>=.545+offset&&p<.77+offset;}
@@ -121,6 +126,26 @@ export function createAttackEffects({scene, origin, direction, attacker, attack}
    break;
   }
   case 'sword': {
+   // Zoro's source miniature has sheathed swords at the hip. Draw separate
+   // rigid blades in his animated hands; never stretch the scabbards as arms.
+   if(attack.id==='mugiwara/queen')for(let i=0;i<2;i++)if(handBones[i]){
+    const steel=new THREE.MeshStandardMaterial({color:'#d2e7ee',metalness:.82,roughness:.24,transparent:true,opacity:0});
+    const grip=new THREE.MeshStandardMaterial({color:i?'#e9e4d9':'#201626',metalness:.3,roughness:.6,transparent:true,opacity:0});
+    steel.userData.strength=grip.userData.strength=1;materials.add(steel);materials.add(grip);
+    const blade=mesh('zoro-held-blade-'+i,new THREE.ConeGeometry(.022,.43,4),steel);
+    const handle=mesh('zoro-held-hilt-'+i,new THREE.CylinderGeometry(.016,.016,.085,8),grip);
+    const guard=mesh('zoro-held-guard-'+i,new THREE.CylinderGeometry(.044,.044,.012,8),steel);
+    const handRotation=new THREE.Quaternion(),bladeAxis=new THREE.Vector3();
+    animations.push(({p})=>{
+     handBones[i].getWorldQuaternion(handRotation).premultiply(rotation);
+     bladeAxis.set(0,1,0).applyQuaternion(handRotation);
+     for(const object of [blade,handle,guard])object.quaternion.copy(handRotation);
+     blade.position.copy(localHands[i]).addScaledVector(bladeAxis,.235);
+     handle.position.copy(localHands[i]).addScaledVector(bladeAxis,-.025);
+     guard.position.copy(localHands[i]).addScaledVector(bladeAxis,.018);
+     steel.opacity=grip.opacity=ramp(p,.30,.35)*(1-ramp(p,.81,.85));
+    });
+   }
    const radius=variant==='daggers'?.40:variant==='longblade'?.88:.66;
    for(let i=0;i<count;i++) {
     const blade=ribbon(`sword-cut-${i}`,radius,.19,color,.82);
@@ -155,7 +180,7 @@ export function createAttackEffects({scene, origin, direction, attacker, attack}
      const z=THREE.MathUtils.lerp(localAttacker.z+.20,.03,flight);
      const bodyHeight=(attacker.userData.combatBody||attacker.children[0])?.position.y||0;
      if(variant==='kick' && i<4){
-      flame.position.set(localBody.x+(i%2?-.07:.07),localBody.y+.14,localBody.z+.12);
+      flame.position.set((footBone?localFoot.x:localBody.x)+(i%2?-.04:.04),(footBone?localFoot.y:localBody.y+.14)+.025,footBone?localFoot.z:localBody.z+.12);
       flame.rotation.set(.18,i*Math.PI/2,-.18);flame.scale.set(.20+strike*.10,.38+strike*.20,1);
      } else if(winged){
       const feather=Math.floor(i/2)/5;flame.position.set(sign*(.10+feather*.72),.62+bodyHeight+Math.sin(feather*Math.PI)*.29,localAttacker.z+.12-feather*.14);
@@ -323,6 +348,8 @@ export function createAttackEffects({scene, origin, direction, attacker, attack}
    localAttacker.copy(attacker.position).sub(origin).applyQuaternion(rotation);
    const body=attacker.userData.combatBody||attacker.children[0]||attacker;
    body.getWorldPosition(localBody).sub(origin).applyQuaternion(rotation);
+   for(let i=0;i<2;i++)handBones[i]?.getWorldPosition(localHands[i]).sub(origin).applyQuaternion(rotation);
+   footBone?.getWorldPosition(localFoot).sub(origin).applyQuaternion(rotation);
    const charge = ramp(p, .30, .55), strike = envelope(p, .55, .62, .79), fade = 1 - ramp(p, .73, .86);
    group.visible = p >= .30 && p < .86;
    const intensity = (.18 * charge + .82 * strike) * fade;
